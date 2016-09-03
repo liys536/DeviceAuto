@@ -1,0 +1,1927 @@
+﻿<!DOCTYPE html PUBLIC "-//4W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="width:100%;height:100%">
+<head>
+    <title></title>
+    <style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+   <style type="text/css">
+.comments {
+ width:85%;/*自动适应父布局宽度*/
+ overflow:auto;
+ word-break:break-all;mm
+/*在ie中解决断行问题(防止自动变为在一行显示，主要解决ie兼容问题，ie8中当设宽度为100%时，文本域类容超过一行时，
+当我们双击文本内容就会自动变为一行显示，所以只能用ie的专有断行属性“word-break或word-wrap”控制其断行)*/
+}
+</style>
+
+ <meta http-equiv="Content-Type" content="text/html;charset=gbk"/>
+
+    <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+    <script type="text/javascript" src="js/highcharts.js"></script>
+   <script type="text/javascript" src="download/exporting.js" charset="gb2312"></script>    
+    <script type="text/javascript" src="js/theme/gray.js"></script>
+
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+    <script src="common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var chart;
+        var itm;
+        var ser;
+        var sbid;
+        var sbname;
+        function toObject(a) {
+            return (new Function('return ' + a))();
+        }
+
+
+        function Save_Excel() {//导出Excel文件
+            //getExcelXML有一个JSON对象的配置，配置项看了下只有title配置，为excel文档的标题
+            var data = $('#tab').datagrid('getExcelXml', { title: '点检记录' }); //获取datagrid数据对应的excel需要的xml格式的内容
+
+            $.post("djjl.ashx", { "action": "export", data: data }, function (data) {
+                window.location = data; //执行下载操作
+                //$.messager.alert("提示", "导出excel成功！");
+            });
+            return false;
+        }
+
+
+        //查询
+        function searchVal() {
+            var qsrq = $('#dksrq').datebox('getValue');
+            var jzrq = $('#djsrq').datebox('getValue');
+
+            var ckey = $('#sel_key').combobox('getValue');
+            var cmemo = $('#cmemo').val();
+
+
+            //查询时需隐藏点检参数列，原因是每个设备的点检参数不同。
+            //-----------------------------------------------------------------------
+            $("#tab").datagrid('hideColumn', 'JSON_cstr1');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr2');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr3');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr4');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr5');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr6');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr7');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr8');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr9');
+
+            $("#tab").datagrid('hideColumn', 'JSON_cstr10');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool1');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool2');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool3');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool4');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool5');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool6');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool7');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool8');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool9');
+
+            $("#tab").datagrid('hideColumn', 'JSON_bbool10');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber1');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber2');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber3');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber4');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber5');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber6');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber7');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber8');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber9');
+
+            $("#tab").datagrid('hideColumn', 'JSON_inumber10');
+            //-----------------------------------------------------------------------
+
+            $('#tab').datagrid({ url: 'djjl.ashx', queryParams: { "action": "query", qsrq: qsrq, jzrq: jzrq, ckey: ckey, cmemo: cmemo, state: "s"} });
+        }
+
+        function sch() {
+            if (sbid == null || sbid == "") {
+                $.messager.alert("提示", "设备不允许为空，请重新选择！");
+                return;
+            }
+
+            //获取起止日期
+            var dqsrq = $('#dqsrq').datetimebox('getValue');
+            var djzrq = $('#djzrq').datetimebox('getValue');
+            var ccs = $('#ccs').combobox('getValue');
+            var csb = sbid;
+
+            if (ccs == "" || ccs == null) {
+                $.messager.alert("提示", "参数不允许为空，请选择！");
+                return;
+            }
+            if (dqsrq == "" || dqsrq == null) {
+                $.messager.alert("提示", "起始日期不允许为空，请选择！");
+                return;
+            }
+            if (djzrq == "" || djzrq == null) {
+                $.messager.alert("提示", "截止日期不允许为空，请选择！");
+                return;
+            }
+
+            $(document).ready(function () {
+                //post异步提交
+                $.post("djtb.ashx", { "action": "query", qsrq: dqsrq, jzrq: djzrq, sbid: csb, cs: ccs }, function (data) {
+                    if (data == null || data == "" || data == undefined) {
+                        $.messager.alert("提示", "没有查询到数据！");
+                        return;
+                    }
+
+                    if (data != "") {
+                        //categories:x轴数据
+                        itm = toObject(data);
+
+                        $.post("djtb.ashx", { "action": "query2", qsrq: dqsrq, jzrq: djzrq, sbid: csb, cs: ccs }, function (data) {
+                            if (data == null || data == "" || data == undefined) {
+                                $.messager.alert("提示", "没有查询到数据！");
+                                return;
+                            }
+
+
+                            if (data != "") {
+                                //series：y轴数据
+                                ser = toObject(data);
+
+                                chart = new Highcharts.Chart({
+                                    chart: {
+                                        renderTo: 'container',          //放置图表的容器
+                                        plotBackgroundColor: null,
+                                        plotBorderWidth: null,
+                                        defaultSeriesType: 'spline',
+                                        backgroundColor: null,
+                                        colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+                                    },
+                                    title: {
+                                        text: '点检记录表'
+                                    },
+                                    subtitle: {
+                                        text: ''        //子标题 
+                                    },
+                                    xAxis: {//X轴数据
+                                        categories: itm,
+                                        labels: {
+                                            //                                            rotation: -45, //字体倾斜:-45
+                                            //                                            align: 'center',
+                                            //                                            style: { font: 'normal 8px 宋体' },
+                                            enabled: false
+                                        }
+                                    },
+                                    yAxis: {//Y轴显示文字;
+                                        title: {
+                                            text: ''
+                                        }
+                                    },
+                                    tooltip: {
+                                        enabled: true,
+                                        formatter: function () {
+                                            return '<b>' + this.x + '</b><br/>' + this.series.name + ': ' + Highcharts.numberFormat(this.y, 1);
+                                        },
+                                        backgroundColor: 'white',   // 背景颜色
+                                        borderColor: 'black',         // 边框颜色
+                                        borderRadius: 10,             // 边框圆角
+                                        borderWidth: 1,               // 边框宽度
+                                        shadow: true,                 // 是否显示阴影
+                                        animation: true,               // 是否启用动画效果
+                                        style: {                      // 文字内容相关样式
+                                            color: "black",
+                                            fontSize: "12px",
+                                            fontWeight: "blod",
+                                            fontFamily: "Courir new"
+                                        }
+                                    },
+                                    plotOptions: {
+                                        spline: {
+                                            lineWidth: 1.5,
+                                            lineColor: "#E61A1A",
+                                            fillOpacity: 0.1,
+                                            marker: {
+                                                enabled: false,
+                                                states: {
+                                                    hover: {
+                                                        enabled: true,
+                                                        radius: 2
+                                                    }
+                                                }
+                                            },
+                                            shadow: false
+                                        }
+                                    },
+                                    series: ser
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+        }
+
+        $(function () {
+            //            var myDate = new Date();    //默认显示当前日期
+            //            //使用服务器函数返回日期
+            //            $.post("getDate.ashx", { data: myDate.toLocaleDateString() }, function (data) {
+            //                var btime = data;
+            //                var etime = add(data, 1)
+
+            //                $('#dqsrq').datetimebox('setValue', btime);
+            //                $('#djzrq').datetimebox('setValue', etime);
+
+            //                $('#dksrq').datetimebox('setValue', btime);
+            //                $('#djsrq').datetimebox('setValue', etime);
+
+            //                $('#dtp1').datetimebox('setValue', btime);
+            //                $('#dtp2').datetimebox('setValue', etime);
+            //            });
+
+
+            var btime = getCurTime();
+            var etime = getCurTime();
+
+            $('#dqsrq').datetimebox('setValue', btime);
+            $('#djzrq').datetimebox('setValue', etime);
+
+            $('#dksrq').datetimebox('setValue', btime);
+            $('#djsrq').datetimebox('setValue', etime);
+
+            $('#dtp1').datetimebox('setValue', btime);
+            $('#dtp2').datetimebox('setValue', etime);
+
+
+            //自动隐藏west部分
+            //----------------------------------------------------
+            $(".layout-button-left").live("click", function () {
+            });
+
+            $(".layout-button-left").click();
+
+            //----------------------------------------------------
+
+
+            /**
+            Jquery easyui datagrid js导出excel
+            修改自extgrid导出excel
+            * allows for downloading of grid data (store) directly into excel
+            * Method: extracts data of gridPanel store, uses columnModel to construct XML excel document,
+            * converts to Base64, then loads everything into a data URL link.
+            *
+            * @author Animal <extjs support team>
+            *
+            */
+            $.extend($.fn.datagrid.methods, {
+                getExcelXml: function (jq, param) {
+                    var worksheet = this.createWorksheet(jq, param);
+                    //alert($(jq).datagrid('getColumnFields'));
+                    var totalWidth = 0;
+                    var cfs = $(jq).datagrid('getColumnFields');
+                    for (var i = 1; i < cfs.length; i++) {
+                        totalWidth += $(jq).datagrid('getColumnOption', cfs[i]).width;
+                    }
+                    //var totalWidth = this.getColumnModel().getTotalWidth(includeHidden);
+                    return '<?xml version="1.0" encoding="utf-8"?>' + //xml申明有问题，以修正，注意是utf-8编码，如果是gb2312，需要修改动态页文件的写入编码
+            '<ss:Workbook xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:o="urn:schemas-microsoft-com:office:office">' +
+            '<o:DocumentProperties><o:Title>' + param.title + '</o:Title></o:DocumentProperties>' +
+            '<ss:ExcelWorkbook>' +
+            '<ss:WindowHeight>' + worksheet.height + '</ss:WindowHeight>' +
+            '<ss:WindowWidth>' + worksheet.width + '</ss:WindowWidth>' +
+            '<ss:ProtectStructure>False</ss:ProtectStructure>' +
+            '<ss:ProtectWindows>False</ss:ProtectWindows>' +
+            '</ss:ExcelWorkbook>' +
+            '<ss:Styles>' +
+            '<ss:Style ss:ID="Default">' +
+            '<ss:Alignment ss:Vertical="Top"  />' +
+            '<ss:Font ss:FontName="arial" ss:Size="10" />' +
+            '<ss:Borders>' +
+            '<ss:Border  ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Top" />' +
+            '<ss:Border  ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Bottom" />' +
+            '<ss:Border  ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Left" />' +
+            '<ss:Border ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Right" />' +
+            '</ss:Borders>' +
+            '<ss:Interior />' +
+            '<ss:NumberFormat />' +
+            '<ss:Protection />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="title">' +
+            '<ss:Borders />' +
+            '<ss:Font />' +
+            '<ss:Alignment  ss:Vertical="Center" ss:Horizontal="Center" />' +
+            '<ss:NumberFormat ss:Format="@" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="headercell">' +
+            '<ss:Font ss:Bold="1" ss:Size="10" />' +
+            '<ss:Alignment  ss:Horizontal="Center" />' +
+            '<ss:Interior ss:Pattern="Solid"  />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="even">' +
+            '<ss:Interior ss:Pattern="Solid"  />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="even" ss:ID="evendate">' +
+            '<ss:NumberFormat ss:Format="yyyy-mm-dd" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="even" ss:ID="evenint">' +
+            '<ss:NumberFormat ss:Format="0" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="even" ss:ID="evenfloat">' +
+            '<ss:NumberFormat ss:Format="0.00" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="odd">' +
+            '<ss:Interior ss:Pattern="Solid"  />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="odd" ss:ID="odddate">' +
+            '<ss:NumberFormat ss:Format="yyyy-mm-dd" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="odd" ss:ID="oddint">' +
+            '<ss:NumberFormat ss:Format="0" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="odd" ss:ID="oddfloat">' +
+            '<ss:NumberFormat ss:Format="0.00" />' +
+            '</ss:Style>' +
+            '</ss:Styles>' +
+            worksheet.xml +
+            '</ss:Workbook>';
+                },
+                createWorksheet: function (jq, param) {
+                    // Calculate cell data types and extra class names which affect formatting
+                    var cellType = [];
+                    var cellTypeClass = [];
+                    //var cm = this.getColumnModel();
+                    var totalWidthInPixels = 0;
+                    var colXml = '';
+                    var headerXml = '';
+                    var visibleColumnCountReduction = 0;
+                    var cfs = $(jq).datagrid('getColumnFields');
+                    var colCount = cfs.length;
+                    for (var i = 1; i < colCount; i++) {
+                        if (cfs[i] != '') {
+                            var w = $(jq).datagrid('getColumnOption', cfs[i]).width;
+                            totalWidthInPixels += w;
+                            if (cfs[i] === "") {
+                                cellType.push("None");
+                                cellTypeClass.push("");
+                                ++visibleColumnCountReduction;
+                            }
+                            else {
+                                colXml += '<ss:Column ss:AutoFitWidth="1" ss:Width="130" />';
+                                headerXml += '<ss:Cell ss:StyleID="headercell">' +
+                        '<ss:Data ss:Type="String">' + $(jq).datagrid('getColumnOption', cfs[i]).title + '</ss:Data>' +
+                        '<ss:NamedCell ss:Name="Print_Titles" /></ss:Cell>';
+                                cellType.push("String");
+                                cellTypeClass.push("");
+                            }
+                        }
+                    }
+                    var visibleColumnCount = cellType.length - visibleColumnCountReduction;
+                    var result = {
+                        height: 9000,
+                        width: Math.floor(totalWidthInPixels * 30) + 50
+                    };
+                    var rows = $(jq).datagrid('getRows');
+                    // Generate worksheet header details.
+                    var t = '<ss:Worksheet ss:Name="' + param.title + '">' +
+            '<ss:Names>' +
+            '<ss:NamedRange ss:Name="Print_Titles" ss:RefersTo="=\'' + param.title + '\'!R1:R2" />' +
+            '</ss:Names>' +
+            '<ss:Table x:FullRows="1" x:FullColumns="1"' +
+            ' ss:ExpandedColumnCount="' + (visibleColumnCount + 2) +
+            '" ss:ExpandedRowCount="' + (rows.length + 2) + '">' +
+            colXml +
+            '<ss:Row ss:AutoFitHeight="1">' +
+            headerXml +
+            '</ss:Row>';
+                    // Generate the data rows from the data in the Store
+                    //for (var i = 0, it = this.store.data.items, l = it.length; i < l; i++) {
+                    for (var i = 0, it = rows, l = it.length; i < l; i++) {
+                        t += '<ss:Row>';
+                        var cellClass = (i & 1) ? 'odd' : 'even';
+                        r = it[i];
+                        var k = 0;
+                        for (var j = 1; j < colCount; j++) {
+                            //if ((cm.getDataIndex(j) != '')
+                            if (cfs[j] != '') {
+                                //var v = r[cm.getDataIndex(j)];
+                                var v = r[cfs[j]];
+                                if (cellType[k] !== "None") {
+                                    t += '<ss:Cell ss:StyleID="' + cellClass + cellTypeClass[k] + '"><ss:Data ss:Type="' + cellType[k] + '">';
+                                    if (cellType[k] == 'DateTime') {
+                                        t += v.format('Y-m-d');
+                                    } else {
+                                        t += v;
+                                    }
+                                    t += '</ss:Data></ss:Cell>';
+                                }
+                                k++;
+                            }
+                        }
+                        t += '</ss:Row>';
+                    }
+                    result.xml = t + '</ss:Table>' +
+            '<x:WorksheetOptions>' +
+            '<x:PageSetup>' +
+            '<x:Layout x:CenterHorizontal="1" x:Orientation="Landscape" />' +
+            '<x:Footer x:Data="Page &P of &N" x:Margin="0.5" />' +
+            '<x:PageMargins x:Top="0.5" x:Right="0.5" x:Left="0.5" x:Bottom="0.8" />' +
+            '</x:PageSetup>' +
+            '<x:FitToPage />' +
+            '<x:Print>' +
+            '<x:PrintErrors>Blank</x:PrintErrors>' +
+            '<x:FitWidth>1</x:FitWidth>' +
+            '<x:FitHeight>32767</x:FitHeight>' +
+            '<x:ValidPrinterInfo />' +
+            '<x:VerticalResolution>600</x:VerticalResolution>' +
+            '</x:Print>' +
+            '<x:Selected />' +
+            '<x:DoNotDisplayGridlines />' +
+            '<x:ProtectObjects>False</x:ProtectObjects>' +
+            '<x:ProtectScenarios>False</x:ProtectScenarios>' +
+            '</x:WorksheetOptions>' +
+            '</ss:Worksheet>';
+                    return result;
+                }
+            });
+
+            $('#ccs').combobox({
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            //datagrid扩展datetimebox
+            $.extend($.fn.datagrid.defaults.editors, {
+                datetimebox: {// datetimebox就是你要自定义editor的名称
+                    init: function (container, options) {
+                        var input = $('<input class="easyuidatetimebox">').appendTo(container);
+                        return input.datetimebox({
+                            formatter: function (date) {
+                                return new Date(date).format("yyyy-MM-dd hh:mm:ss");
+                            }
+                        });
+                    },
+                    getValue: function (target) {
+                        return $(target).parent().find('input.combo-value').val();
+                    },
+                    setValue: function (target, value) {
+                        $(target).datetimebox("setValue", value);
+                    },
+                    resize: function (target, width) {
+                        var input = $(target);
+                        if ($.boxModel == true) {
+                            input.width(width - (input.outerWidth() - input.width()));
+                        } else {
+                            input.width(width);
+                        }
+                    }
+                }
+            });
+            // 时间格式化
+            Date.prototype.format = function (format) {
+                /*
+                * eg:format="yyyy-MM-dd hh:mm:ss";
+                */
+                if (!format) {
+                    format = "yyyy-MM-dd hh:mm:ss";
+                }
+
+                var o = {
+                    "M+": this.getMonth() + 1, // month
+                    "d+": this.getDate(), // day
+                    "h+": this.getHours(), // hour
+                    "m+": this.getMinutes(), // minute
+                    "s+": this.getSeconds(), // second
+                    "q+": Math.floor((this.getMonth() + 3) / 3), // quarter
+                    "S": this.getMilliseconds()
+                    // millisecond
+                };
+
+                if (/(y+)/.test(format)) {
+                    format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                }
+
+                for (var k in o) {
+                    if (new RegExp("(" + k + ")").test(format)) {
+                        format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                    }
+                }
+                return format;
+            };
+
+
+            $.extend($.fn.validatebox.defaults.rules, {
+                /*13:04:06*/
+                time: {
+                    validator: function (value) {
+                        var a = value.match(/^(\d{1,2})(:)?(\d{1,2})\2(\d{1,2})$/);
+                        if (a == null) {
+                            return false;
+                        } else if (a[1] > 24 || a[3] > 60 || a[4] > 60) {
+                            return false;
+                        }
+                    },
+                    message: '时间格式不正确，请重新输入。'
+                },
+                /*2014-01-01*/
+                date: {
+                    validator: function (value) {
+                        var r = value.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
+                        if (r == null) {
+                            return false;
+                        }
+                        var d = new Date(r[1], r[3] - 1, r[4]);
+                        return (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4]);
+                    },
+                    message: '时间格式不正确，请重新输入。'
+                },
+                /*2014-01-01 13:04:06*/
+                datetime: {
+                    validator: function (value) {
+                        var r = value.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/);
+                        if (r == null) return false;
+                        var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6], r[7]);
+                        return (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6] && d.getSeconds() == r[7]);
+                    },
+                    message: '时间格式不正确，请重新输入。'
+                }
+            });
+
+            $("#tt").tree({//同步加载Tree
+                url: 'sbfl.ashx?action=0',
+                lines: true,
+                onBeforeExpand: function (node, param) {        //异步加载设备资料
+
+                    $('#tt').tree('options').url = 't_sbzl.ashx?action=' + node.id;
+                },
+                onSelect: function (node) {
+                    if ($('#tt').tree('isLeaf', node.target)) {      //是否叶子节点
+
+                        //加载参数
+                        //***************************************************************
+                        sbid = node.id;
+                        sbname = node.text;
+
+                        if (sbid == "" || sbid == null) {
+                            $.messager.alert("提示", "设备不允许为空，请选择！");
+                            return;
+                        }
+
+                        var url = 'cssz_load.ashx?sbid=' + sbid;
+
+                        $('#ccs').combobox('setValue', '');
+                        $('#ccs').combobox('reload', url);
+                        //***************************************************************
+
+                        //加载文档内容
+                        //******************************************************************
+
+                        //$('#tab_wd').datagrid('load', { "action": "query", sbid: node.id });
+                        //******************************************************************
+
+                        $.post("djjl.ashx", { "action": "isshow", data: node.id }, function (data) {
+                            if (data != "") {
+                                //解析data内容
+                                var cstr1 = data.split("*")[0];
+                                var cstr2 = data.split("*")[1];
+                                var cstr3 = data.split("*")[2];
+                                var cstr4 = data.split("*")[3];
+                                var cstr5 = data.split("*")[4];
+                                var cstr6 = data.split("*")[5];
+                                var cstr7 = data.split("*")[6];
+                                var cstr8 = data.split("*")[7];
+                                var cstr9 = data.split("*")[8];
+                                var cstr10 = data.split("*")[9];
+
+                                var bBool1 = data.split("*")[10];
+                                var bBool2 = data.split("*")[11];
+                                var bBool3 = data.split("*")[12];
+                                var bBool4 = data.split("*")[13];
+                                var bBool5 = data.split("*")[14];
+                                var bBool6 = data.split("*")[15];
+                                var bBool7 = data.split("*")[16];
+                                var bBool8 = data.split("*")[17];
+                                var bBool9 = data.split("*")[18];
+                                var bBool10 = data.split("*")[19];
+
+                                var iNumber1 = data.split("*")[20];
+                                var iNumber2 = data.split("*")[21];
+                                var iNumber3 = data.split("*")[22];
+                                var iNumber4 = data.split("*")[23];
+                                var iNumber5 = data.split("*")[24];
+                                var iNumber6 = data.split("*")[25];
+                                var iNumber7 = data.split("*")[26];
+                                var iNumber8 = data.split("*")[27];
+                                var iNumber9 = data.split("*")[28];
+                                var iNumber10 = data.split("*")[29];
+
+                                if (cstr1.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr1');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr1');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr1', text: cstr1.split("@")[2] });
+                                }
+                                if (cstr2.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr2');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr2');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr2', text: cstr2.split("@")[2] });
+                                }
+                                if (cstr3.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr3');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr3');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr3', text: cstr3.split("@")[2] });
+                                }
+                                if (cstr4.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr4');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr4');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr4', text: cstr4.split("@")[2] });
+                                }
+                                if (cstr5.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr5');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr5');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr5', text: cstr5.split("@")[2] });
+                                }
+                                if (cstr6.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr6');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr6');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr6', text: cstr6.split("@")[2] });
+                                }
+                                if (cstr7.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr7');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr7');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr7', text: cstr7.split("@")[2] });
+                                }
+                                if (cstr8.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr8');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr8');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr8', text: cstr8.split("@")[2] });
+                                }
+                                if (cstr9.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr9');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr9');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr9', text: cstr9.split("@")[2] });
+                                }
+                                if (cstr10.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_cstr10');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_cstr10');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr10', text: cstr10.split("@")[2] });
+                                }
+
+                                //bool
+                                if (bBool1.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool1');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool1');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool1', text: bBool1.split("@")[2] });
+                                }
+                                if (bBool2.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool2');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool2');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool2', text: bBool2.split("@")[2] });
+                                }
+                                if (bBool3.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool3');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool3');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool3', text: bBool3.split("@")[2] });
+                                }
+                                if (bBool4.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool4');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool4');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool4', text: bBool4.split("@")[2] });
+                                }
+                                if (bBool5.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool5');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool5');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool5', text: bBool5.split("@")[2] });
+                                }
+                                if (bBool6.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool6');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool6');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool6', text: bBool6.split("@")[2] });
+                                }
+                                if (bBool7.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool7');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool7');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool7', text: bBool7.split("@")[2] });
+                                }
+                                if (bBool8.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool8');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool8');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool8', text: bBool8.split("@")[2] });
+                                }
+                                if (bBool9.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool9');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool9');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool9', text: bBool9.split("@")[2] });
+                                }
+                                if (bBool10.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_bbool10');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_bbool10');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool10', text: bBool10.split("@")[2] });
+                                }
+
+                                //number
+                                if (iNumber1.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber1');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber1');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber1', text: iNumber1.split("@")[2] });
+                                }
+                                if (iNumber2.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber2');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber2');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber2', text: iNumber2.split("@")[2] });
+                                }
+                                if (iNumber3.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber3');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber3');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber3', text: iNumber3.split("@")[2] });
+                                }
+                                if (iNumber4.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber4');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber4');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber4', text: iNumber4.split("@")[2] });
+                                }
+                                if (iNumber5.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber5');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber5');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber5', text: iNumber5.split("@")[2] });
+                                }
+                                if (iNumber6.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber6');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber6');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber6', text: iNumber6.split("@")[2] });
+                                }
+                                if (iNumber7.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber7');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber7');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber7', text: iNumber7.split("@")[2] });
+                                }
+                                if (iNumber8.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber8');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber8');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber8', text: iNumber8.split("@")[2] });
+                                }
+                                if (iNumber9.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber9');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber9');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber9', text: iNumber9.split("@")[2] });
+                                }
+                                if (iNumber10.split("@")[1] == "f") {
+                                    $("#tab").datagrid('hideColumn', 'JSON_inumber10');
+                                }
+                                else {
+                                    $("#tab").datagrid('showColumn', 'JSON_inumber10');
+                                    $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber10', text: iNumber10.split("@")[2] });
+                                }
+                            }
+                        });
+
+                        var ksrq = $('#dksrq').datebox('getValue');
+                        var jsrq = $('#djsrq').datebox('getValue');
+                        //重载
+                        $('#tab').datagrid('load', { "action": "query", sb: node.id, state: "s", qsrq: ksrq, jzrq: jsrq });
+                    }
+                }
+
+            });
+
+            //扩展方法，设置列名使用
+            $.extend($.fn.datagrid.methods, {
+                setColumnTitle: function (jq, option) {
+                    if (option.field) {
+                        return jq.each(function () {
+                            var $panel = $(this).datagrid("getPanel");
+                            var $field = $('td[field=' + option.field + ']', $panel);
+                            if ($field.length) {
+                                var $span = $("span", $field).eq(0);
+                                $span.html(option.text);
+                            }
+                        });
+                    }
+                    return jq;
+                }
+            });
+
+            $("#tab").datagrid({
+                width: $('#panel2').width(),
+                height: 400,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "djjl.ashx", //请求路径
+                title: "点检记录", //标题
+                //fit: true,        //该处不能使用语句，否则无法看到下方趋势
+                nowrap: false,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_id", title: "id", width: 100, hidden: true },
+                { field: "JSON_isbid", title: "isbid", width: 100, hidden: true },
+                { field: "JSON_csbbh", title: "设备编号", width: 100, editor: 'text' },
+                { field: "JSON_csbmc", title: "设备名称", width: 100 },
+                { field: "JSON_cscx", title: "生产线", width: 100 },
+                { field: "JSON_csszy", title: "所属专业", width: 100 },
+                { field: "JSON_drq", title: "日期", width: 150, editor: 'datetimebox' },
+                { field: "JSON_cjllx", title: "记录类型", width: 100 },
+                { field: "JSON_cdjr", title: "点检人", width: 100, editor: 'text' },
+                { field: "JSON_cbz", title: "备注", width: 100, editor: 'text' },
+                { field: "JSON_cstr1", title: "cStr1", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr2", title: "cStr2", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr3", title: "cStr3", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr4", title: "cStr4", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr5", title: "cStr5", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr6", title: "cStr6", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr7", title: "cStr7", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr8", title: "cStr8", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr9", title: "cStr9", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr10", title: "cStr10", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_bbool1", title: "bBool1", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool2", title: "bBool2", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool3", title: "bBool3", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool4", title: "bBool4", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool5", title: "bBool5", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool6", title: "bBool6", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool7", title: "bBool7", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool8", title: "bBool8", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool9", title: "bBool9", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool10", title: "bBool10", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_inumber1", title: "iNumber1", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber2", title: "iNumber2", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber3", title: "iNumber3", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber4", title: "iNumber4", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber5", title: "iNumber5", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber6", title: "iNumber6", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber7", title: "iNumber7", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber8", title: "iNumber8", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber9", title: "iNumber9", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber10", title: "iNumber10", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} }
+                                 ]],
+                //传输参数
+                queryParams: { "action": "query", sb: 0, state: '' },
+                pagination: true,
+                toolbar: "#tool",
+                //onDblClickRow: onDblClickRow
+                onDblClickRow: function () {
+                    edit_dg();  //行双击调用修改函数
+                },
+                onClickRow: function () {
+                    selectRow();  //行双击调用修改函数
+                }
+            });
+
+            $("#tab").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+
+            $('#s_cscx').combobox({
+                url: 'scx.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $('#s_csszy').combobox({
+                url: 'sszy.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            //            //文档
+            //            $("#tab_wd").datagrid({
+            //                width: $('#panel2').width(),
+            //                height: 230,
+            //                singleSelect: true, //选中一行的设置
+            //                rownumbers: true, //行号
+            //                url: "wdgl.ashx", //请求路径
+            //                title: "文档资料", //标题
+            //                //iconCls: "icon-save", //图标
+            //                //collapsible: true, //隐藏按钮
+            //                loadMsg: '正在加载,请稍后...',
+            //                //冻结列
+            //                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+            //                //列
+            //                columns: [[
+            //                { field: "JSON_id", title: "文档id", width: 100, hidden: true },
+            //                { field: "JSON_cnr", title: "文档", width: 200, editor: 'text' }
+            //                ]],
+            //                //传输参数
+            //                queryParams: { "action": "query", sbid: 0 },
+            //                pagination: true,
+            //                toolbar: "#tool_wd"
+            //            });
+            //            $("#tab_wd").datagrid('getPager').pagination({
+            //                pageSize: 10, //每页显示的记录条数                       
+            //                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+            //                beforePageText: '第', //页数文本框前显示的汉字                           
+            //                afterPageText: '页    共 {pages} 页',
+            //                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            //            });
+
+
+            $("#ipt_search2").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab_wd').datagrid('options').queryParams.search_type = name;
+                    $('#tab_wd').datagrid('options').queryParams.search_value = val;
+                    $('#tab_wd').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+
+
+            //设备资料关联记录
+            var ssurl = window.location.href;
+            var slen = ssurl.substr(0, ssurl.indexOf("&")).length;  //第一个&出现的位置
+            //window.location.href = ssurl.substr(0, len-1);
+            if (slen > 0) {
+                var s = get_url(ssurl);
+                var len = s.substr(0, s.indexOf("&")).length;  //第一个&出现的位置
+                var sstr = "";
+                sstr = s.substr(len + 1, s.length - len);
+
+
+                if (sstr == "" || sstr == null || sstr == undefined || sstr.length == 0) {
+                    searchVal();
+                }
+                else {
+                    sbid = sstr;
+
+//                    if (sbid == "" || sbid == null) {
+//                        $.messager.alert("提示", "设备不允许为空，请选择！");
+//                        return;
+//                    }
+
+                    var url = 'cssz_load.ashx?sbid=' + sbid;
+
+                    $('#ccs').combobox('setValue', '');
+                    $('#ccs').combobox('reload', url);
+                    //***************************************************************
+
+                    //加载文档内容
+                    //******************************************************************
+
+                    //$('#tab_wd').datagrid('load', { "action": "query", sbid: node.id });
+                    //******************************************************************
+
+                    $.post("djjl.ashx", { "action": "isshow", data: sstr }, function (data) {
+                        if (data != "") {
+                            //解析data内容
+                            var cstr1 = data.split("*")[0];
+                            var cstr2 = data.split("*")[1];
+                            var cstr3 = data.split("*")[2];
+                            var cstr4 = data.split("*")[3];
+                            var cstr5 = data.split("*")[4];
+                            var cstr6 = data.split("*")[5];
+                            var cstr7 = data.split("*")[6];
+                            var cstr8 = data.split("*")[7];
+                            var cstr9 = data.split("*")[8];
+                            var cstr10 = data.split("*")[9];
+
+                            var bBool1 = data.split("*")[10];
+                            var bBool2 = data.split("*")[11];
+                            var bBool3 = data.split("*")[12];
+                            var bBool4 = data.split("*")[13];
+                            var bBool5 = data.split("*")[14];
+                            var bBool6 = data.split("*")[15];
+                            var bBool7 = data.split("*")[16];
+                            var bBool8 = data.split("*")[17];
+                            var bBool9 = data.split("*")[18];
+                            var bBool10 = data.split("*")[19];
+
+                            var iNumber1 = data.split("*")[20];
+                            var iNumber2 = data.split("*")[21];
+                            var iNumber3 = data.split("*")[22];
+                            var iNumber4 = data.split("*")[23];
+                            var iNumber5 = data.split("*")[24];
+                            var iNumber6 = data.split("*")[25];
+                            var iNumber7 = data.split("*")[26];
+                            var iNumber8 = data.split("*")[27];
+                            var iNumber9 = data.split("*")[28];
+                            var iNumber10 = data.split("*")[29];
+
+                            if (cstr1.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr1');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr1');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr1', text: cstr1.split("@")[2] });
+                            }
+                            if (cstr2.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr2');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr2');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr2', text: cstr2.split("@")[2] });
+                            }
+                            if (cstr3.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr3');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr3');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr3', text: cstr3.split("@")[2] });
+                            }
+                            if (cstr4.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr4');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr4');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr4', text: cstr4.split("@")[2] });
+                            }
+                            if (cstr5.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr5');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr5');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr5', text: cstr5.split("@")[2] });
+                            }
+                            if (cstr6.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr6');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr6');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr6', text: cstr6.split("@")[2] });
+                            }
+                            if (cstr7.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr7');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr7');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr7', text: cstr7.split("@")[2] });
+                            }
+                            if (cstr8.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr8');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr8');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr8', text: cstr8.split("@")[2] });
+                            }
+                            if (cstr9.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr9');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr9');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr9', text: cstr9.split("@")[2] });
+                            }
+                            if (cstr10.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_cstr10');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_cstr10');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_cstr10', text: cstr10.split("@")[2] });
+                            }
+
+                            //bool
+                            if (bBool1.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool1');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool1');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool1', text: bBool1.split("@")[2] });
+                            }
+                            if (bBool2.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool2');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool2');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool2', text: bBool2.split("@")[2] });
+                            }
+                            if (bBool3.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool3');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool3');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool3', text: bBool3.split("@")[2] });
+                            }
+                            if (bBool4.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool4');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool4');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool4', text: bBool4.split("@")[2] });
+                            }
+                            if (bBool5.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool5');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool5');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool5', text: bBool5.split("@")[2] });
+                            }
+                            if (bBool6.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool6');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool6');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool6', text: bBool6.split("@")[2] });
+                            }
+                            if (bBool7.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool7');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool7');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool7', text: bBool7.split("@")[2] });
+                            }
+                            if (bBool8.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool8');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool8');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool8', text: bBool8.split("@")[2] });
+                            }
+                            if (bBool9.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool9');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool9');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool9', text: bBool9.split("@")[2] });
+                            }
+                            if (bBool10.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_bbool10');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_bbool10');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_bbool10', text: bBool10.split("@")[2] });
+                            }
+
+                            //number
+                            if (iNumber1.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber1');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber1');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber1', text: iNumber1.split("@")[2] });
+                            }
+                            if (iNumber2.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber2');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber2');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber2', text: iNumber2.split("@")[2] });
+                            }
+                            if (iNumber3.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber3');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber3');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber3', text: iNumber3.split("@")[2] });
+                            }
+                            if (iNumber4.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber4');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber4');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber4', text: iNumber4.split("@")[2] });
+                            }
+                            if (iNumber5.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber5');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber5');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber5', text: iNumber5.split("@")[2] });
+                            }
+                            if (iNumber6.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber6');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber6');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber6', text: iNumber6.split("@")[2] });
+                            }
+                            if (iNumber7.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber7');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber7');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber7', text: iNumber7.split("@")[2] });
+                            }
+                            if (iNumber8.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber8');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber8');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber8', text: iNumber8.split("@")[2] });
+                            }
+                            if (iNumber9.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber9');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber9');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber9', text: iNumber9.split("@")[2] });
+                            }
+                            if (iNumber10.split("@")[1] == "f") {
+                                $("#tab").datagrid('hideColumn', 'JSON_inumber10');
+                            }
+                            else {
+                                $("#tab").datagrid('showColumn', 'JSON_inumber10');
+                                $("#tab").datagrid("setColumnTitle", { field: 'JSON_inumber10', text: iNumber10.split("@")[2] });
+                            }
+                        }
+                    });
+
+                    if (sstr != "" || sstr != null || sstr != undefined) {
+                        //重载
+                        $('#tab').datagrid('loadData', { total: 0, rows: [] });
+                        $('#tab').datagrid({ url: 'djjl.ashx', queryParams: { "action": "query", sb: sstr, state: "s"} });
+                    }
+                }
+            }
+            else {
+                //$('#tab').datagrid({ url: 'djjl.ashx', queryParams: { "action": "query", state: "s"} });
+
+
+                searchVal();
+            }
+        })
+
+        /////////////////////////删除/////////////////
+        function delete_dg() {
+            //获取url
+            var surl = get_url();
+            $.post("qx_load.ashx", { "action": "del", data: surl }, function (data) {
+                if (data == "del") {
+                    $.messager.alert("提示", "您没有操作此功能的权限，请与系统管理员联系！");
+                    return;
+                }
+
+                if (sflag != "") {
+                    $.messager.alert("提示", "当前有记录正在编辑，不允许删除记录！");
+                    return;
+                }
+
+                var selected = $("#tab").datagrid('getSelected');
+
+                if (selected != null) {
+                    $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                        if (y) {
+                            var v = "";
+                            var checked = $("#tab").datagrid('getChecked');
+                            $.each(checked, function (i, j) {
+                                v += j.JSON_id + ",";
+                            })
+                            v = v.substring(0, v.length - 1);
+                            $.post("djjl.ashx", { "action": "del", id: v }, function (data) {
+                                $.messager.alert('提示', data);
+                                $("#tab").datagrid('reload');
+                            });
+                        }
+                    })
+                } else {
+                    $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+                }
+            });
+        }
+
+
+        var editIndex = undefined;
+        var sflag = "";
+
+        /////////////////////添加///////////////////
+        function add_dg() {
+            //获取url
+            var surl = get_url();
+            $.post("qx_load.ashx", { "action": "add", data: surl }, function (data) {
+                if (data == "add") {
+                    $.messager.alert("提示", "您没有操作此功能的权限，请与系统管理员联系！");
+                    return;
+                }
+
+                if (sflag != "") {
+                    $.messager.alert("提示", "当前有记录正在编辑，不允许增加记录");
+                    return;
+                }
+
+                $('#tab').datagrid('appendRow', {});
+                editIndex = $('#tab').datagrid('getRows').length - 1;
+                $('#tab').datagrid('selectRow', editIndex)
+				.datagrid('beginEdit', editIndex);
+
+                sflag = "add";
+            });
+        }
+
+        function accept() {
+            $('#tab').datagrid('endEdit', editIndex);
+
+            //设置选定行，否则无法获取内容
+            $('#tab').datagrid('selectRow', editIndex);
+
+            var selected = $('#tab').datagrid('getSelected');
+
+            if (selected != null) {
+                var id = selected.JSON_id;
+                var csbbh = selected.JSON_csbbh;
+                var drq = selected.JSON_drq;
+                var cdjr = selected.JSON_cdjr;
+                var cbz = selected.JSON_cbz;
+                var cstr1 = "";
+                if (selected.JSON_cstr1 != undefined) {
+                    cstr1 = selected.JSON_cstr1;
+                }
+                var cstr2 = "";
+                if (selected.JSON_cstr2 != undefined) {
+                    cstr2 = selected.JSON_cstr2;
+                }
+                var cstr3 = "";
+                if (selected.JSON_cstr3 != undefined) {
+                    cstr3 = selected.JSON_cstr3;
+                }
+                var cstr4 = "";
+                if (selected.JSON_cstr4 != undefined) {
+                    cstr4 = selected.JSON_cstr4;
+                }
+                var cstr5 = "";
+                if (selected.JSON_cstr5 != undefined) {
+                    cstr5 = selected.JSON_cstr5;
+                }
+                var cstr6 = "";
+                if (selected.JSON_cstr6 != undefined) {
+                    cstr6 = selected.JSON_cstr6;
+                }
+                var cstr7 = "";
+                if (selected.JSON_cstr7 != undefined) {
+                    cstr7 = selected.JSON_cstr7;
+                }
+                var cstr8 = "";
+                if (selected.JSON_cstr8 != undefined) {
+                    cstr8 = selected.JSON_cstr8;
+                }
+                var cstr9 = "";
+                if (selected.JSON_cstr9 != undefined) {
+                    cstr9 = selected.JSON_cstr9;
+                }
+                var cstr10 = "";
+                if (selected.JSON_cstr10 != undefined) {
+                    cstr10 = selected.JSON_cstr10;
+                }
+                var bBool1 = "";
+                if (selected.JSON_bbool1 != undefined) {
+                    bBool1 = selected.JSON_bbool1;
+                }
+                var bBool2 = false;
+                if (selected.JSON_bbool2 != undefined) {
+                    bBool2 = selected.JSON_bbool2;
+                }
+                var bBool3 = false;
+                if (selected.JSON_bbool3 != undefined) {
+                    bBool3 = selected.JSON_bbool3;
+                }
+                var bBool4 = false;
+                if (selected.JSON_bbool4 != undefined) {
+                    bBool4 = selected.JSON_bbool4;
+                }
+                var bBool5 = false;
+                if (selected.JSON_bbool5 != undefined) {
+                    bBool5 = selected.JSON_bbool5;
+                }
+                var bBool6 = false;
+                if (selected.JSON_bbool6 != undefined) {
+                    bBool6 = selected.JSON_bbool6;
+                }
+                var bBool7 = false;
+                if (selected.JSON_bbool7 != undefined) {
+                    bBool7 = selected.JSON_bbool7;
+                }
+                var bBool8 = false;
+                if (selected.JSON_bbool8 != undefined) {
+                    bBool8 = selected.JSON_bbool8;
+                }
+                var bBool9 = false;
+                if (selected.JSON_bbool9 != undefined) {
+                    bBool9 = selected.JSON_bbool9;
+                }
+                var bBool10 = false;
+                if (selected.JSON_bbool10 != undefined) {
+                    bBool10 = selected.JSON_bbool10;
+                }
+                var inumber1 = 0;
+                if (selected.JSON_inumber1 != undefined) {
+                    inumber1 = selected.JSON_inumber1;
+                }
+                var inumber2 = 0;
+                if (selected.JSON_inumber2 != undefined) {
+                    inumber2 = selected.JSON_inumber2;
+                }
+                var inumber3 = 0;
+                if (selected.JSON_inumber3 != undefined) {
+                    inumber3 = selected.JSON_inumber3;
+                }
+                var inumber4 = 0;
+                if (selected.JSON_inumber4 != undefined) {
+                    inumber4 = selected.JSON_inumber4;
+                }
+                var inumber5 = 0;
+                if (selected.JSON_inumber5 != undefined) {
+                    inumber5 = selected.JSON_inumber5;
+                }
+                var inumber6 = 0;
+                if (selected.JSON_inumber6 != undefined) {
+                    inumber6 = selected.JSON_inumber6;
+                }
+                var inumber7 = 0;
+                if (selected.JSON_inumber7 != undefined) {
+                    inumber7 = selected.JSON_inumber7;
+                }
+                var inumber8 = 0;
+                if (selected.JSON_inumber8 != undefined) {
+                    inumber8 = selected.JSON_inumber8;
+                }
+                var inumber9 = 0;
+                if (selected.JSON_inumber9 != undefined) {
+                    inumber9 = selected.JSON_inumber9;
+                }
+                var inumber10 = 0;
+                if (selected.JSON_inumber10 != undefined) {
+                    inumber10 = selected.JSON_inumber10;
+                }
+
+                var value = "@";
+                value = value + id + "@" + csbbh + "@" + drq + "@" + cdjr + "@" + cbz + "@" + cstr1 + "@" + cstr2 + "@" + cstr3 + "@" + cstr4 + "@" +
+                cstr5 + "@" + cstr6 + "@" + cstr7 + "@" + cstr8 + "@" + cstr9 + "@" + cstr10 + "@" + bBool1 + "@" + bBool2 + "@" +
+                bBool3 + "@" + bBool4 + "@" + bBool5 + "@" + bBool6 + "@" + bBool7 + "@" + bBool8 + "@" + bBool9 + "@" + bBool1 + "@" +
+                inumber1 + "@" + inumber2 + "@" + inumber3 + "@" + inumber4 + "@" + inumber5 + "@" + inumber6 + "@" + inumber7 + "@" + inumber8 + "@" +
+                inumber9 + "@" + inumber10;
+
+                var pp = decodeURIComponent(value, true);
+
+                if (sflag == "add") {
+                    $.post("djjl.ashx", { "action": "add", data: pp }, function (data) {
+                        if (data == "1") {
+                            $.messager.alert("提示", "设备不允许为空，请输入！");
+                            sflag = "";
+                            return;
+                        }
+                        if (data == "2") {
+                            $.messager.alert("提示", "设备不存在，请重新输入！");
+                            sflag = "";
+                            return;
+                        }
+                        if (data == "3") {
+                            $.messager.alert("提示", "日期不允许为空，请输入！");
+                            sflag = "";
+                            return;
+                        }
+
+                        $.messager.alert('提示', data);
+                        //重新加载datagrid
+                        $("#tab").datagrid('reload');
+
+                        sflag = "";
+                    });
+                }
+                else if (sflag == "edit") {
+                    $.post("djjl.ashx", { "action": "edit", data: pp }, function (data) {
+
+                        if (data == "1") {
+                            $.messager.alert("提示", "设备不允许为空，请输入！");
+                            sflag = "";
+                            return;
+                        }
+                        if (data == "2") {
+                            $.messager.alert("提示", "设备不存在，请重新输入！");
+                            sflag = "";
+                            return;
+                        }
+                        if (data == "3") {
+                            $.messager.alert("提示", "日期不允许为空，请输入！");
+                            sflag = "";
+                            return;
+                        }
+
+                        $.messager.alert('提示', data);
+                        //重新加载datagrid
+                        $("#tab").datagrid('reload');
+
+                        sflag = "";
+                    });
+                }
+            }
+            else {
+                alert("没有选中");
+            }
+        }
+
+        //////////////////修改//////////////////
+        function edit_dg() {
+            //获取url
+            var surl = get_url();
+            $.post("qx_load.ashx", { "action": "edit", data: surl }, function (data) {
+                if (data == "edit") {
+                    $.messager.alert("提示", "您没有操作此功能的权限，请与系统管理员联系！");
+                    return;
+                }
+
+                if (sflag != "") {
+                    $.messager.alert("提示", "当前有记录正在编辑，不允许修改记录！");
+                    return;
+                }
+
+                var selected = $("#tab").datagrid('getSelected');
+
+                editIndex = $('#tab').datagrid('getRowIndex', selected);
+
+                $('#tab').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+                sflag = "edit";
+            });
+        }
+
+
+        //双击行
+        //        function onDblClickRow(index) {
+        //                    $('#tab').datagrid('selectRow', index)
+        //							.datagrid('beginEdit', index);
+        //                    editIndex = index;
+
+        //                    sflag = "edit";
+        //                }
+
+        function reject() {
+            $('#tab').datagrid('cancelEdit', editIndex);
+            editIndex = undefined;
+            sflag = "";
+        }
+
+
+
+        //高级查询
+        function search_dg() {
+            //表单清空
+            //不能使用表单清空，原因是该语句生效后，还能获取上次表单留下的内容，与查询条件不符，所以该语句注释掉
+            //$("#fm_search")[0].reset();       
+
+            //显示
+            $("#div_search").show();
+
+            //以窗体的形式展示
+            $("#div_search").dialog({
+                title: "高级查询", //标题
+                iconCls: "icon-search", //图标
+                width: 600, //窗体的宽度
+                height: 350, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //将数据序列化
+                    var parm = $("#fm_search").serialize();
+
+                    //中文格式转换
+                    var pp = decodeURIComponent(parm, true);
+
+
+                    //查询时需隐藏点检参数列，原因是每个设备的点检参数不同。
+                    //-----------------------------------------------------------------------
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr1');
+                            
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr2');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr3');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr4');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr5');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr6');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr7');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr8');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr9');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_cstr10');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool1');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool2');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool3');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool4');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool5');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool6');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool7');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool8');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool9');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_bbool10');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber1');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber2');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber3');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber4');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber5');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber6');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber7');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber8');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber9');
+
+                    $("#tab").datagrid('hideColumn', 'JSON_inumber10');
+                    //-----------------------------------------------------------------------
+
+
+                    $('#tab').datagrid('loadData', { total: 0, rows: [] });
+                    $("#tab").datagrid('load', { "action": "search", data: pp });
+
+                    $("#div_search").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div_search").window("close");
+                  }
+              }
+            ]
+            });
+      }
+
+
+        //单击一行，下方图表中显示该设备的点检参数。
+      function selectRow() {
+          var selected = $("#tab").datagrid('getSelected');
+          if (selected != null) {
+              sbid = selected.JSON_isbid;
+              var url = 'cssz_load.ashx?sbid=' + sbid;
+
+              $('#ccs').combobox('setValue', '');
+              $('#ccs').combobox('reload', url);
+          }
+      }
+
+    </script>
+
+    <style type="text/css">
+        .style1
+        {
+            width: 178px;
+        }
+        .style2
+        {
+            width: 65px;
+        }
+        .style3
+        {
+            width: 269px;
+        }
+        .style4
+        {
+            width: 64px;
+        }
+        .style5
+        {
+            width: 114px;
+        }
+        .style6
+        {
+            width: 69px;
+        }
+    </style>
+
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="easyui-layout">
+<div class="easyui-layout" style="width:100%;height:100%;">
+<div data-options="region:'west',split:true" title="设备资料" style="width:200px;">
+<ul id="tt"></ul> 
+</div>
+<div id="panel2" data-options="region:'center',title:'点检记录',iconCls:'icon-ok'" class="div01">
+</br>
+<div><h1>点检记录</h1></div>
+<table id="tab">
+</table>
+
+<div><h1>趋势图</h1></div>
+<table border="0" style="width: 853px">
+  <tr>
+    <td class="style4">参数：</td>
+    <td class="style5"><input id="ccs" name="ccs" class="easyui-combobox"/></td>
+    <td class="style6">时间：</td>
+    <td width="128"><input id="dqsrq" name="dqsrq" class="easyui-datetimebox"  editable="false"/></td>
+    <td width="26">至</td>
+    <td class="style1"><input id="djzrq" name="djzrq" class="easyui-datetimebox" editable="false" /></td>
+    <td class="style3"><a href="#" class="easyui-linkbutton" id="id_search" iconcls="icon-search"  plain="true" onclick="javascript:sch();" >查询</a></td>
+  </tr>
+</table>
+
+<div id="container">
+    </div> 
+<!--<div><h1>图文档</h1></div>
+    <div align="center" id="wd" >
+    <table width="800" border="0" id="tab_wd">      
+  </table>
+    </div>-->
+</div>
+</div>
+
+<div id="tool">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add" iconcls="icon-add"  plain="true" onclick="add_dg();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit" iconCls="icon-edit"  plain="true" onclick="edit_dg();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_cancel" onclick="delete_dg();"  iconcls="icon-cancel" plain="true">删除</a>
+                <a href="#" class="easyui-linkbutton" id="id_accept" onclick="accept();"  iconcls="icon-save" plain="true">保存</a>
+                <a href="#" class="easyui-linkbutton" id="id_undo" onclick="reject();"  iconcls="icon-undo" plain="true">取消</a>
+                 <a href="#" class="easyui-linkbutton" id="id_select" onclick="search_dg();"  iconcls="icon-search" plain="true">高级查询</a>
+                <a href="#" class="easyui-linkbutton" onclick="return Save_Excel()" iconCls="icon-save" plain="true" title="导出">导出</a>
+            </td>
+            </tr>
+         <tr>
+            <td style="text-align: left; ">
+            <div id="searchRq">
+                日期: <input id="dksrq" name="dksrq" class="easyui-datetimebox"  style="width:150px;" editable="false"/>
+			    至<input id="djsrq" name="djsrq" class="easyui-datetimebox"   style="width:150px;"  editable="false"/> 
+                <select style="width:135px;" id="sel_key" name="sel_key" class="easyui-combobox" >
+                    <option value="设备编号">设备编号</option>
+                    <option value="设备名称">设备名称</option>
+                    <option value="生产线">生产线</option>
+                    <option value="所属专业">所属专业</option>
+                    <option value="点检人">点检人</option>
+                    <option value="备注">备注</option>
+                  </select>
+                  <input id="cmemo" name="cmemo" class="easyui-validatebox"  style="width:150px;"/>
+                <a href="#" class="easyui-linkbutton"  iconCls="icon-search"  onclick="searchVal();">查询</a>
+            </div>
+            </td>     
+       	</tr>
+       </table>
+    </div>
+    <!--<div id="tool_wd">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search2" menu="#search_menu2" />
+                    <div id="search_menu2" style="width:120px">
+                        <div name="cnr">
+                            文档</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>-->
+
+
+
+    
+    <div id="div_search" align="center" style="display:none">
+        <form id="fm_search">
+        <table border="0">
+          <tr>
+            <td width="109" height="30"><div align="right">设备编号:</div></td>
+            <td width="192"><input style="width:130px" type="text" id="s_csbbh" name="s_csbbh" class="easyui-validatebox"  /></td>
+          
+            <td height="30"><div align="right">设备名称:</div></td>
+            <td><input type="text" style="width:130px" id="s_csbmc" name="s_csbmc" class="easyui-validatebox" /></td>
+            </tr>
+          <tr>
+            <td height="30"><div align="right">所属专业:</div></td>
+            <td><input id="s_csszy" style="width:135px" name="s_csszy" class="easyui-combobox"></td>
+
+            <td height="30"><div align="right">生产线:</div></td>
+            <td><input id="s_cscx" style="width:135px" name="s_cscx" class="easyui-combobox"/></td>
+
+          </tr>
+          <tr>
+            <td height="30"><div align="right">记录类型:</div></td>
+            <td><input type="text" style="width:130px" id="s_cjllx" name="s_cjllx" class="easyui-validatebox" /></td>
+
+
+            <td height="30"><div align="right">点检人:</div></td>
+            <td><input type="text" style="width:130px" id="s_cdjr" name="s_cdjr" class="easyui-validatebox"/></td>
+           </tr>
+           <tr>
+            <td height="30"><div align="right">起始时间:</div></td>
+            <td><input id="dtp1" name="dtp1" class="easyui-datetimebox" style="width:135px;" editable="false"/></td>
+            <td height="30"><div align="right">截止时间:</div></td>
+			  <td>  <input id="dtp2" name="dtp2" class="easyui-datetimebox" style="width:135px;"  editable="false"/> </td>
+           </tr>
+        </table>
+        </form>
+	</div>
+</body>
+</html>

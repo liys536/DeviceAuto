@@ -1,0 +1,1043 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="width:100%;height:100%">
+<head>
+    <title></title>
+        <style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+    <script src="common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        //查询
+        function searchVal() {
+            var qsrq = $('#dqsrq').datebox('getValue');
+            var jzrq = $('#djzrq').datebox('getValue');
+
+            var ckey = $('#sel_key').combobox('getValue');
+            var cmemo = $('#cmemo').val();
+
+            $('#tab').datagrid({ url: 'llb.ashx', queryParams: { "action": "query", qsrq: qsrq, jzrq: jzrq, ckey: ckey, cmemo: cmemo, state: "s"} });
+        }
+
+
+        function Save_Excel() {//导出Excel文件
+            //getExcelXML有一个JSON对象的配置，配置项看了下只有title配置，为excel文档的标题
+            var data = $('#tab').datagrid('getExcelXml', { title: '履历表' }); //获取datagrid数据对应的excel需要的xml格式的内容
+
+            $.post("llb.ashx", { "action": "export", data: data }, function (data) {
+                window.location = data; //执行下载操作
+                //$.messager.alert("提示", "导出excel成功！");
+            });
+            return false;
+        }
+
+        //查看单据
+        function show() {
+            //选中一行，获取这一行的属性的值
+            var selected = $("#tab").datagrid('getSelected');
+            //判断是否选中
+            if (selected != null) {
+                if (selected.JSON_czyxm=="维修") {
+                    var wxid = selected.JSON_ixmid;
+
+                    if (wxid == "" || wxid == null || wxid == "undefined") {
+                        $.messager.alert("提示", "找不到相应记录！");
+                        return;
+                    }
+
+                    //中文格式转换
+                    var pp = decodeURIComponent(wxid, true);
+                    //post异步提交
+                    $.post("llb.ashx", { "action": "w", data: pp }, function (data) {
+                        var cgdh = data.split("&")[0];
+                        var drq = data.split("&")[1];
+                        var csbbh = data.split("&")[2];
+                        var csbmc = data.split("&")[3];
+                        var cscx = data.split("&")[4];
+                        var czy = data.split("&")[5];
+                        var dgzsj = data.split("&")[6];
+                        var cgzlx = data.split("&")[7];
+                        var cgzxx = data.split("&")[8];
+                        var cclfs = data.split("&")[9];
+                        var cwxr = data.split("&")[10];
+                        var cwxnr = data.split("&")[11];
+                        var dwxkssj = data.split("&")[12];
+                        var dwcsj = data.split("&")[13];
+                        var cbz = data.split("&")[14];
+
+
+                        $('#cgdh').val(cgdh);
+                        $('#drq').val(drq);
+                        $('#csbbh').val(csbbh);
+                        $('#csbmc').val(csbmc);
+                        $('#cscx').val(cscx);
+                        $('#czy').val(czy);
+                        $('#dgzsj').val(dgzsj);
+                        $('#cgzlx').val(cgzlx);
+                        $('#cgzxx').val(cgzxx);
+                        $('#cclfs').val(cclfs);
+                        $('#cwxr').val(cwxr);
+                        $('#cwxnr').val(cwxnr);
+                        $('#dwxkssj').val(dwxkssj);
+                        $('#dwcsj').val(dwcsj);
+                        $('#cbz').val(cbz);
+
+                        $('#tab_wxjl').datagrid('load', { "action": "query", wxid: wxid });
+                    });
+
+                    $("#dd_wxjl").show(); //显示修改窗体
+                
+
+                    $("#dd_wxjl").dialog({
+                        title: "查看维修记录",
+                        iconCls: "icon-edit",
+                        modal: true, //遮罩层
+                        width: 900,
+                        height: 500,
+                        buttons: [
+                    {
+                        text: "取消",
+                        iconCls: "icon-cancel",
+                        handler: function () {
+                            $("#dd_wxjl").window('close');
+                        }
+                    }
+                    ]
+                });
+            }
+
+            if (selected.JSON_czyxm == "保养") {
+                var byid = selected.JSON_ixmid;
+
+                if (byid == "" || byid == null || byid == "undefined") {
+                    $.messager.alert("提示", "找不到相应记录！");
+                    return;
+                }
+
+                //中文格式转换
+                var pp = decodeURIComponent(byid, true);
+                //post异步提交
+                $.post("llb.ashx", { "action": "b", data: pp }, function (data) {
+                    var cgdh = data.split("&")[0];
+                    var drq = data.split("&")[1];
+                    var csbbh = data.split("&")[2];
+                    var csbmc = data.split("&")[3];
+                    var cscx = data.split("&")[4];
+                    var czy = data.split("&")[5];
+                    var dbysj = data.split("&")[6];
+                    var cbylx = data.split("&")[7];
+                    var cnrjl = data.split("&")[8];
+                    var dxcbysj = data.split("&")[9];
+                    var cbyr = data.split("&")[10];
+                    var cbz = data.split("&")[11];
+
+                    $('#cgdh_by').val(cgdh);
+                    $('#drq_by').val(drq);
+                    $('#csbbh_by').val(csbbh);
+                    $('#csbmc_by').val(csbmc);
+                    $('#cscx_by').val(cscx);
+                    $('#czy_by').val(czy);
+                    $('#dbysj_by').val(dbysj);
+                    $('#cbylx_by').val(cbylx);
+                    $('#cnrjl_by').val(cnrjl);
+                    $('#dxcbysj_by').val(dxcbysj);
+                    $('#cbyr_by').val(cbyr);
+                    $('#cbz_by').val(cbz);
+
+                    $('#tab_by').datagrid('load', { "action": "query", byid: byid });
+                });
+
+                $("#dd_by").show(); //显示修改窗体
+
+
+                $("#dd_by").dialog({
+                    title: "查看保养记录",
+                    iconCls: "icon-edit",
+                    modal: true, //遮罩层
+                    width: 900,
+                    height: 500,
+                    buttons: [
+                    {
+                        text: "取消",
+                        iconCls: "icon-cancel",
+                        handler: function () {
+                            $("#dd_by").window('close');
+                        }
+                    }
+                    ]
+                });
+            }
+
+            if (selected.JSON_czyxm == "停机") {
+                var tjid = selected.JSON_ixmid;
+                if (tjid == "" || tjid == null || tjid == "undefined") {
+                    $.messager.alert("提示", "找不到相应记录！");
+                    return;
+                }
+
+                //中文格式转换
+                var pp = decodeURIComponent(tjid, true);
+                //post异步提交
+                $.post("llb.ashx", { "action": "t", data: pp }, function (data) {
+                    var cgdh = data.split("&")[0];
+                    var drq = data.split("&")[1];
+                    var csbbh = data.split("&")[2];
+                    var csbmc = data.split("&")[3];
+                    var cscx = data.split("&")[4];
+                    var czy = data.split("&")[5];
+                    var dkjrq = data.split("&")[6];
+                    var dtjrq = data.split("&")[7];
+                    var ctjzl = data.split("&")[8];
+                    var cxxms = data.split("&")[9];
+                    var cjjfa = data.split("&")[10];
+                    var cyyfx = data.split("&")[11];
+                    var cgsdc = data.split("&")[12];
+                    var ctjr = data.split("&")[13];
+                    var cbz = data.split("&")[14];
+
+                    $('#cdh_tj').val(cgdh);
+                    $('#dtxrq_tj').val(drq);
+                    $('#csbbh_tj').val(csbbh);
+                    $('#csbmc_tj').val(csbmc);
+                    $('#cscx_tj').val(cscx);
+                    $('#czy_tj').val(czy);
+                    $('#dkjrq_tj').val(dkjrq);
+                    $('#dtjrq_tj').val(dtjrq);
+                    $('#ctjzl_tj').val(ctjzl);
+                    $('#cxxms_tj').val(cxxms);
+                    $('#cjjfa_tj').val(cjjfa);
+                    $('#cyyfx_tj').val(cyyfx);
+                    $('#cgsdc_tj').val(cgsdc);
+                    $('#ctjr_tj').val(ctjr);
+                    $('#cbz_tj').val(cbz);
+                });
+
+                $("#dd_tj").show(); //显示修改窗体
+
+
+                $("#dd_tj").dialog({
+                    title: "查看停机记录",
+                    iconCls: "icon-edit",
+                    modal: true, //遮罩层
+                    width: 600,
+                    height: 420,
+                    buttons: [
+                    {
+                        text: "取消",
+                        iconCls: "icon-cancel",
+                        handler: function () {
+                            $("#dd_tj").window('close');
+                        }
+                    }
+                    ]
+                });
+            }
+
+            if (selected.JSON_czyxm == "强制") {
+                var xhid = selected.JSON_ixmid;
+                if (xhid == "" || xhid == null || xhid=="undefined") {
+                    $.messager.alert("提示", "找不到相应记录！");
+                    return;
+                }
+
+                //中文格式转换
+                var pp = decodeURIComponent(xhid, true);
+                //post异步提交
+                $.post("llb.ashx", { "action": "x", data: pp }, function (data) {
+                    var cgdh = data.split("&")[0];
+                    var dsj = data.split("&")[1];
+                    var csbbh = data.split("&")[2];
+                    var csbmc = data.split("&")[3];
+                    var cscx = data.split("&")[4];
+                    var iyz = data.split("&")[5];
+                    var iqzz = data.split("&")[6];
+                    var cyy = data.split("&")[7];
+                    var czt = data.split("&")[8];
+                    var czdr = data.split("&")[9];
+                    var cbz = data.split("&")[10];
+
+                    $('#cdh_xh').val(cgdh);
+                    $('#dsj_xh').val(dsj);
+                    $('#csbbh_xh').val(csbbh);
+                    $('#csbmc_xh').val(csbmc);
+                    $('#cscx_xh').val(cscx);
+                    $('#iyz_xh').val(iyz);
+                    $('#iqzz_xh').val(iqzz);
+                    $('#cyy_xh').val(cyy);
+                    $('#czt_xh').val(czt);
+                    $('#czdr_xh').val(czdr);
+                    $('#cbz_xh').val(cbz);
+                });
+
+                $("#dd_xh").show(); //显示修改窗体
+
+
+                $("#dd_xh").dialog({
+                    title: "查看信号强制",
+                    iconCls: "icon-edit",
+                    modal: true, //遮罩层
+                    width: 550,
+                    height: 300,
+                    buttons: [
+                    {
+                        text: "取消",
+                        iconCls: "icon-cancel",
+                        handler: function () {
+                            $("#dd_xh").window('close');
+                        }
+                    }
+                    ]
+                });
+            }
+
+            if (selected.JSON_czyxm == "异常") {
+                var ycid = selected.JSON_ixmid;
+                if (ycid == "" || ycid == null || ycid == "undefined") {
+                    $.messager.alert("提示", "找不到相应记录！");
+                    return;
+                }
+                //中文格式转换
+                var pp = decodeURIComponent(ycid, true);
+                //post异步提交
+                $.post("llb.ashx", { "action": "y", data: pp }, function (data) {
+                    var cgdh = data.split("&")[0];
+                    var drq = data.split("&")[1];
+                    var csbbh = data.split("&")[2];
+                    var csbmc = data.split("&")[3];
+                    var cscx = data.split("&")[4];
+                    var czy = data.split("&")[5];
+                    var cycms = data.split("&")[6];
+                    var dycsj = data.split("&")[7];
+                    var ccljl = data.split("&")[8];
+                    var czyr = data.split("&")[9];
+                    var djssj = data.split("&")[10];
+                    var cbz = data.split("&")[11];
+
+                    $('#cgdh_yc').val(cgdh);
+                    $('#drq_yc').val(drq);
+                    $('#csbbh_yc').val(csbbh);
+                    $('#csbmc_yc').val(csbmc);
+                    $('#cscx_yc').val(cscx);
+                    $('#czy_yc').val(czy);
+                    $('#cycms_yc').val(cycms);
+                    $('#dycsj_yc').val(dycsj);
+                    $('#ccljl_yc').val(ccljl);
+                    $('#czyr_yc').val(czyr);
+                    $('#djssj_yc').val(djssj);
+                    $('#cbz_yc').val(cbz);
+
+                    $('#tab_yc').datagrid('load', { "action": "query", ycid: ycid });
+                });
+
+                $("#dd_yc").show(); //显示修改窗体
+
+
+                $("#dd_yc").dialog({
+                    title: "查看异常记录",
+                    iconCls: "icon-edit",
+                    modal: true, //遮罩层
+                    width: 900,
+                    height: 500,
+                    buttons: [
+                    {
+                        text: "取消",
+                        iconCls: "icon-cancel",
+                        handler: function () {
+                            $("#dd_yc").window('close');
+                        }
+                    }
+                    ]
+                });
+            }
+            } else {
+                $.messager.alert('提示', '请选中一行在进行编辑');
+            }
+        }
+
+        $(function () {
+//            var myDate = new Date();
+//            //使用服务器函数返回日期
+//            $.post("getDate.ashx", { data: myDate.toLocaleDateString() }, function (data) {
+//                $('#dqsrq').datebox('setValue', data);
+//                $('#djzrq').datebox('setValue', data);
+            //            });
+
+            $('#dqsrq').datebox('setValue', getCurDate());
+            $('#djzrq').datebox('setValue', getCurDate());
+
+            /**
+            Jquery easyui datagrid js导出excel
+            修改自extgrid导出excel
+            * allows for downloading of grid data (store) directly into excel
+            * Method: extracts data of gridPanel store, uses columnModel to construct XML excel document,
+            * converts to Base64, then loads everything into a data URL link.
+            *
+            * @author Animal <extjs support team>
+            *
+            */
+            $.extend($.fn.datagrid.methods, {
+                getExcelXml: function (jq, param) {
+                    var worksheet = this.createWorksheet(jq, param);
+                    //alert($(jq).datagrid('getColumnFields'));
+                    var totalWidth = 0;
+                    var cfs = $(jq).datagrid('getColumnFields');
+                    for (var i = 1; i < cfs.length; i++) {
+                        totalWidth += $(jq).datagrid('getColumnOption', cfs[i]).width;
+                    }
+                    //var totalWidth = this.getColumnModel().getTotalWidth(includeHidden);
+                    return '<?xml version="1.0" encoding="utf-8"?>' + //xml申明有问题，以修正，注意是utf-8编码，如果是gb2312，需要修改动态页文件的写入编码
+            '<ss:Workbook xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:o="urn:schemas-microsoft-com:office:office">' +
+            '<o:DocumentProperties><o:Title>' + param.title + '</o:Title></o:DocumentProperties>' +
+            '<ss:ExcelWorkbook>' +
+            '<ss:WindowHeight>' + worksheet.height + '</ss:WindowHeight>' +
+            '<ss:WindowWidth>' + worksheet.width + '</ss:WindowWidth>' +
+            '<ss:ProtectStructure>False</ss:ProtectStructure>' +
+            '<ss:ProtectWindows>False</ss:ProtectWindows>' +
+            '</ss:ExcelWorkbook>' +
+            '<ss:Styles>' +
+            '<ss:Style ss:ID="Default">' +
+            '<ss:Alignment ss:Vertical="Top"  />' +
+            '<ss:Font ss:FontName="arial" ss:Size="10" />' +
+            '<ss:Borders>' +
+            '<ss:Border  ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Top" />' +
+            '<ss:Border  ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Bottom" />' +
+            '<ss:Border  ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Left" />' +
+            '<ss:Border ss:Weight="1" ss:LineStyle="Continuous" ss:Position="Right" />' +
+            '</ss:Borders>' +
+            '<ss:Interior />' +
+            '<ss:NumberFormat />' +
+            '<ss:Protection />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="title">' +
+            '<ss:Borders />' +
+            '<ss:Font />' +
+            '<ss:Alignment  ss:Vertical="Center" ss:Horizontal="Center" />' +
+            '<ss:NumberFormat ss:Format="@" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="headercell">' +
+            '<ss:Font ss:Bold="1" ss:Size="10" />' +
+            '<ss:Alignment  ss:Horizontal="Center" />' +
+            '<ss:Interior ss:Pattern="Solid"  />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="even">' +
+            '<ss:Interior ss:Pattern="Solid"  />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="even" ss:ID="evendate">' +
+            '<ss:NumberFormat ss:Format="yyyy-mm-dd" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="even" ss:ID="evenint">' +
+            '<ss:NumberFormat ss:Format="0" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="even" ss:ID="evenfloat">' +
+            '<ss:NumberFormat ss:Format="0.00" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:ID="odd">' +
+            '<ss:Interior ss:Pattern="Solid"  />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="odd" ss:ID="odddate">' +
+            '<ss:NumberFormat ss:Format="yyyy-mm-dd" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="odd" ss:ID="oddint">' +
+            '<ss:NumberFormat ss:Format="0" />' +
+            '</ss:Style>' +
+            '<ss:Style ss:Parent="odd" ss:ID="oddfloat">' +
+            '<ss:NumberFormat ss:Format="0.00" />' +
+            '</ss:Style>' +
+            '</ss:Styles>' +
+            worksheet.xml +
+            '</ss:Workbook>';
+                },
+                createWorksheet: function (jq, param) {
+                    // Calculate cell data types and extra class names which affect formatting
+                    var cellType = [];
+                    var cellTypeClass = [];
+                    //var cm = this.getColumnModel();
+                    var totalWidthInPixels = 0;
+                    var colXml = '';
+                    var headerXml = '';
+                    var visibleColumnCountReduction = 0;
+                    var cfs = $(jq).datagrid('getColumnFields');
+                    var colCount = cfs.length;
+                    for (var i = 2; i < colCount; i++) {
+                        if (cfs[i] != '') {
+                            var w = $(jq).datagrid('getColumnOption', cfs[i]).width;
+                            totalWidthInPixels += w;
+                            if (cfs[i] === "") {
+                                cellType.push("None");
+                                cellTypeClass.push("");
+                                ++visibleColumnCountReduction;
+                            }
+                            else {
+                                colXml += '<ss:Column ss:AutoFitWidth="1" ss:Width="130" />';
+                                headerXml += '<ss:Cell ss:StyleID="headercell">' +
+                        '<ss:Data ss:Type="String">' + $(jq).datagrid('getColumnOption', cfs[i]).title + '</ss:Data>' +
+                        '<ss:NamedCell ss:Name="Print_Titles" /></ss:Cell>';
+                                cellType.push("String");
+                                cellTypeClass.push("");
+                            }
+                        }
+                    }
+                    var visibleColumnCount = cellType.length - visibleColumnCountReduction;
+                    var result = {
+                        height: 9000,
+                        width: Math.floor(totalWidthInPixels * 30) + 50
+                    };
+                    var rows = $(jq).datagrid('getRows');
+                    // Generate worksheet header details.
+                    var t = '<ss:Worksheet ss:Name="' + param.title + '">' +
+            '<ss:Names>' +
+            '<ss:NamedRange ss:Name="Print_Titles" ss:RefersTo="=\'' + param.title + '\'!R1:R2" />' +
+            '</ss:Names>' +
+            '<ss:Table x:FullRows="1" x:FullColumns="1"' +
+            ' ss:ExpandedColumnCount="' + (visibleColumnCount + 2) +
+            '" ss:ExpandedRowCount="' + (rows.length + 2) + '">' +
+            colXml +
+            '<ss:Row ss:AutoFitHeight="1">' +
+            headerXml +
+            '</ss:Row>';
+                    // Generate the data rows from the data in the Store
+                    //for (var i = 0, it = this.store.data.items, l = it.length; i < l; i++) {
+                    for (var i = 0, it = rows, l = it.length; i < l; i++) {
+                        t += '<ss:Row>';
+                        var cellClass = (i & 1) ? 'odd' : 'even';
+                        r = it[i];
+                        var k = 0;
+                        for (var j = 2; j < colCount; j++) {
+                            //if ((cm.getDataIndex(j) != '')
+                            if (cfs[j] != '') {
+                                //var v = r[cm.getDataIndex(j)];
+                                var v = r[cfs[j]];
+                                if (cellType[k] !== "None") {
+                                    t += '<ss:Cell ss:StyleID="' + cellClass + cellTypeClass[k] + '"><ss:Data ss:Type="' + cellType[k] + '">';
+                                    if (cellType[k] == 'DateTime') {
+                                        t += v.format('Y-m-d');
+                                    } else {
+                                        t += v;
+                                    }
+                                    t += '</ss:Data></ss:Cell>';
+                                }
+                                k++;
+                            }
+                        }
+                        t += '</ss:Row>';
+                    }
+                    result.xml = t + '</ss:Table>' +
+            '<x:WorksheetOptions>' +
+            '<x:PageSetup>' +
+            '<x:Layout x:CenterHorizontal="1" x:Orientation="Landscape" />' +
+            '<x:Footer x:Data="Page &P of &N" x:Margin="0.5" />' +
+            '<x:PageMargins x:Top="0.5" x:Right="0.5" x:Left="0.5" x:Bottom="0.8" />' +
+            '</x:PageSetup>' +
+            '<x:FitToPage />' +
+            '<x:Print>' +
+            '<x:PrintErrors>Blank</x:PrintErrors>' +
+            '<x:FitWidth>1</x:FitWidth>' +
+            '<x:FitHeight>32767</x:FitHeight>' +
+            '<x:ValidPrinterInfo />' +
+            '<x:VerticalResolution>600</x:VerticalResolution>' +
+            '</x:Print>' +
+            '<x:Selected />' +
+            '<x:DoNotDisplayGridlines />' +
+            '<x:ProtectObjects>False</x:ProtectObjects>' +
+            '<x:ProtectScenarios>False</x:ProtectScenarios>' +
+            '</x:WorksheetOptions>' +
+            '</ss:Worksheet>';
+                    return result;
+                }
+            });
+
+            $("#tab").datagrid({
+                width: $(panel2).width(),
+                height: $(panel2).height(),
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "llb.ashx", //请求路径
+                nowrap: false,
+                fit: true,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //title: "备件资料", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                columns: [[
+                { field: "JSON_id", title: "id", width: 80, hidden: true },
+                { field: "JSON_ixmid", title: "项目id", width: 80, hidden: true },
+                { field: "JSON_csbbh", title: "设备编码", width: 100 },
+                { field: "JSON_csbmc", title: "设备名称", width: 100 },
+                { field: "JSON_cscx", title: "生产线", width: 100 },
+                { field: "JSON_csszy", title: "所属专业", width: 100 },
+                { field: "JSON_czyxm", title: "作业项目", width: 100 },
+                { field: "JSON_czyry", title: "作业人员", width: 100 },
+                { field: "JSON_dzysj", title: "作业时间", width: 80, formatter: myformatter },
+                { field: "JSON_czynr", title: "作业内容", width: 400 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", sb: 0,state:'' },
+                pagination: true,
+                toolbar: "#tool",
+                onDblClickRow: function () {
+                    show();  //行双击调用修改函数
+                }
+            });
+            $("#tab").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+
+            $("#ipt_search").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    var qsrq = $('#dqsrq').datebox('getValue');
+                    var jzrq = $('#djzrq').datebox('getValue');
+                    name = name + "&" + qsrq + "&" + jzrq;
+                    $('#tab').datagrid('options').queryParams.search_type = name;
+                    $('#tab').datagrid('options').queryParams.search_value = val;
+                    $('#tab').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+
+            $("#tab_wxjl").datagrid({
+                width: 870,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "wxjl_mx.ashx", //请求路径
+                nowrap: false,
+                title: "备件更换记录", //标题
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_ibjid", title: "备件id", width: 100, hidden: true },
+                { field: "JSON_cbjbh", title: "备件编号", width: 100 },
+                { field: "JSON_cbjmc", title: "备件名称", width: 100 },
+                { field: "JSON_ibjsl", title: "使用数量", width: 100, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_isysl", title: "剩余数量", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", wxid: 0 },
+                pagination: true
+            });
+            $("#tab_wxjl").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            $("#tab_by").datagrid({
+                width: 800,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                nowrap: false,
+                url: "zyby_mx.ashx", //请求路径
+                title: "备件更换记录", //标题
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_ibjid", title: "备件id", width: 100, hidden: true },
+                { field: "JSON_cbjbh", title: "备件编号", width: 100 },
+                { field: "JSON_cbjmc", title: "备件名称", width: 100 },
+                { field: "JSON_ibjsl", title: "使用数量", width: 100, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_isysl", title: "剩余数量", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", byid: 0 },
+                pagination: true
+            });
+            $("#tab_by").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            $("#tab_yc").datagrid({
+                width: 800,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "qtjl_mx.ashx", //请求路径
+                nowrap: false,
+                title: "备件更换记录", //标题
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_ibjid", title: "备件id", width: 100, hidden: true },
+                { field: "JSON_cbjbh", title: "备件编号", width: 100 },
+                { field: "JSON_cbjmc", title: "备件名称", width: 100 },
+                { field: "JSON_ibjsl", title: "使用数量", width: 100, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_isysl", title: "剩余数量", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", ycid: 0 },
+                pagination: true
+            });
+            $("#tab_yc").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            var ssurl = window.location.href;
+            var slen = ssurl.substr(0, ssurl.indexOf("&")).length;  //第一个&出现的位置
+            if (slen > 0) {
+                var s = get_url(ssurl);
+                var len = s.substr(0, s.indexOf("&")).length;  //第一个&出现的位置
+                var sstr = s.substr(len + 1, s.length - len);
+
+                if (sstr == "" || sstr == null || sstr == undefined || sstr.length == 0) {
+                    searchVal();
+                }
+                else {
+                    $('#tab').datagrid({ url: 'llb.ashx', queryParams: { "action": "query", sb: sstr, state: "s"} });
+                }
+            }
+            else {
+                //$('#tab').datagrid({ url: 'llb.ashx', queryParams: { "action": "query", state: "s"} });
+
+
+                searchVal();
+            }
+
+        })
+
+        
+
+    </script>
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="easyui-layout">
+     <div id="panel2" data-options="region:'center',title:'履历表'"   class="div01">
+<table id="tab">
+</table>
+</div>
+<div id="tool">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_search" iconCls="icon-search"  plain="true" onclick="show();">查看单据</a>
+                <a href="#" class="easyui-linkbutton" onclick="return Save_Excel()" iconCls="icon-save" plain="true" title="导出">导出</a>
+            </td>
+        </tr>
+        <tr>
+        <td style="text-align: left; ">
+            <div id="Div3">
+                日期: <input id="dqsrq" name="dqsrq" class="easyui-datebox"  style="width:100px;" editable="false"/>
+			    至<input id="djzrq" name="djzrq" class="easyui-datebox"   style="width:100px;"  editable="false"/> 
+                <select style="width:135px;" id="sel_key" name="sel_key" class="easyui-combobox" >
+                    <option value="设备编码">设备编码</option>
+                    <option value="设备名称">设备名称</option>
+                    <option value="生产线">生产线</option>
+                    <option value="所属专业">所属专业</option>
+                    <option value="作业项目">作业项目</option>
+                    <option value="作业人员">作业人员</option>
+                    <option value="备注">备注</option>
+                  </select>
+                  <input id="cmemo" name="cmemo" class="easyui-validatebox"  style="width:150px;"/>
+                <a href="#" class="easyui-linkbutton"  iconCls="icon-search"  onclick="searchVal();">查询</a>
+            </div>
+            </td>     
+       	</tr>
+       </table>
+    </div>
+    <br />
+    <div id="dd_wxjl" style=" display:none">
+        <form id="fm_wxjl">
+        <input type="hidden" id="id" name="id"/>
+
+<table width="830" height="150" border="0" align="center">
+  <tr>
+    <td width="84" height="31"><div align="right">工单号:</div></td>
+    <td width="200"><input id="cgdh" name="cgdh" class="easyui-validatebox"  readonly/></td>
+    <td width="61" height="31"><div align="right">日期:</div></td>
+    <td width="200"><input id="drq" name="drq" class="easyui-validatebox"  readonly/></td>
+    <td width="63" height="31"><div align="right">设备编号:</div></td>
+    <td width="200"><input type="text" id="csbbh" name="csbbh" class="easyui-validatebox"  readonly/></td>
+  </tr>
+  <tr>
+    <td width="84" height="31"><div align="right">设备名称:</div></td>
+    <td width="200"><input type="text" id="csbmc" name="csbmc" class="easyui-validatebox" readonly /></td>
+    <td width="61" height="30"><div align="right">生产线:</div></td>
+    <td width="200"><input type="text" id="cscx" name="cscx" class="easyui-validatebox" readonly /></td>
+    <td width="61" height="30"><div align="right">专业:</div></td>
+    <td width="200"><input type="text" id="czy" name="czy" class="easyui-validatebox" readonly /></td>
+  </tr>
+  <tr>
+    <td width="84" height="31"><div align="right">故障时间:</div></td>
+    <td width="200"><input id="dgzsj" name="dgzsj" class="easyui-validatebox"  readonly/></td>
+    <td width="61" height="31"><div align="right">故障类型:</div></td>
+    <td width="200"><input id="cgzlx" name="cgzlx" class="easyui-validatebox" readonly/></td>
+    <td width="63" height="31"><div align="right">故障现象:</div></td>
+    <td width="200"><input id="cgzxx" name="cgzxx" class="easyui-validatebox" readonly/></td>
+  </tr>
+   <tr>
+   <td width="63" height="31"><div align="right">处理方式:</div></td>
+    <td width="200"><input id="cclfs" name="cclfs" class="easyui-validatebox" readonly/></td>
+     <td height="41"><div align="right">维修人:</div></td>
+    <td><input id="cwxr" name="cwxr" class="easyui-validatebox" readonly/></td>
+     <td height="41"><div align="right">维修内容:</div></td>
+    <td><input id="cwxnr" name="cwxnr" class="easyui-validatebox" readonly/></td>
+ </tr>
+ <tr>
+    <td width="84" height="31"><div align="right">维修开始时间:</div></td>
+    <td width="191"><input id="dwxkssj" name="dwxkssj" class="easyui-validatebox"  readonly/></td>
+    <td width="63" height="31"><div align="right">完成时间:</div></td>
+    <td width="291"><input id="dwcsj" name="dwcsj" class="easyui-validatebox"  readonly/></td>
+     <td height="41"><div align="right">备注:</div></td>
+    <td><input id="cbz" name="cbz" class="easyui-validatebox" readonly/></td>
+  </tr>
+
+</table>
+<div align="center">
+  <table width="800" border="0" id="tab_wxjl">
+  </table>
+</div>
+        </form>
+    </div>
+
+ <div id="dd_by" style=" display:none">
+        <form id="fm_by">
+        <input type="hidden" id="Hidden1" name="id"/>
+   <table width="900" height="150" border="0" align="center">
+  <tr>
+    <td width="84" height="31"><div align="right">工单号:</div></td>
+    <td width="200"><input id="cgdh_by" name="cgdh_by" class="easyui-validatebox" readonly/ ></td>
+    <td width="61" height="31"><div align="right">日期:</div></td>
+    <td width="200"><input id="drq_by" name="drq_by" class="easyui-validatebox"  readonly/></td>
+    <td width="63" height="31"><div align="right">设备编号:</div></td>
+    <td width="200"><input type="text" id="csbbh_by" name="csbbh_by" class="easyui-validatebox" readonly/></td>
+  </tr>
+  <tr>
+    <td width="84" height="31"><div align="right">设备名称:</div></td>
+    <td width="200"><input type="text" id="csbmc_by" name="csbmc_by" class="easyui-validatebox"  readonly/></td>
+    <td width="61" height="30"><div align="right">生产线:</div></td>
+    <td width="200"><input type="text" id="cscx_by" name="cscx_by" class="easyui-validatebox" readonly /></td>
+    <td width="61" height="30"><div align="right">专业:</div></td>
+    <td width="200"><input type="text" id="czy_by" name="czy_by" class="easyui-validatebox"  readonly/></td>
+  </tr>
+  <tr>
+    <td width="84" height="31"><div align="right">保养时间:</div></td>
+    <td width="200"><input id="dbysj_by" name="dbysj_by" class="easyui-validatebox" readonly/></td>
+    <td width="61" height="31"><div align="right">保养类型:</div></td>
+    <td width="200"><input id="cbylx_by" name="cbylx_by" class="easyui-validatebox" readonly/></td>
+    <td width="63" height="31"><div align="right">内容记录:</div></td>
+    <td width="200"><input id="cnrjl_by" name="cnrjl_by" class="easyui-validatebox" readonly/></td>
+  </tr>
+   <tr>
+   <td width="84" height="31"><div align="right">下次保养时间:</div></td>
+    <td width="200"><input id="dxcbysj_by" name="dxcbysj_by" class="easyui-validatebox"  readonly/></td>
+     <td height="41"><div align="right">保养人:</div></td>
+    <td><input id="cbyr_by" name="cbyr_by" class="easyui-validatebox" readonly/></td>
+     <td height="41"><div align="right">备注:</div></td>
+    <td><input id="cbz_by" name="cbz_by" class="easyui-validatebox" readonly/></td>
+  </tr>
+</table>
+<div align="center">
+  <table width="600" border="0" id="tab_by">
+  </table>
+</div>
+        </form>
+    </div>
+
+
+    <div id="dd_tj" style=" display:none">
+        <form id="fm_tj">
+        <input type="hidden" id="Hidden2" name="id"/>
+        <table border="0">
+            <tr>
+            <td width="80" height="31"><div align="right">单号:</div></td>
+            <td width="200"><input id="cdh_tj" name="cdh_tj" class="easyui-validatebox"   readonly /></td>
+            <td width="80" height="31"><div align="right">日期:</div></td>
+            <td><input id="dtxrq_tj" name="dtxrq_tj" class="easyui-validatebox" readonly/></td>
+          </tr>
+          <tr>
+          <td width="63" height="31"><div align="right">设备编号:</div></td>
+          <td width="200"><input type="text" id="csbbh_tj" name="csbbh_tj" class="easyui-validatebox"  readonly/></td>
+          <td width="84" height="31"><div align="right">设备名称:</div></td>
+        <td width="200"><input type="text" id="csbmc_tj" name="csbmc_tj" class="easyui-validatebox" readonly /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产线:</div></td>
+            <td><input  type="text"  id="cscx_tj" name="cscx_tj" class="easyui-validatebox"   readonly /></td>
+            
+             <td width="61" height="30"><div align="right">专业:</div></td>
+            <td width="200"><input type="text" id="czy_tj" name="czy_tj" class="easyui-validatebox" readonly /></td>
+          </tr>
+          <tr>
+            <td height="41"><div align="right">开机日期:</div></td>
+            <td><input id="dkjrq_tj" name="dkjrq_tj" class="easyui-validatebox" readonly /></td>
+
+            <td height="41"><div align="right">停机日期:</div></td>
+            <td><input id="dtjrq_tj" name="dtjrq_tj" class="easyui-validatebox"  readonly /></td>
+            </tr>
+           <tr>
+           <td height="41"><div align="right">停机种类:</div></td>
+            <td><input id="ctjzl_tj" name="ctjzl_tj" class="easyui-validatebox"  readonly /></td>
+
+            <td height="41"><div align="right">现象描述:</div></td>
+            <td><input id="cxxms_tj" name="cxxms_tj"  class="easyui-validatebox" readonly /></td>
+
+          </tr>
+          <tr>
+            <td height="41"><div align="right">解决方案:</div></td>
+            <td><input id="cjjfa_tj" name="cjjfa_tj"  class="easyui-validatebox" readonly /></td>
+
+            <td height="41"><div align="right">原因分析:</div></td>
+            <td><input id="cyyfx_tj" name="cyyfx_tj" class="easyui-validatebox" readonly /></td>
+          </tr>
+          <tr>
+          <td height="41"><div align="right">改善对策:</div></td>
+            <td><input id="cgsdc_tj" name="cgsdc_tj"class="easyui-validatebox" readonly /></td>
+            <td height="41"><div align="right">停机人:</div></td>
+            <td><input id="ctjr_tj" name="ctjr_tj" class="easyui-validatebox"  readonly /></td>
+          </tr>
+          <tr>
+          <td height="41"><div align="right">备注:</div></td>
+            <td colspan="3"><input id="cbz_tj" style="width:420px;"  name="cbz_tj" class="easyui-validatebox"  readonly/></td>
+          </tr>
+</table>
+        </form>
+    </div>
+
+
+     <div id="dd_xh" style=" display:none">
+        <form id="fm_xh">
+        <input type="hidden" id="Hidden3" name="id"/>
+        <table border="0">
+          <tr>
+            <td width="109" height="31"><div align="right">单号:</div></td>
+            <td width="200">
+                <input id="cdh_xh"  style="width:130px;"  name="cdh_xh" class="easyui-validatebox" readonly/>
+            </td>
+            <td width="109" height="31"><div align="right">时间:</div></td>
+            <td width="200">
+                <input id="dsj_xh" name="dsj_xh" class="easyui-validatebox"  style="width:135px;" readonly /></td>
+            </td>
+        </tr>
+        <tr>
+            <td width="132" height="30"><div align="right">设备编号:</div></td>
+            <td width="200"><input type="text" style="width:130px;" id="csbbh_xh" name="csbbh_xh" class="easyui-validatebox" readonly /></td>
+
+            <td height="30"><div align="right">设备名称:</div></td>
+            <td><input type="text" style="width:130px;" id="csbmc_xh" name="csbmc_xh" class="easyui-validatebox" readonly/></td>
+          </tr>
+          <tr>
+             <td height="30"><div align="right">生产线:</div></td>
+            <td><input type="text" style="width:130px;" id="cscx_xh" name="cscx_xh" class="easyui-validatebox"  readonly /></td>
+
+            <td height="30"><div align="right">原值:</div></td>
+            <td><input type="text" style="width:130px;" id="iyz_xh" name="iyz_xh" class="easyui-validatebox"  readonly/></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">强制值:</div></td>
+            <td><input type="text" style="width:130px;" id="iqzz_xh" name="iqzz_xh" class="easyui-validatebox"  readonly/></td>
+
+             <td height="30"><div align="right">原因:</div></td>
+            <td><input type="text" style="width:130px;" id="cyy_xh" name="cyy_xh" class="easyui-validatebox" readonly/></td>
+          </tr>
+           <tr>
+            <td height="30"><div align="right">状态:</div></td>
+            <td><input type="text" style="width:130px;" id="czt_xh" name="czt_xh" class="easyui-validatebox" readonly/></td>
+
+             <td height="30"><div align="right">制单人:</div></td>
+            <td><input type="text" style="width:130px;" id="czdr_xh" name="czdr_xh" class="easyui-validatebox" style="text-align:right" readonly/></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">备注:</div></td>
+               <td height="30" colspan="3"><input type="text" style="width:410px;" id="cbz_xh" name="cbz_xh" class="easyui-validatebox"  readonly/></td>
+          </tr>
+          
+        </table>
+        </form>
+
+	</div>
+
+
+<div id="dd_yc" style=" display:none">
+        <form id="fm_yc">
+        <input type="hidden" id="Hidden4" name="id"/>
+   <table width="900" height="150" border="0" align="center">
+  <tr>
+    <td width="84" height="31"><div align="right">工单号:</div></td>
+    <td width="200"><input id="cgdh_yc" name="cgdh_yc" class="easyui-validatebox" readonly /></td>
+    <td width="61" height="31"><div align="right">日期:</div></td>
+    <td width="200"><input id="drq_yc" name="drq_yc" class="easyui-validatebox" readonly/></td>
+    <td width="63" height="31"><div align="right">设备编号:</div></td>
+    <td width="200"><input type="text" id="csbbh_yc" name="csbbh_yc" class="easyui-validatebox" readonly/></td>
+  </tr>
+  <tr>
+    <td width="84" height="31"><div align="right">设备名称:</div></td>
+    <td width="200"><input type="text" id="csbmc_yc" name="csbmc_yc" class="easyui-validatebox"  readonly/></td>
+    <td width="61" height="30"><div align="right">生产线:</div></td>
+    <td width="200"><input type="text" id="cscx_yc" name="cscx_yc" class="easyui-validatebox"  readonly/></td>
+    <td width="61" height="30"><div align="right">专业:</div></td>
+    <td width="200"><input type="text" id="czy_yc" name="czy_yc" class="easyui-validatebox"  readonly/></td>
+  </tr>
+  <tr>
+    <td width="61" height="31"><div align="right">异常描述:</div></td>
+    <td width="200"><input id="cycms_yc" name="cycms_yc" class="easyui-validatebox" readonly/></td>
+    <td width="84" height="31"><div align="right">异常时间:</div></td>
+    <td width="200"><input id="dycsj_yc" name="dycsj_yc" class="easyui-validatebox"  readonly/></td>
+    <td width="63" height="31"><div align="right">处理记录:</div></td>
+    <td width="200"><input id="ccljl_yc" name="ccljl_yc" class="easyui-validatebox" readonly/></td>
+  </tr>
+   <tr>
+   <td height="41"><div align="right">作业人:</div></td>
+    <td><input id="czyr_yc" name="czyr_yc" class="easyui-validatebox" readonly/></td>
+   <td width="84" height="31"><div align="right">结束时间:</div></td>
+    <td width="200"><input id="djssj_yc" name="djssj_yc" class="easyui-validatebox"  readonly/></td>
+     <td height="41"><div align="right">备注:</div></td>
+    <td><input id="cbz_yc" name="cbz_yc" class="easyui-validatebox" readonly/></td>
+  </tr>
+</table>
+<div align="center">
+  <table width="600" border="0" id="tab_yc">
+  </table>
+</div>
+        </form>
+    </div>
+
+</body>
+</html>

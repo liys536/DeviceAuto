@@ -1,0 +1,46 @@
+﻿Service State: Service started     2016/2/19 13:00:53
+
+Service State: Service started     2016/2/19 13:05:53
+
+Service State: Service started     2016/2/19 13:10:53
+
+Service State: Service started     2016/2/19 13:15:53
+
+Service State: Service started     2016/2/19 13:20:53
+
+Service State: Service started     2016/2/19 13:25:53
+
+Service State: Service started     2016/2/19 13:30:53
+
+Service State: Service started     2016/2/19 13:35:53
+
+Service State: Service started     2016/2/19 13:40:53
+
+Service State: Service started     2016/2/19 13:45:53
+
+Service State: Service stoped     2016/2/19 13:46:58
+
+Service State: Service stoped     2016/2/19 14:44:45
+
+Service State: Service started     2016/2/19 14:46:00
+
+Service State: Service started     2016/2/19 14:47:00
+
+Service State: Service started     2016/2/19 14:48:00
+
+Service State: Service stoped     2016/2/19 14:48:25
+
+Service State: Service started     2016/2/20 8:12:44
+
+Service State: Service started     2016/2/20 8:13:43
+
+Service State: Service started     2016/2/20 8:14:43
+
+Service State: Service stoped     2016/2/20 8:15:24
+
+Service State: Service stoped     2016/2/20 8:53:17
+
+Service State: Service started     2016/2/20 8:54:36
+
+Service State: Service stoped     2016/2/20 8:55:04
+

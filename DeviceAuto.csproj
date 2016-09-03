@@ -1,0 +1,1138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{85F3EDEE-158D-4418-9B8F-3B9BB29882A0}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DeviceAuto</RootNamespace>
+    <AssemblyName>DeviceAuto</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>Quartz\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="LitJSON, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>kindeditor\kindeditor-4.1.10\asp.net\bin\LitJSON.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Quartz\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>Quartz\Quartz.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Topshelf">
+      <HintPath>Quartz\Topshelf.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\DeviceAuto.dll" />
+    <Content Include="bin\DeviceAuto.pdb" />
+    <Content Include="bjzl.html" />
+    <Content Include="bjzl_app.html" />
+    <Content Include="clfs.html" />
+    <Content Include="common.js" />
+    <Content Include="dbsx.html" />
+    <Content Include="Debug\log.txt" />
+    <Content Include="Debug\WindowsService1.exe" />
+    <Content Include="Debug\WindowsService1.pdb" />
+    <Content Include="Debug\WindowsService1.vshost.exe" />
+    <Content Include="Default.aspx" />
+    <Content Include="DeviceAuto.Publish.xml" />
+    <Content Include="djlx.html" />
+    <Content Include="bylx.html" />
+    <Content Include="bmzl.html" />
+    <Content Include="djfs.html" />
+    <Content Include="djjl.html" />
+    <Content Include="download\exporting.js" />
+    <Content Include="easyui\css\demo.css" />
+    <Content Include="easyui\css\dlg.css" />
+    <Content Include="easyui\css\themes\default\accordion.css" />
+    <Content Include="easyui\css\themes\default\calendar.css" />
+    <Content Include="easyui\css\themes\default\combo.css" />
+    <Content Include="easyui\css\themes\default\combobox.css" />
+    <Content Include="easyui\css\themes\default\datagrid.css" />
+    <Content Include="easyui\css\themes\default\datebox.css" />
+    <Content Include="easyui\css\themes\default\dialog.css" />
+    <Content Include="easyui\css\themes\default\easyui.css" />
+    <Content Include="easyui\css\themes\default\images\accordion_arrows.png" />
+    <Content Include="easyui\css\themes\default\images\blank.gif" />
+    <Content Include="easyui\css\themes\default\images\calendar_arrows.png" />
+    <Content Include="easyui\css\themes\default\images\combo_arrow.png" />
+    <Content Include="easyui\css\themes\default\images\datagrid_icons.png" />
+    <Content Include="easyui\css\themes\default\images\datebox_arrow.png" />
+    <Content Include="easyui\css\themes\default\images\layout_arrows.png" />
+    <Content Include="easyui\css\themes\default\images\linkbutton_bg.png" />
+    <Content Include="easyui\css\themes\default\images\loading.gif" />
+    <Content Include="easyui\css\themes\default\images\menu_arrows.png" />
+    <Content Include="easyui\css\themes\default\images\messager_icons.png" />
+    <Content Include="easyui\css\themes\default\images\pagination_icons.png" />
+    <Content Include="easyui\css\themes\default\images\panel_tools.png" />
+    <Content Include="easyui\css\themes\default\images\searchbox_button.png" />
+    <Content Include="easyui\css\themes\default\images\slider_handle.png" />
+    <Content Include="easyui\css\themes\default\images\spinner_arrows.png" />
+    <Content Include="easyui\css\themes\default\images\tabs_icons.png" />
+    <Content Include="easyui\css\themes\default\images\tree_icons.png" />
+    <Content Include="easyui\css\themes\default\images\validatebox_warning.png" />
+    <Content Include="easyui\css\themes\default\layout.css" />
+    <Content Include="easyui\css\themes\default\linkbutton.css" />
+    <Content Include="easyui\css\themes\default\menu.css" />
+    <Content Include="easyui\css\themes\default\menubutton.css" />
+    <Content Include="easyui\css\themes\default\messager.css" />
+    <Content Include="easyui\css\themes\default\pagination.css" />
+    <Content Include="easyui\css\themes\default\panel.css" />
+    <Content Include="easyui\css\themes\default\progressbar.css" />
+    <Content Include="easyui\css\themes\default\propertygrid.css" />
+    <Content Include="easyui\css\themes\default\searchbox.css" />
+    <Content Include="easyui\css\themes\default\slider.css" />
+    <Content Include="easyui\css\themes\default\spinner.css" />
+    <Content Include="easyui\css\themes\default\splitbutton.css" />
+    <Content Include="easyui\css\themes\default\tabs.css" />
+    <Content Include="easyui\css\themes\default\tooltip.css" />
+    <Content Include="easyui\css\themes\default\tree.css" />
+    <Content Include="easyui\css\themes\default\validatebox.css" />
+    <Content Include="easyui\css\themes\default\window.css" />
+    <Content Include="easyui\css\themes\gray\accordion.css" />
+    <Content Include="easyui\css\themes\gray\calendar.css" />
+    <Content Include="easyui\css\themes\gray\combo.css" />
+    <Content Include="easyui\css\themes\gray\combobox.css" />
+    <Content Include="easyui\css\themes\gray\datagrid.css" />
+    <Content Include="easyui\css\themes\gray\datebox.css" />
+    <Content Include="easyui\css\themes\gray\dialog.css" />
+    <Content Include="easyui\css\themes\gray\easyui.css" />
+    <Content Include="easyui\css\themes\gray\images\accordion_arrows.png" />
+    <Content Include="easyui\css\themes\gray\images\blank.gif" />
+    <Content Include="easyui\css\themes\gray\images\calendar_arrows.png" />
+    <Content Include="easyui\css\themes\gray\images\combo_arrow.png" />
+    <Content Include="easyui\css\themes\gray\images\datagrid_icons.png" />
+    <Content Include="easyui\css\themes\gray\images\datebox_arrow.png" />
+    <Content Include="easyui\css\themes\gray\images\layout_arrows.png" />
+    <Content Include="easyui\css\themes\gray\images\linkbutton_bg.png" />
+    <Content Include="easyui\css\themes\gray\images\loading.gif" />
+    <Content Include="easyui\css\themes\gray\images\menu_arrows.png" />
+    <Content Include="easyui\css\themes\gray\images\messager_icons.png" />
+    <Content Include="easyui\css\themes\gray\images\pagination_icons.png" />
+    <Content Include="easyui\css\themes\gray\images\panel_tools.png" />
+    <Content Include="easyui\css\themes\gray\images\searchbox_button.png" />
+    <Content Include="easyui\css\themes\gray\images\slider_handle.png" />
+    <Content Include="easyui\css\themes\gray\images\spinner_arrows.png" />
+    <Content Include="easyui\css\themes\gray\images\tabs_icons.png" />
+    <Content Include="easyui\css\themes\gray\images\tree_icons.png" />
+    <Content Include="easyui\css\themes\gray\images\validatebox_warning.png" />
+    <Content Include="easyui\css\themes\gray\layout.css" />
+    <Content Include="easyui\css\themes\gray\linkbutton.css" />
+    <Content Include="easyui\css\themes\gray\menu.css" />
+    <Content Include="easyui\css\themes\gray\menubutton.css" />
+    <Content Include="easyui\css\themes\gray\messager.css" />
+    <Content Include="easyui\css\themes\gray\pagination.css" />
+    <Content Include="easyui\css\themes\gray\panel.css" />
+    <Content Include="easyui\css\themes\gray\progressbar.css" />
+    <Content Include="easyui\css\themes\gray\propertygrid.css" />
+    <Content Include="easyui\css\themes\gray\searchbox.css" />
+    <Content Include="easyui\css\themes\gray\slider.css" />
+    <Content Include="easyui\css\themes\gray\spinner.css" />
+    <Content Include="easyui\css\themes\gray\splitbutton.css" />
+    <Content Include="easyui\css\themes\gray\tabs.css" />
+    <Content Include="easyui\css\themes\gray\tooltip.css" />
+    <Content Include="easyui\css\themes\gray\tree.css" />
+    <Content Include="easyui\css\themes\gray\validatebox.css" />
+    <Content Include="easyui\css\themes\gray\window.css" />
+    <Content Include="easyui\css\themes\icon.css" />
+    <Content Include="easyui\css\themes\icons\back.png" />
+    <Content Include="easyui\css\themes\icons\blank.gif" />
+    <Content Include="easyui\css\themes\icons\cancel.png" />
+    <Content Include="easyui\css\themes\icons\cut.png" />
+    <Content Include="easyui\css\themes\icons\edit_add.png" />
+    <Content Include="easyui\css\themes\icons\edit_remove.png" />
+    <Content Include="easyui\css\themes\icons\filesave.png" />
+    <Content Include="easyui\css\themes\icons\help.png" />
+    <Content Include="easyui\css\themes\icons\mini_add.png" />
+    <Content Include="easyui\css\themes\icons\mini_edit.png" />
+    <Content Include="easyui\css\themes\icons\mini_refresh.png" />
+    <Content Include="easyui\css\themes\icons\no.png" />
+    <Content Include="easyui\css\themes\icons\ok.png" />
+    <Content Include="easyui\css\themes\icons\pencil.png" />
+    <Content Include="easyui\css\themes\icons\print.png" />
+    <Content Include="easyui\css\themes\icons\redo.png" />
+    <Content Include="easyui\css\themes\icons\reload.png" />
+    <Content Include="easyui\css\themes\icons\search.gif" />
+    <Content Include="easyui\css\themes\icons\search.png" />
+    <Content Include="easyui\css\themes\icons\sum.png" />
+    <Content Include="easyui\css\themes\icons\tip.png" />
+    <Content Include="easyui\css\themes\icons\undo.png" />
+    <Content Include="easyui\extension\datagrid-bufferview.html" />
+    <Content Include="easyui\extension\datagrid-bufferview.js" />
+    <Content Include="easyui\extension\datagrid-defaultview.js" />
+    <Content Include="easyui\extension\datagrid-detailview.html" />
+    <Content Include="easyui\extension\datagrid-detailview.js" />
+    <Content Include="easyui\extension\datagrid-groupview.html" />
+    <Content Include="easyui\extension\datagrid-groupview.js" />
+    <Content Include="easyui\extension\datagrid-scrollview.html" />
+    <Content Include="easyui\extension\datagrid-scrollview.js" />
+    <Content Include="easyui\extension\datagrid-scrollview2.html" />
+    <Content Include="easyui\js\easyui-lang-zh_CN.js" />
+    <Content Include="easyui\js\jquery-1.8.2.min.js" />
+    <Content Include="easyui\js\jquery.easyui.min.js" />
+    <Content Include="errPage.html" />
+    <Content Include="gcstz.html" />
+    <Content Include="Global.asax" />
+    <Content Include="gzxx.html" />
+    <Content Include="jxjh.html" />
+    <Content Include="kindeditor\kindeditor-all-min.js" />
+    <Content Include="kindeditor\kindeditor-all.js" />
+    <Content Include="kindeditor\kindeditor-min.js" />
+    <Content Include="kindeditor\kindeditor.js" />
+    <Content Include="kindeditor\lang\ar.js" />
+    <Content Include="kindeditor\lang\en.js" />
+    <Content Include="kindeditor\lang\ko.js" />
+    <Content Include="kindeditor\lang\zh_CN.js" />
+    <Content Include="kindeditor\lang\zh_TW.js" />
+    <Content Include="kindeditor\license.txt" />
+    <Content Include="kindeditor\themes\common\anchor.gif" />
+    <Content Include="kindeditor\themes\common\blank.gif" />
+    <Content Include="kindeditor\themes\common\flash.gif" />
+    <Content Include="kindeditor\themes\common\loading.gif" />
+    <Content Include="kindeditor\themes\common\media.gif" />
+    <Content Include="kindeditor\themes\common\rm.gif" />
+    <Content Include="kindeditor\themes\default\background.png" />
+    <Content Include="kindeditor\themes\default\default.css" />
+    <Content Include="kindeditor\themes\default\default.png" />
+    <Content Include="kindeditor\themes\qq\editor.gif" />
+    <Content Include="kindeditor\themes\qq\qq.css" />
+    <Content Include="kindeditor\themes\simple\simple.css" />
+    <Content Include="kindeditor\西西软件园.txt" />
+    <Content Include="llb.html" />
+    <Content Include="Log\log.txt" />
+    <Content Include="PDFView.aspx" />
+    <Content Include="sbzl_edit.html" />
+    <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.4.1.js" />
+    <Content Include="Scripts\jquery-1.4.1.min.js" />
+    <Content Include="Scripts\pdfobject.js" />
+    <Content Include="scsz.html" />
+    <Content Include="sjqx.html" />
+    <Content Include="style\alogin.css" />
+    <Content Include="sxlx.html" />
+    <Content Include="tdsz.html" />
+    <Content Include="tsdjl.html" />
+    <Content Include="images\Default.css" />
+    <Content Include="images\user_all_bg.gif" />
+    <Content Include="images\user_bottom_c.gif" />
+    <Content Include="images\user_bottom_l.gif" />
+    <Content Include="images\user_bottom_r.gif" />
+    <Content Include="images\user_botton.gif" />
+    <Content Include="images\User_Login.css" />
+    <Content Include="images\user_login_name.gif" />
+    <Content Include="images\user_login_password.gif" />
+    <Content Include="images\user_login_validatecode.gif" />
+    <Content Include="images\user_main_c.gif" />
+    <Content Include="images\user_main_l.gif" />
+    <Content Include="images\user_main_r.gif" />
+    <Content Include="images\user_top_c.gif" />
+    <Content Include="images\user_top_l.gif" />
+    <Content Include="images\user_top_r.gif" />
+    <Content Include="images\xtree.css" />
+    <Content Include="js\highcharts.js" />
+    <Content Include="js\jquery-1.5.2.min.js" />
+    <Content Include="js\theme\dark-blue.js" />
+    <Content Include="js\theme\dark-green.js" />
+    <Content Include="js\theme\gray.js" />
+    <Content Include="js\theme\grid.js" />
+    <Content Include="login.html" />
+    <Content Include="Main.html" />
+    <Content Include="qtjl.html" />
+    <Content Include="qxgl.html" />
+    <Content Include="sbfl.html" />
+    <Content Include="sbzl.html" />
+    <Content Include="scx.html" />
+    <Content Include="sjbf.html" />
+    <Content Include="sjhf.html" />
+    <Content Include="sszy.html" />
+    <Content Include="table.css" />
+    <Content Include="tjjl.html" />
+    <Content Include="tjzl.html" />
+    <Content Include="wdgl.html" />
+    <Content Include="wdgl_view.html" />
+    <Content Include="website\bin\DeviceAuto.dll" />
+    <Content Include="website\bin\DeviceAuto.pdb" />
+    <Content Include="website\bin\LitJSON.dll" />
+    <Content Include="website\bjzl.html" />
+    <Content Include="website\bmzl.html" />
+    <Content Include="website\bylx.html" />
+    <Content Include="website\clfs.html" />
+    <Content Include="website\common.js" />
+    <Content Include="website\DeviceAuto.Publish.xml" />
+    <Content Include="website\djfs.html" />
+    <Content Include="website\djjl.html" />
+    <Content Include="website\djlx.html" />
+    <Content Include="website\download\exporting.js" />
+    <Content Include="website\easyui\css\demo.css" />
+    <Content Include="website\easyui\css\dlg.css" />
+    <Content Include="website\easyui\css\themes\default\accordion.css" />
+    <Content Include="website\easyui\css\themes\default\calendar.css" />
+    <Content Include="website\easyui\css\themes\default\combo.css" />
+    <Content Include="website\easyui\css\themes\default\combobox.css" />
+    <Content Include="website\easyui\css\themes\default\datagrid.css" />
+    <Content Include="website\easyui\css\themes\default\datebox.css" />
+    <Content Include="website\easyui\css\themes\default\dialog.css" />
+    <Content Include="website\easyui\css\themes\default\easyui.css" />
+    <Content Include="website\easyui\css\themes\default\images\accordion_arrows.png" />
+    <Content Include="website\easyui\css\themes\default\images\blank.gif" />
+    <Content Include="website\easyui\css\themes\default\images\calendar_arrows.png" />
+    <Content Include="website\easyui\css\themes\default\images\combo_arrow.png" />
+    <Content Include="website\easyui\css\themes\default\images\datagrid_icons.png" />
+    <Content Include="website\easyui\css\themes\default\images\datebox_arrow.png" />
+    <Content Include="website\easyui\css\themes\default\images\layout_arrows.png" />
+    <Content Include="website\easyui\css\themes\default\images\linkbutton_bg.png" />
+    <Content Include="website\easyui\css\themes\default\images\loading.gif" />
+    <Content Include="website\easyui\css\themes\default\images\menu_arrows.png" />
+    <Content Include="website\easyui\css\themes\default\images\messager_icons.png" />
+    <Content Include="website\easyui\css\themes\default\images\pagination_icons.png" />
+    <Content Include="website\easyui\css\themes\default\images\panel_tools.png" />
+    <Content Include="website\easyui\css\themes\default\images\searchbox_button.png" />
+    <Content Include="website\easyui\css\themes\default\images\slider_handle.png" />
+    <Content Include="website\easyui\css\themes\default\images\spinner_arrows.png" />
+    <Content Include="website\easyui\css\themes\default\images\tabs_icons.png" />
+    <Content Include="website\easyui\css\themes\default\images\tree_icons.png" />
+    <Content Include="website\easyui\css\themes\default\images\validatebox_warning.png" />
+    <Content Include="website\easyui\css\themes\default\layout.css" />
+    <Content Include="website\easyui\css\themes\default\linkbutton.css" />
+    <Content Include="website\easyui\css\themes\default\menu.css" />
+    <Content Include="website\easyui\css\themes\default\menubutton.css" />
+    <Content Include="website\easyui\css\themes\default\messager.css" />
+    <Content Include="website\easyui\css\themes\default\pagination.css" />
+    <Content Include="website\easyui\css\themes\default\panel.css" />
+    <Content Include="website\easyui\css\themes\default\progressbar.css" />
+    <Content Include="website\easyui\css\themes\default\propertygrid.css" />
+    <Content Include="website\easyui\css\themes\default\searchbox.css" />
+    <Content Include="website\easyui\css\themes\default\slider.css" />
+    <Content Include="website\easyui\css\themes\default\spinner.css" />
+    <Content Include="website\easyui\css\themes\default\splitbutton.css" />
+    <Content Include="website\easyui\css\themes\default\tabs.css" />
+    <Content Include="website\easyui\css\themes\default\tooltip.css" />
+    <Content Include="website\easyui\css\themes\default\tree.css" />
+    <Content Include="website\easyui\css\themes\default\validatebox.css" />
+    <Content Include="website\easyui\css\themes\default\window.css" />
+    <Content Include="website\easyui\css\themes\gray\accordion.css" />
+    <Content Include="website\easyui\css\themes\gray\calendar.css" />
+    <Content Include="website\easyui\css\themes\gray\combo.css" />
+    <Content Include="website\easyui\css\themes\gray\combobox.css" />
+    <Content Include="website\easyui\css\themes\gray\datagrid.css" />
+    <Content Include="website\easyui\css\themes\gray\datebox.css" />
+    <Content Include="website\easyui\css\themes\gray\dialog.css" />
+    <Content Include="website\easyui\css\themes\gray\easyui.css" />
+    <Content Include="website\easyui\css\themes\gray\images\accordion_arrows.png" />
+    <Content Include="website\easyui\css\themes\gray\images\blank.gif" />
+    <Content Include="website\easyui\css\themes\gray\images\calendar_arrows.png" />
+    <Content Include="website\easyui\css\themes\gray\images\combo_arrow.png" />
+    <Content Include="website\easyui\css\themes\gray\images\datagrid_icons.png" />
+    <Content Include="website\easyui\css\themes\gray\images\datebox_arrow.png" />
+    <Content Include="website\easyui\css\themes\gray\images\layout_arrows.png" />
+    <Content Include="website\easyui\css\themes\gray\images\linkbutton_bg.png" />
+    <Content Include="website\easyui\css\themes\gray\images\loading.gif" />
+    <Content Include="website\easyui\css\themes\gray\images\menu_arrows.png" />
+    <Content Include="website\easyui\css\themes\gray\images\messager_icons.png" />
+    <Content Include="website\easyui\css\themes\gray\images\pagination_icons.png" />
+    <Content Include="website\easyui\css\themes\gray\images\panel_tools.png" />
+    <Content Include="website\easyui\css\themes\gray\images\searchbox_button.png" />
+    <Content Include="website\easyui\css\themes\gray\images\slider_handle.png" />
+    <Content Include="website\easyui\css\themes\gray\images\spinner_arrows.png" />
+    <Content Include="website\easyui\css\themes\gray\images\tabs_icons.png" />
+    <Content Include="website\easyui\css\themes\gray\images\tree_icons.png" />
+    <Content Include="website\easyui\css\themes\gray\images\validatebox_warning.png" />
+    <Content Include="website\easyui\css\themes\gray\layout.css" />
+    <Content Include="website\easyui\css\themes\gray\linkbutton.css" />
+    <Content Include="website\easyui\css\themes\gray\menu.css" />
+    <Content Include="website\easyui\css\themes\gray\menubutton.css" />
+    <Content Include="website\easyui\css\themes\gray\messager.css" />
+    <Content Include="website\easyui\css\themes\gray\pagination.css" />
+    <Content Include="website\easyui\css\themes\gray\panel.css" />
+    <Content Include="website\easyui\css\themes\gray\progressbar.css" />
+    <Content Include="website\easyui\css\themes\gray\propertygrid.css" />
+    <Content Include="website\easyui\css\themes\gray\searchbox.css" />
+    <Content Include="website\easyui\css\themes\gray\slider.css" />
+    <Content Include="website\easyui\css\themes\gray\spinner.css" />
+    <Content Include="website\easyui\css\themes\gray\splitbutton.css" />
+    <Content Include="website\easyui\css\themes\gray\tabs.css" />
+    <Content Include="website\easyui\css\themes\gray\tooltip.css" />
+    <Content Include="website\easyui\css\themes\gray\tree.css" />
+    <Content Include="website\easyui\css\themes\gray\validatebox.css" />
+    <Content Include="website\easyui\css\themes\gray\window.css" />
+    <Content Include="website\easyui\css\themes\icon.css" />
+    <Content Include="website\easyui\css\themes\icons\back.png" />
+    <Content Include="website\easyui\css\themes\icons\blank.gif" />
+    <Content Include="website\easyui\css\themes\icons\cancel.png" />
+    <Content Include="website\easyui\css\themes\icons\cut.png" />
+    <Content Include="website\easyui\css\themes\icons\edit_add.png" />
+    <Content Include="website\easyui\css\themes\icons\edit_remove.png" />
+    <Content Include="website\easyui\css\themes\icons\filesave.png" />
+    <Content Include="website\easyui\css\themes\icons\help.png" />
+    <Content Include="website\easyui\css\themes\icons\mini_add.png" />
+    <Content Include="website\easyui\css\themes\icons\mini_edit.png" />
+    <Content Include="website\easyui\css\themes\icons\mini_refresh.png" />
+    <Content Include="website\easyui\css\themes\icons\no.png" />
+    <Content Include="website\easyui\css\themes\icons\ok.png" />
+    <Content Include="website\easyui\css\themes\icons\pencil.png" />
+    <Content Include="website\easyui\css\themes\icons\print.png" />
+    <Content Include="website\easyui\css\themes\icons\redo.png" />
+    <Content Include="website\easyui\css\themes\icons\reload.png" />
+    <Content Include="website\easyui\css\themes\icons\search.png" />
+    <Content Include="website\easyui\css\themes\icons\sum.png" />
+    <Content Include="website\easyui\css\themes\icons\tip.png" />
+    <Content Include="website\easyui\css\themes\icons\undo.png" />
+    <Content Include="website\easyui\extension\datagrid-bufferview.html" />
+    <Content Include="website\easyui\extension\datagrid-bufferview.js" />
+    <Content Include="website\easyui\extension\datagrid-defaultview.js" />
+    <Content Include="website\easyui\extension\datagrid-detailview.html" />
+    <Content Include="website\easyui\extension\datagrid-detailview.js" />
+    <Content Include="website\easyui\extension\datagrid-groupview.html" />
+    <Content Include="website\easyui\extension\datagrid-groupview.js" />
+    <Content Include="website\easyui\extension\datagrid-scrollview.html" />
+    <Content Include="website\easyui\extension\datagrid-scrollview.js" />
+    <Content Include="website\easyui\extension\datagrid-scrollview2.html" />
+    <Content Include="website\easyui\js\easyui-lang-zh_CN.js" />
+    <Content Include="website\easyui\js\jquery-1.8.2.min.js" />
+    <Content Include="website\easyui\js\jquery.easyui.min.js" />
+    <Content Include="website\gcstz.html" />
+    <Content Include="website\Global.asax" />
+    <Content Include="website\gzxx.html" />
+    <Content Include="website\images\blocks.gif" />
+    <Content Include="website\images\Default.css" />
+    <Content Include="website\images\login\bg.gif" />
+    <Content Include="website\images\login\btnlogin.gif" />
+    <Content Include="website\images\login\code.gif" />
+    <Content Include="website\images\login\login_01.gif" />
+    <Content Include="website\images\login\login_02.gif" />
+    <Content Include="website\images\login\login_03.gif" />
+    <Content Include="website\images\login\login_04.gif" />
+    <Content Include="website\images\login\login_05.gif" />
+    <Content Include="website\images\login\login_06.gif" />
+    <Content Include="website\images\login\login_07.gif" />
+    <Content Include="website\images\login\login_08.gif" />
+    <Content Include="website\images\login\login_09.gif" />
+    <Content Include="website\images\login\login_10.gif" />
+    <Content Include="website\images\login\login_11.gif" />
+    <Content Include="website\images\login\login_12.gif" />
+    <Content Include="website\images\login\login_13.gif" />
+    <Content Include="website\images\login\login_14.gif" />
+    <Content Include="website\images\login\txt.gif" />
+    <Content Include="website\images\user_all_bg.gif" />
+    <Content Include="website\images\user_bottom_c.gif" />
+    <Content Include="website\images\user_bottom_l.gif" />
+    <Content Include="website\images\user_bottom_r.gif" />
+    <Content Include="website\images\user_botton.gif" />
+    <Content Include="website\images\User_Login.css" />
+    <Content Include="website\images\user_login_name.gif" />
+    <Content Include="website\images\user_login_password.gif" />
+    <Content Include="website\images\user_login_validatecode.gif" />
+    <Content Include="website\images\user_main_c.gif" />
+    <Content Include="website\images\user_main_l.gif" />
+    <Content Include="website\images\user_main_r.gif" />
+    <Content Include="website\images\user_top_c.gif" />
+    <Content Include="website\images\user_top_l.gif" />
+    <Content Include="website\images\user_top_r.gif" />
+    <Content Include="website\images\xtree.css" />
+    <Content Include="website\js\highcharts.js" />
+    <Content Include="website\js\jquery-1.5.2.min.js" />
+    <Content Include="website\js\theme\dark-blue.js" />
+    <Content Include="website\js\theme\dark-green.js" />
+    <Content Include="website\js\theme\gray.js" />
+    <Content Include="website\js\theme\grid.js" />
+    <Content Include="website\llb.html" />
+    <Content Include="website\login.html" />
+    <Content Include="website\Main.html" />
+    <Content Include="website\qtjl.html" />
+    <Content Include="website\qxgl.html" />
+    <Content Include="website\sbfl.html" />
+    <Content Include="website\sbzl.html" />
+    <Content Include="website\scx.html" />
+    <Content Include="website\sjbf.html" />
+    <Content Include="website\sjhf.html" />
+    <Content Include="website\sszy.html" />
+    <Content Include="website\style\alogin.css" />
+    <Content Include="website\table.css" />
+    <Content Include="website\tjjl.html" />
+    <Content Include="website\tjzl.html" />
+    <Content Include="website\tsdjl.html" />
+    <Content Include="website\wdgl.html" />
+    <Content Include="website\wxjl.html" />
+    <Content Include="website\xhqz.html" />
+    <Content Include="website\ygqx.html" />
+    <Content Include="website\ygzl.html" />
+    <Content Include="website\zbjl.html" />
+    <Content Include="website\zwzl.html" />
+    <Content Include="website\zyby.html" />
+    <Content Include="wxfssz.html" />
+    <Content Include="wxgzh.html" />
+    <Content Include="wxgzz.html" />
+    <Content Include="wxjl.html" />
+    <Content Include="wxjl_app.html" />
+    <Content Include="xhqz.html" />
+    <Content Include="ygqx.html" />
+    <Content Include="ygzl.html" />
+    <Content Include="obj\Debug\GridDemos.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\GridDemos.dll" />
+    <Content Include="obj\Debug\GridDemos.pdb" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="ygzl_app.html" />
+    <Content Include="yjjl.html" />
+    <Content Include="zbjl.html" />
+    <Content Include="zbsz.html" />
+    <Content Include="zwzl.html" />
+    <Content Include="zyby.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="bjzl.ashx.cs">
+      <DependentUpon>bjzl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bj_load.ashx.cs">
+      <DependentUpon>bj_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bmzl2.ashx.cs">
+      <DependentUpon>bmzl2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bm_load.ashx.cs">
+      <DependentUpon>bm_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bsz.ashx.cs">
+      <DependentUpon>bsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bylx2.ashx.cs">
+      <DependentUpon>bylx2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="clfs.ashx.cs">
+      <DependentUpon>clfs.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="clfs_load.ashx.cs">
+      <DependentUpon>clfs_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="common.ashx.cs">
+      <DependentUpon>common.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="cssz_load.ashx.cs">
+      <DependentUpon>cssz_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="dbsx.ashx.cs">
+      <DependentUpon>dbsx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="djcs_load.ashx.cs">
+      <DependentUpon>djcs_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djfs_plsz.ashx.cs">
+      <DependentUpon>djfs_plsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djlx.ashx.cs">
+      <DependentUpon>djlx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djlx2.ashx.cs">
+      <DependentUpon>djlx2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djlx_mx.ashx.cs">
+      <DependentUpon>djlx_mx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bylx.ashx.cs">
+      <DependentUpon>bylx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bylx_load.ashx.cs">
+      <DependentUpon>bylx_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bmzl.ashx.cs">
+      <DependentUpon>bmzl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="bmzl_load.ashx.cs">
+      <DependentUpon>bmzl_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djfs2_load.ashx.cs">
+      <DependentUpon>djfs2_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djjl_loadtt.ashx.cs">
+      <DependentUpon>djjl_loadtt.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djfs.ashx.cs">
+      <DependentUpon>djfs.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djfs_load.ashx.cs">
+      <DependentUpon>djfs_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djjl.ashx.cs">
+      <DependentUpon>djjl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djjl_load.ashx.cs">
+      <DependentUpon>djjl_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="djtb.ashx.cs">
+      <DependentUpon>djtb.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="dw_load.ashx.cs">
+      <DependentUpon>dw_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="dxmc_load.ashx.cs">
+      <DependentUpon>dxmc_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="gcstz.ashx.cs">
+      <DependentUpon>gcstz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="getDate.ashx.cs">
+      <DependentUpon>getDate.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="getSession.ashx.cs">
+      <DependentUpon>getSession.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="gzxx.ashx.cs">
+      <DependentUpon>gzxx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="gzxx2.ashx.cs">
+      <DependentUpon>gzxx2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="gzxx2_load.ashx.cs">
+      <DependentUpon>gzxx2_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="gzxx_load.ashx.cs">
+      <DependentUpon>gzxx_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Handler1.ashx.cs">
+      <DependentUpon>Handler1.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="jsgl_load.ashx.cs">
+      <DependentUpon>jsgl_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="js_load.ashx.cs">
+      <DependentUpon>js_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="jxjh.ashx.cs">
+      <DependentUpon>jxjh.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="llb.ashx.cs">
+      <DependentUpon>llb.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="login.ashx.cs">
+      <DependentUpon>login.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="logout.ashx.cs">
+      <DependentUpon>logout.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Main.ashx.cs">
+      <DependentUpon>Main.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="mmxg.ashx.cs">
+      <DependentUpon>mmxg.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="PDFView.aspx.cs">
+      <DependentUpon>PDFView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PDFView.aspx.designer.cs">
+      <DependentUpon>PDFView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="qtjl.ashx.cs">
+      <DependentUpon>qtjl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="qtjl_mx.ashx.cs">
+      <DependentUpon>qtjl_mx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="qxgl.ashx.cs">
+      <DependentUpon>qxgl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="qx_load.ashx.cs">
+      <DependentUpon>qx_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sb2_load.ashx.cs">
+      <DependentUpon>sb2_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbfl.ashx.cs">
+      <DependentUpon>sbfl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbfl2.ashx.cs">
+      <DependentUpon>sbfl2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbfl_load.ashx.cs">
+      <DependentUpon>sbfl_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl.ashx.cs">
+      <DependentUpon>sbzl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_bj.ashx.cs">
+      <DependentUpon>sbzl_bj.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_bjzl2.ashx.cs">
+      <DependentUpon>sbzl_bjzl2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_by.ashx.cs">
+      <DependentUpon>sbzl_by.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_dj.ashx.cs">
+      <DependentUpon>sbzl_dj.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_djcs.ashx.cs">
+      <DependentUpon>sbzl_djcs.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_edit.ashx.cs">
+      <DependentUpon>sbzl_edit.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_oad.ashx.cs">
+      <DependentUpon>sbzl_oad.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sbzl_sbbj2.ashx.cs">
+      <DependentUpon>sbzl_sbbj2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sb_load.ashx.cs">
+      <DependentUpon>sb_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="scgdh.ashx.cs">
+      <DependentUpon>scgdh.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="scsz.ashx.cs">
+      <DependentUpon>scsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="scx.ashx.cs">
+      <DependentUpon>scx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="scx2.ashx.cs">
+      <DependentUpon>scx2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="scx_load.ashx.cs">
+      <DependentUpon>scx_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sjbf.ashx.cs">
+      <DependentUpon>sjbf.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sjhf.ashx.cs">
+      <DependentUpon>sjhf.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sjqx.ashx.cs">
+      <DependentUpon>sjqx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sszy.ashx.cs">
+      <DependentUpon>sszy.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sszy2.ashx.cs">
+      <DependentUpon>sszy2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sszy_load.ashx.cs">
+      <DependentUpon>sszy_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sxlx.ashx.cs">
+      <DependentUpon>sxlx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="sys.cs" />
+    <Compile Include="tdsz.ashx.cs">
+      <DependentUpon>tdsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="td_load.ashx.cs">
+      <DependentUpon>td_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="tjjl.ashx.cs">
+      <DependentUpon>tjjl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="tjzl.ashx.cs">
+      <DependentUpon>tjzl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="tjzl2.ashx.cs">
+      <DependentUpon>tjzl2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="tjzl_load.ashx.cs">
+      <DependentUpon>tjzl_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="t_bsz.ashx.cs">
+      <DependentUpon>t_bsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="t_sbzl.ashx.cs">
+      <DependentUpon>t_sbzl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="t_zsz.ashx.cs">
+      <DependentUpon>t_zsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Util.cs" />
+    <Compile Include="wdgl.ashx.cs">
+      <DependentUpon>wdgl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="website\Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="wxfssz.ashx.cs">
+      <DependentUpon>wxfssz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="wxgzh.ashx.cs">
+      <DependentUpon>wxgzh.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="wxgzz.ashx.cs">
+      <DependentUpon>wxgzz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="wxjl.ashx.cs">
+      <DependentUpon>wxjl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="wxjl_mx.ashx.cs">
+      <DependentUpon>wxjl_mx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="wxjl_vali.ashx.cs">
+      <DependentUpon>wxjl_vali.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="xhqz.ashx.cs">
+      <DependentUpon>xhqz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="ygck_load.ashx.cs">
+      <DependentUpon>ygck_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="ygqx.ashx.cs">
+      <DependentUpon>ygqx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="ygzl.ashx.cs">
+      <DependentUpon>ygzl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="JSonHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlHelper.cs" />
+    <Compile Include="ygzl_load.ashx.cs">
+      <DependentUpon>ygzl_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="yh_load.ashx.cs">
+      <DependentUpon>yh_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="yjjl.ashx.cs">
+      <DependentUpon>yjjl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zbsz.ashx.cs">
+      <DependentUpon>zbsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zsz.ashx.cs">
+      <DependentUpon>zsz.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zwzl.ashx.cs">
+      <DependentUpon>zwzl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zwzl2.ashx.cs">
+      <DependentUpon>zwzl2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zwzl_load.ashx.cs">
+      <DependentUpon>zwzl_load.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zxdbsx.ashx.cs">
+      <DependentUpon>zxdbsx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zxzbjl.ashx.cs">
+      <DependentUpon>zxzbjl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zyby.ashx.cs">
+      <DependentUpon>zyby.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zyby_mx.ashx.cs">
+      <DependentUpon>zyby_mx.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="zzqzjl.ashx.cs">
+      <DependentUpon>zzqzjl.ashx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bmzl.ashx" />
+    <Content Include="ygzl.ashx" />
+    <Content Include="bmzl_load.ashx" />
+    <Content Include="bjzl.ashx" />
+    <Content Include="djfs_load.ashx" />
+    <Content Include="djfs.ashx" />
+    <Content Include="bylx.ashx" />
+    <Content Include="bylx_load.ashx" />
+    <Content Include="djjl.ashx" />
+    <Content Include="djjl_load.ashx" />
+    <Content Include="djjl_loadtt.ashx" />
+    <Content Include="djfs2_load.ashx" />
+    <Content Include="cssz_load.ashx" />
+    <Content Include="clfs.ashx" />
+    <Content Include="dxmc_load.ashx" />
+    <Content Include="clfs_load.ashx" />
+    <Content Include="bj_load.ashx" />
+    <Content Include="bmzl2.ashx" />
+    <Content Include="bylx2.ashx" />
+    <Content Include="djlx.ashx" />
+    <Content Include="djlx2.ashx" />
+    <Content Include="djlx_mx.ashx" />
+    <Content Include="djtb.ashx" />
+    <Content Include="common.ashx" />
+    <Content Include="djcs_load.ashx" />
+    <Content Include="dw_load.ashx" />
+    <Content Include="dbsx.ashx" />
+    <Content Include="bsz.ashx" />
+    <None Include="app\MainActivity.apk" />
+    <Content Include="djfs_plsz.ashx" />
+    <Content Include="bm_load.ashx" />
+    <None Include="Debug\config.ini" />
+    <None Include="Debug\interval.ini" />
+    <None Include="Debug\start.bat" />
+    <None Include="Debug\stop.bat" />
+    <None Include="Debug\WindowsService1.application" />
+    <None Include="Debug\WindowsService1.exe.manifest" />
+    <None Include="Debug\windowsservice1.InstallLog" />
+    <None Include="Debug\windowsservice1.InstallState" />
+    <None Include="Debug\WindowsService1.vshost.application" />
+    <None Include="Debug\WindowsService1.vshost.exe.manifest" />
+    <None Include="easyui\css\themes\default\images\Thumbs.db" />
+    <None Include="easyui\css\themes\gray\images\Thumbs.db" />
+    <Content Include="gcstz.ashx" />
+    <Content Include="login.ashx" />
+    <Content Include="Main.ashx" />
+    <Content Include="mmxg.ashx" />
+    <Content Include="gzxx.ashx" />
+    <Content Include="gzxx_load.ashx" />
+    <Content Include="gzxx2_load.ashx" />
+    <Content Include="gzxx2.ashx" />
+    <Content Include="jsgl_load.ashx" />
+    <Content Include="js_load.ashx" />
+    <None Include="easyui\extension\datagrid_data.json" />
+    <Content Include="llb.ashx" />
+    <Content Include="getDate.ashx" />
+    <Content Include="logout.ashx" />
+    <Content Include="Handler1.ashx" />
+    <Content Include="jxjh.ashx" />
+    <Content Include="getSession.ashx" />
+    <None Include="kindeditor\西西软件园.url" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\GridDemos.csprojResolveAssemblyReference.cache" />
+    <Content Include="zwzl.ashx" />
+    <Content Include="scx.ashx" />
+    <Content Include="sbfl.ashx" />
+    <Content Include="sbfl2.ashx" />
+    <Content Include="sbfl_load.ashx" />
+    <Content Include="zwzl_load.ashx" />
+    <Content Include="sbzl.ashx" />
+    <Content Include="scx_load.ashx" />
+    <Content Include="sbzl_oad.ashx" />
+    <Content Include="sszy.ashx" />
+    <Content Include="tjzl.ashx" />
+    <Content Include="sszy_load.ashx" />
+    <Content Include="ygzl_load.ashx" />
+    <Content Include="wxjl.ashx" />
+    <Content Include="tjjl.ashx" />
+    <Content Include="tjzl_load.ashx" />
+    <Content Include="zyby.ashx" />
+    <Content Include="sjbf.ashx" />
+    <Content Include="sjhf.ashx" />
+    <Content Include="qxgl.ashx" />
+    <Content Include="qx_load.ashx" />
+    <Content Include="yh_load.ashx" />
+    <Content Include="ygck_load.ashx" />
+    <Content Include="sszy2.ashx" />
+    <Content Include="t_sbzl.ashx" />
+    <Content Include="sb_load.ashx" />
+    <Content Include="scgdh.ashx" />
+    <Content Include="wdgl.ashx" />
+    <Content Include="scx2.ashx" />
+    <Content Include="zwzl2.ashx" />
+    <Content Include="tjzl2.ashx" />
+    <Content Include="xhqz.ashx" />
+    <Content Include="wxjl_vali.ashx" />
+    <Content Include="wxjl_mx.ashx" />
+    <Content Include="zyby_mx.ashx" />
+    <Content Include="qtjl.ashx" />
+    <Content Include="qtjl_mx.ashx" />
+    <Content Include="ygqx.ashx" />
+    <Content Include="sbzl_bj.ashx" />
+    <Content Include="sbzl_bjzl2.ashx" />
+    <Content Include="sbzl_sbbj2.ashx" />
+    <Content Include="sbzl_by.ashx" />
+    <Content Include="sbzl_djcs.ashx" />
+    <Content Include="sbzl_dj.ashx" />
+    <Content Include="website\bjzl.ashx" />
+    <Content Include="website\bj_load.ashx" />
+    <Content Include="website\bmzl.ashx" />
+    <Content Include="website\bmzl2.ashx" />
+    <Content Include="website\bmzl_load.ashx" />
+    <Content Include="website\bylx.ashx" />
+    <Content Include="website\bylx2.ashx" />
+    <Content Include="website\bylx_load.ashx" />
+    <Content Include="website\clfs.ashx" />
+    <Content Include="website\clfs_load.ashx" />
+    <Content Include="website\common.ashx" />
+    <Content Include="website\cssz_load.ashx" />
+    <Content Include="website\djcs_load.ashx" />
+    <Content Include="website\djfs.ashx" />
+    <Content Include="website\djfs2_load.ashx" />
+    <Content Include="website\djfs_load.ashx" />
+    <Content Include="website\djjl.ashx" />
+    <Content Include="website\djjl_load.ashx" />
+    <Content Include="website\djjl_loadtt.ashx" />
+    <Content Include="website\djlx.ashx" />
+    <Content Include="website\djlx2.ashx" />
+    <Content Include="website\djlx_mx.ashx" />
+    <Content Include="website\djtb.ashx" />
+    <Content Include="website\dw_load.ashx" />
+    <Content Include="website\dxmc_load.ashx" />
+    <Content Include="website\gcstz.ashx" />
+    <Content Include="website\getDate.ashx" />
+    <Content Include="website\gzxx.ashx" />
+    <Content Include="website\gzxx2.ashx" />
+    <Content Include="website\gzxx2_load.ashx" />
+    <Content Include="website\gzxx_load.ashx" />
+    <Content Include="tdsz.ashx" />
+    <Content Include="sb2_load.ashx" />
+    <Content Include="td_load.ashx" />
+    <Content Include="scsz.ashx" />
+    <Content Include="sbzl_edit.ashx" />
+    <Content Include="t_bsz.ashx" />
+    <Content Include="t_zsz.ashx" />
+    <Content Include="sxlx.ashx" />
+    <Content Include="sjqx.ashx" />
+    <None Include="UpLoad\数据字典.CHM" />
+    <None Include="UpLoad\数据字典.VCM" />
+    <None Include="UpLoad\新建 Microsoft Word 文档.docx" />
+    <None Include="website\images\login\95eef01f3a292df58c22b0e5be315c6035a87358.psd" />
+    <Content Include="website\jsgl_load.ashx" />
+    <Content Include="website\js_load.ashx" />
+    <Content Include="website\llb.ashx" />
+    <Content Include="website\login.ashx" />
+    <Content Include="website\Main.ashx" />
+    <Content Include="website\mmxg.ashx" />
+    <Content Include="website\qtjl.ashx" />
+    <Content Include="website\qtjl_mx.ashx" />
+    <Content Include="website\qxgl.ashx" />
+    <Content Include="website\qx_load.ashx" />
+    <Content Include="website\sbfl.ashx" />
+    <Content Include="website\sbfl2.ashx" />
+    <Content Include="website\sbfl_load.ashx" />
+    <Content Include="website\sbzl.ashx" />
+    <Content Include="website\sbzl_bj.ashx" />
+    <Content Include="website\sbzl_bjzl2.ashx" />
+    <Content Include="website\sbzl_by.ashx" />
+    <Content Include="website\sbzl_dj.ashx" />
+    <Content Include="website\sbzl_djcs.ashx" />
+    <Content Include="website\sbzl_oad.ashx" />
+    <Content Include="website\sbzl_sbbj2.ashx" />
+    <Content Include="website\sb_load.ashx" />
+    <Content Include="website\scgdh.ashx" />
+    <Content Include="website\scx.ashx" />
+    <Content Include="website\scx2.ashx" />
+    <Content Include="website\scx_load.ashx" />
+    <Content Include="website\sjbf.ashx" />
+    <Content Include="website\sjhf.ashx" />
+    <Content Include="website\sszy.ashx" />
+    <Content Include="website\sszy2.ashx" />
+    <Content Include="website\sszy_load.ashx" />
+    <Content Include="website\tjjl.ashx" />
+    <Content Include="website\tjzl.ashx" />
+    <Content Include="website\tjzl2.ashx" />
+    <Content Include="website\tjzl_load.ashx" />
+    <Content Include="website\t_sbzl.ashx" />
+    <Content Include="website\wdgl.ashx" />
+    <Content Include="website\Web.config" />
+    <Content Include="website\wxjl.ashx" />
+    <Content Include="website\wxjl_mx.ashx" />
+    <Content Include="website\wxjl_vali.ashx" />
+    <Content Include="website\xhqz.ashx" />
+    <Content Include="website\ygck_load.ashx" />
+    <Content Include="website\ygqx.ashx" />
+    <Content Include="website\ygzl.ashx" />
+    <Content Include="website\ygzl_load.ashx" />
+    <Content Include="website\yh_load.ashx" />
+    <Content Include="website\zbjl.ashx" />
+    <Content Include="website\zwzl.ashx" />
+    <Content Include="website\zwzl2.ashx" />
+    <Content Include="website\zwzl_load.ashx" />
+    <Content Include="website\zyby.ashx" />
+    <Content Include="website\zyby_mx.ashx" />
+    <Content Include="zxzbjl.ashx" />
+    <Content Include="zzqzjl.ashx" />
+    <Content Include="zbsz.ashx" />
+    <Content Include="zsz.ashx" />
+    <Content Include="wxgzh.ashx" />
+    <Content Include="wxgzz.ashx" />
+    <Content Include="yjjl.ashx" />
+    <Content Include="wxfssz.ashx" />
+    <Content Include="zxdbsx.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DB\" />
+    <Folder Include="obj\Debug\TempPE\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>12876</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

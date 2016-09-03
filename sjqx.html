@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html PUBLIC "-//4W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="width: 100%; height: 100%">
+<head>
+    <title></title>
+    <style>
+        .div01
+        {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .div02
+        {
+            background: #FF0000;
+            color: #FFFFFF;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: -100px 0 0 -100px;
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function cellStyler(value, row, index) {
+            if (row.JSON_cgnbh == "R0101" || row.JSON_cgnbh == "R0110" || row.JSON_cgnbh == "R0112") {        //设置值班记录增删改的背景色
+                return 'background-color:pink;color:red;';
+            }
+        }
+
+        var selected = "";
+        var selected_text = "";
+        $(function () {
+            $("#tt").tree({//同步加载Tree
+                url: 'ygzl_load.ashx?action=2',
+                lines: true,
+                onSelect: function (node) {
+                    selected = node.id;
+                    selected_text = node.text;
+                    $.post("sjqx.ashx", { "action": "query", userid: selected }, function (data) {
+                        var root = $('#tab').tree('getRoot');
+                        $("#tab").tree('uncheck', root.target);  
+                        if (data != "") {
+                            var array = data.split(',');
+                            for (var i = 0; i < array.length; i++) {
+                                var nodes = $('#tab').tree('find', array[i]);
+                                $('#tab').tree('check', nodes.target);
+                            }
+                        }
+
+                    });
+                }
+            });
+
+            $("#tab").tree({//同步加载Tree
+                url: 'bmzl.ashx',
+                checkbox: true,
+                lines: true,
+                //cascadeCheck :false,
+                onSelect: function (node) {
+                    $("#tab").datagrid('load', { "action": "query", lb: node.text, lbid: node.id });
+                }
+            });
+
+        })
+        //////////////////授权//////////////////
+        function power() {
+            //判断是否选中
+            if (selected != null) {
+                if (selected == 0) {
+                    $.messager.alert('提示', '请选择被授权人员！');
+                    return;
+                }
+                //                var nodes = $('#tab').tree('getChecked', 'indeterminate');
+                var nodes1 = $('#tab').tree('getChecked');
+                var s = '';
+                //                for (var i = 0; i < nodes.length; i++) {
+                //                    if (s != '') { s += ',' };
+                //                    s += nodes[i].id;
+                //                }
+                for (var i = 0; i < nodes1.length; i++) {
+                    if (s != '') { s += ',' };
+                    s += nodes1[i].id;
+                }
+
+                $.post("sjqx.ashx", { "action": "edit", userid: selected, depid: s }, function (data) {
+                    $.messager.alert('提示', "授权成功！");
+                });
+            } else {
+                $.messager.alert('提示', '请选中一个角色在进行编辑');
+            }
+        }
+    </script>
+</head>
+<body style="width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden">
+    <div class="easyui-layout" style="width: 100%; height: 100%;">
+        <div data-options="region:'west',split:true" title="操作员" style="width: 200px;">
+            <ul id="tt">
+            </ul>
+        </div>
+        <div id="panel2" data-options="region:'center',title:'权限',iconCls:'icon-ok'" class="div01">
+            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                    <td style="padding-left: 2px">
+                        <a href="#" class="easyui-linkbutton" id="id_edit" iconcls="icon-edit" plain="true"
+                            onclick="power();">授权</a>
+                    </td>
+                </tr>
+            </table>
+            <table id="tab">
+            </table>
+        </div>
+    </div>
+</body>
+</html>

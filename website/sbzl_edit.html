@@ -1,0 +1,810 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+     <script src="common.js" type="text/javascript"></script>
+
+
+     <script type="text/javascript">
+
+         //扩展方法，设置列名使用
+         $.extend($.fn.datagrid.methods, {
+             setColumnTitle: function (jq, option) {
+                 if (option.field) {
+                     return jq.each(function () {
+                         var $panel = $(this).datagrid("getPanel");
+                         var $field = $('td[field=' + option.field + ']', $panel);
+                         if ($field.length) {
+                             var $span = $("span", $field).eq(0);
+                             $span.html(option.text);
+                         }
+                     });
+                 }
+                 return jq;
+             }
+         });
+
+         /// 获取url中"？"后面的内容,注意：放在common.js中，不加载
+         /// 使用var Request = new Object();
+         ///    Request = GetRequest();
+         ///     var 参数1,参数2,参数3,参数N;
+         ///      参数1 = Request[''参数1'']; 
+         ///     参数2 = Request[''参数2''];
+         ///     参数3 = Request[''参数3''];
+         ///     参数N = Request[''参数N''];
+         function GetRequest(sdata) {
+             var theRequest = new Object();
+             if (sdata.indexOf("?") != -1) {
+                 var str = sdata.substr(1);
+                 strs = str.split("&");
+                 for (var i = 0; i < strs.length; i++) {
+                     theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                 }
+             }
+             return theRequest;
+         }
+
+         //解析src，获取deviceid的内容
+         function get_surl(src) {
+             var I = src.substr(src.indexOf("?deviceid=") + 10).length;
+             var T = src.indexOf("?deviceid=");
+             if (0 >= T) return "";
+             if (I == src.length) return -1;
+             var url = src.substr(src.indexOf("?deviceid=") + 10);
+             return url;
+         }
+
+         $(function () {
+             //var ssrc = "http://192.168.1.34:86/sbzl_edit.html?deviceid=SD-TM3-KT001";  
+             var ssrc = window.location.href;
+             var surl = get_surl(ssrc);
+
+             $.post("sbzl_edit.ashx", { "action": "query", data: surl }, function (data) {
+                 if (data == "") {
+                     $.messager.alert('提示', '该设备查找不到。');
+                     return;
+                 }
+
+                 if (data != "err" || data !="") {
+                     //使用GetRequest函数解析data
+                     var Request = new Object();
+                     Request = GetRequest(data);
+                     var id, csbfl, csbbh, csbmc, csbsbh, cbmmc, csszy, cscx, cggxh, csdwz, cjscs, csbzt, csbdj, csccj;
+                     var izjsl, cazdd, dtyrq, csjsb, cbz;
+
+                     id = Request["id"];
+                     csbfl = Request["csbfl"];
+                     csbbh = Request["csbbh"];
+                     csbmc = Request["csbmc"];
+                     csbsbh = Request["csbsbh"];
+                     cbmmc = Request["cbmmc"];
+                     csszy = Request["csszy"];
+                     cscx = Request["cscx"];
+                     cggxh = Request["cggxh"];
+                     csdwz = Request["csdwz"];
+                     cjscs = Request["cjscs"];
+                     csbzt = Request["csbzt"];
+                     csbdj = Request["csbdj"];
+                     csccj = Request["csccj"];
+                     izjsl = Request["izjsl"];
+                     cazdd = Request["cazdd"];
+                     dtyrq = Request["dtyrq"];
+                     csjsb = Request["csjsb"];
+                     cbz = Request["cbz"];
+
+                     //赋值
+                     $('#csbfl').val(csbfl);
+                     $('#csbbh').val(csbbh);
+                     $("#csbmc").val(csbmc);
+                     $('#csbsbh').val(csbsbh);
+                     $("#cbmmc").val(cbmmc);
+                     $('#csszy').val(csszy);
+                     $("#cscx").val(cscx);
+                     $('#cggxh').val(cggxh);
+                     $("#csdwz").val(csdwz);
+                     $('#cjscs').val(cjscs);
+                     $("#csbzt").val(csbzt);
+                     $('#csbdj').val(csbdj);
+                     $("#csccj").val(csccj);
+                     $('#izjsl').val(izjsl);
+                     $("#cazdd").val(cazdd);
+                     $('#dtyrq').val(dtyrq);
+                     $("#csjsb").val(csjsb);
+                     $('#cbz').val(cbz);
+
+                     //默认显示全部
+                     show_all();
+
+                     //表格赋值
+                     var sbid = id;
+                     $('#tab_bj').datagrid('load', { "action": "query", sbid: sbid });       //备件
+                     $('#tab_bj2').datagrid('load', { "action": "query", sbid: sbid });      //部件
+                     $('#tab_ll').datagrid('load', { "action": "query", sb: sbid, state: 's' });      //履历
+                     $('#tab_wd').datagrid('load', { "action": "query", sbid: sbid });      //文档
+                     $('#tab_dj').datagrid('load', { "action": "query", sbid: sbid });      //点检方式
+
+
+                     //点检记录
+                     $.post("djjl.ashx", { "action": "isshow", data: sbid }, function (data) {
+                         if (data != "") {
+                             //解析data内容
+                             var cstr1 = data.split("*")[0];
+                             var cstr2 = data.split("*")[1];
+                             var cstr3 = data.split("*")[2];
+                             var cstr4 = data.split("*")[3];
+                             var cstr5 = data.split("*")[4];
+                             var cstr6 = data.split("*")[5];
+                             var cstr7 = data.split("*")[6];
+                             var cstr8 = data.split("*")[7];
+                             var cstr9 = data.split("*")[8];
+                             var cstr10 = data.split("*")[9];
+
+                             var bBool1 = data.split("*")[10];
+                             var bBool2 = data.split("*")[11];
+                             var bBool3 = data.split("*")[12];
+                             var bBool4 = data.split("*")[13];
+                             var bBool5 = data.split("*")[14];
+                             var bBool6 = data.split("*")[15];
+                             var bBool7 = data.split("*")[16];
+                             var bBool8 = data.split("*")[17];
+                             var bBool9 = data.split("*")[18];
+                             var bBool10 = data.split("*")[19];
+
+                             var iNumber1 = data.split("*")[20];
+                             var iNumber2 = data.split("*")[21];
+                             var iNumber3 = data.split("*")[22];
+                             var iNumber4 = data.split("*")[23];
+                             var iNumber5 = data.split("*")[24];
+                             var iNumber6 = data.split("*")[25];
+                             var iNumber7 = data.split("*")[26];
+                             var iNumber8 = data.split("*")[27];
+                             var iNumber9 = data.split("*")[28];
+                             var iNumber10 = data.split("*")[29];
+
+                             if (cstr1.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr1');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr1');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr1', text: cstr1.split("@")[2] });
+                             }
+                             if (cstr2.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr2');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr2');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr2', text: cstr2.split("@")[2] });
+                             }
+                             if (cstr3.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr3');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr3');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr3', text: cstr3.split("@")[2] });
+                             }
+                             if (cstr4.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr4');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr4');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr4', text: cstr4.split("@")[2] });
+                             }
+                             if (cstr5.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr5');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr5');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr5', text: cstr5.split("@")[2] });
+                             }
+                             if (cstr6.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr6');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr6');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr6', text: cstr6.split("@")[2] });
+                             }
+                             if (cstr7.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr7');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr7');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr7', text: cstr7.split("@")[2] });
+                             }
+                             if (cstr8.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr8');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr8');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr8', text: cstr8.split("@")[2] });
+                             }
+                             if (cstr9.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr9');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr9');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr9', text: cstr9.split("@")[2] });
+                             }
+                             if (cstr10.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_cstr10');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_cstr10');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_cstr10', text: cstr10.split("@")[2] });
+                             }
+
+                             //bool
+                             if (bBool1.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool1');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool1');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool1', text: bBool1.split("@")[2] });
+                             }
+                             if (bBool2.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool2');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool2');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool2', text: bBool2.split("@")[2] });
+                             }
+                             if (bBool3.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool3');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool3');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool3', text: bBool3.split("@")[2] });
+                             }
+                             if (bBool4.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool4');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool4');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool4', text: bBool4.split("@")[2] });
+                             }
+                             if (bBool5.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool5');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool5');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool5', text: bBool5.split("@")[2] });
+                             }
+                             if (bBool6.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool6');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool6');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool6', text: bBool6.split("@")[2] });
+                             }
+                             if (bBool7.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool7');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool7');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool7', text: bBool7.split("@")[2] });
+                             }
+                             if (bBool8.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool8');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool8');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool8', text: bBool8.split("@")[2] });
+                             }
+                             if (bBool9.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool9');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool9');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool9', text: bBool9.split("@")[2] });
+                             }
+                             if (bBool10.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_bbool10');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_bbool10');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_bbool10', text: bBool10.split("@")[2] });
+                             }
+
+                             //number
+                             if (iNumber1.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber1');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber1');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber1', text: iNumber1.split("@")[2] });
+                             }
+                             if (iNumber2.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber2');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber2');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber2', text: iNumber2.split("@")[2] });
+                             }
+                             if (iNumber3.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber3');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber3');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber3', text: iNumber3.split("@")[2] });
+                             }
+                             if (iNumber4.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber4');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber4');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber4', text: iNumber4.split("@")[2] });
+                             }
+                             if (iNumber5.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber5');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber5');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber5', text: iNumber5.split("@")[2] });
+                             }
+                             if (iNumber6.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber6');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber6');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber6', text: iNumber6.split("@")[2] });
+                             }
+                             if (iNumber7.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber7');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber7');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber7', text: iNumber7.split("@")[2] });
+                             }
+                             if (iNumber8.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber8');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber8');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber8', text: iNumber8.split("@")[2] });
+                             }
+                             if (iNumber9.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber9');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber9');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber9', text: iNumber9.split("@")[2] });
+                             }
+                             if (iNumber10.split("@")[1] == "f") {
+                                 $("#tab_dj").datagrid('hideColumn', 'JSON_inumber10');
+                             }
+                             else {
+                                 $("#tab_dj").datagrid('showColumn', 'JSON_inumber10');
+                                 $("#tab_dj").datagrid("setColumnTitle", { field: 'JSON_inumber10', text: iNumber10.split("@")[2] });
+                             }
+                         }
+                     });
+
+                     $('#tab_dj').datagrid({ url: 'djjl.ashx', queryParams: { "action": "query", sb: sbid, state: "s"} });
+                 }
+
+             });
+
+
+             //备件
+             $("#tab_bj").datagrid({
+                 width: 600,
+                 height: 300,
+                 singleSelect: true, //选中一行的设置
+                 rownumbers: true, //行号
+                 nowrap: false,
+                 url: "sbzl_bjzl2.ashx", //请求路径
+                 title: "备件资料", //标题
+                 iconCls: "icon-save", //图标
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                 //collapsible: true, //隐藏按钮
+                 loadMsg: '正在加载,请稍后...',
+                 //冻结列
+                 frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                 //列
+                 columns: [[
+                { field: "JSON_ibjid", title: "备件id", width: 100, hidden: true, editable: false },
+                { field: "JSON_cbjbh", title: "备件编号", width: 100 },
+                { field: "JSON_cbjmc", title: "备件名称", width: 100 },
+                { field: "JSON_cggxh", title: "规格型号", width: 100 },
+                { field: "JSON_cjscs", title: "技术参数", width: 100 },
+                { field: "JSON_csszy", title: "所属专业", width: 100 },
+                { field: "JSON_cbjdj", title: "备件等级", width: 100 },
+                { field: "JSON_csccj", title: "生产厂家", width: 100 },
+                { field: "JSON_cbz", title: "备注", width: 100 }
+                ]],
+                 //传输参数
+                 queryParams: { "action": "query", sbid: 0 },
+                 pagination: true
+             });
+             $("#tab_bj").datagrid('getPager').pagination({
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                 beforePageText: '第', //页数文本框前显示的汉字                           
+                 afterPageText: '页    共 {pages} 页',
+                 displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+             });
+
+             //部件
+             $("#tab_bj2").datagrid({
+                 width: 600,
+                 height: 300,
+                 singleSelect: true, //选中一行的设置
+                 rownumbers: true, //行号
+                 nowrap: false,
+                 url: "sbzl_sbbj2.ashx", //请求路径
+                 title: "部件资料", //标题
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                 iconCls: "icon-save", //图标
+                 //collapsible: true, //隐藏按钮
+                 loadMsg: '正在加载,请稍后...',
+                 //冻结列
+                 frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                 //列
+                 columns: [[
+                { field: "JSON_id", title: "部件id", width: 100, hidden: true, editable: false },
+                { field: "JSON_ibmid", title: "部门id", width: 100, hidden: true },
+                { field: "JSON_izyid", title: "专业id", width: 100, hidden: true },
+                { field: "JSON_iscxid", title: "生产线id", width: 100, hidden: true },
+                { field: "JSON_cbjbh", title: "部件编号" },
+                { field: "JSON_cbjmc", title: "部件名称" },
+                { field: "JSON_cbjsbh", title: "部件识别号", width: 100, editor: 'text' },
+                { field: "JSON_cbjzt", title: "部件状态", width: 100 },
+                { field: "JSON_cbjdj", title: "部件等级", width: 100 },
+                { field: "JSON_cbjxh", title: "部件型号", width: 100, editor: 'text' },
+                { field: "JSON_cjscs", title: "技术参数", width: 100, editor: 'text' },
+                { field: "JSON_csccj", title: "生产厂家", width: 100, editor: 'text' },
+                { field: "JSON_izjsl", title: "装机数量", width: 100 },
+                { field: "JSON_cbz", title: "备注", width: 100 }
+                ]],
+                 //传输参数
+                 queryParams: { "action": "query", sbid: 0 },
+                 pagination: true
+             });
+             $("#tab_bj2").datagrid('getPager').pagination({
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                 beforePageText: '第', //页数文本框前显示的汉字                           
+                 afterPageText: '页    共 {pages} 页',
+                 displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+             });
+
+             //履历
+             $("#tab_ll").datagrid({
+                 width: 600,
+                 height: 300,
+                 singleSelect: true, //选中一行的设置
+                 nowrap: false,
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                 rownumbers: true, //行号
+                 url: "llb.ashx", //请求路径
+                 title: "履历表", //标题
+                 iconCls: "icon-save", //图标
+                 //collapsible: true, //隐藏按钮
+                 loadMsg: '正在加载,请稍后...',
+                 frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                 columns: [[
+                { field: "JSON_id", title: "id", width: 80, hidden: true },
+                { field: "JSON_ixmid", title: "项目id", width: 80, hidden: true },
+                { field: "JSON_czyxm", title: "作业项目", width: 100 },
+                { field: "JSON_czyry", title: "作业人员", width: 100 },
+                { field: "JSON_dzysj", title: "作业时间", width: 80, formatter: myformatter },
+                { field: "JSON_czynr", title: "作业内容", width: 400 }
+                ]],
+                 //传输参数
+                 queryParams: { "action": "query", sb: 0,state:'s' },
+                 pagination: true
+             });
+             $("#tab_ll").datagrid('getPager').pagination({
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                 beforePageText: '第', //页数文本框前显示的汉字                           
+                 afterPageText: '页    共 {pages} 页',
+                 displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+             });
+
+             //文档
+             $("#tab_wd").datagrid({
+                 width: 600,
+                 height: 300,
+                 nowrap: false,
+                 singleSelect: true, //选中一行的设置
+                 rownumbers: true, //行号
+                 url: "wdgl.ashx", //请求路径
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                 title: "文档资料", //标题
+                 iconCls: "icon-save", //图标
+                 //collapsible: true, //隐藏按钮
+                 loadMsg: '正在加载,请稍后...',
+                 //冻结列
+                 frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                 //列
+                 columns: [[
+                { field: "JSON_id", title: "文档id", width: 100, hidden: true },
+                { field: "JSON_cnr", title: "文档", width: 200 }
+                ]],
+                 //传输参数
+                 queryParams: { "action": "query", sbid: 0 },
+                 pagination: true
+             });
+             $("#tab_wd").datagrid('getPager').pagination({
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                 beforePageText: '第', //页数文本框前显示的汉字                           
+                 afterPageText: '页    共 {pages} 页',
+                 displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+             });
+
+             //点检
+             $("#tab_dj").datagrid({
+                 width: 600,
+                 height: 300,
+                 nowrap: false,
+                 singleSelect: true, //选中一行的设置
+                 rownumbers: true, //行号
+                 url: "djjl.ashx", //请求路径
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                 title: "点检记录", //标题
+                 iconCls: "icon-save", //图标
+                 //collapsible: true, //隐藏按钮
+                 loadMsg: '正在加载,请稍后...',
+                 //冻结列
+                 frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                 //列
+                 columns: [[
+                { field: "JSON_csbbh", title: "设备编号", width: 100, editor: 'text' },
+                { field: "JSON_csbmc", title: "设备名称", width: 100 },
+                { field: "JSON_cscx", title: "生产线", width: 100 },
+                { field: "JSON_csszy", title: "所属专业", width: 100 },
+                { field: "JSON_drq", title: "日期", width: 150, editor: 'datetimebox' },
+                { field: "JSON_cjllx", title: "记录类型", width: 100 },
+                { field: "JSON_cdjr", title: "点检人", width: 100, editor: 'text' },
+                { field: "JSON_cbz", title: "备注", width: 100, editor: 'text' },
+                { field: "JSON_cstr1", title: "cStr1", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr2", title: "cStr2", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr3", title: "cStr3", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr4", title: "cStr4", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr5", title: "cStr5", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr6", title: "cStr6", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr7", title: "cStr7", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr8", title: "cStr8", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr9", title: "cStr9", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_cstr10", title: "cStr10", width: 100, hidden: "true", editor: 'text' },
+                { field: "JSON_bbool1", title: "bBool1", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool2", title: "bBool2", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool3", title: "bBool3", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool4", title: "bBool4", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool5", title: "bBool5", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool6", title: "bBool6", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool7", title: "bBool7", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool8", title: "bBool8", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool9", title: "bBool9", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_bbool10", title: "bBool10", width: 100, hidden: "true", align: "center", editor: { type: 'checkbox', options: { on: '1', off: '0'}} },
+                { field: "JSON_inumber1", title: "iNumber1", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber2", title: "iNumber2", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber3", title: "iNumber3", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber4", title: "iNumber4", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber5", title: "iNumber5", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber6", title: "iNumber6", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber7", title: "iNumber7", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber8", title: "iNumber8", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber9", title: "iNumber9", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_inumber10", title: "iNumber10", width: 100, hidden: "true", editor: { type: 'numberbox', options: { precision: 2}} }
+                                 ]],
+                 //传输参数
+                 queryParams: { "action": "query", sb: 0 },
+                 pagination: true
+             });
+             $("#tab_dj").datagrid('getPager').pagination({
+                 pageSize: 10, //每页显示的记录条数                       
+                 pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                 beforePageText: '第', //页数文本框前显示的汉字                           
+                 afterPageText: '页    共 {pages} 页',
+                 displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+             });
+         })
+
+        
+
+        style = "display: none;";
+
+        //履历
+        function show_by() {
+            //使用show,hide，在ie8版本或更低版本的ie下显示异常，原因是jquery版本较高，不兼容ie8或7
+            //使用html语句实现隐藏或显示
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("ll").style.display = ""; //显
+        }
+
+        //显示部件
+        function show_bj2() {
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("ll").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("bj2").style.display = ""; //显
+        }
+
+        //显示备件
+        function show_bj() {
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("ll").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("bj").style.display = ""; //显
+
+        }
+
+        //显示文档
+        function show_wd() {
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("ll").style.display = "none";
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("wd").style.display = ""; //显
+        }
+
+        //显示点检
+        function show_dj() {
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("ll").style.display = "none";
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = ""; //显
+        }
+
+        //显示备件
+        function show_all() {
+            document.getElementById("bj2").style.display = "";
+            document.getElementById("ll").style.display = "";
+            document.getElementById("wd").style.display = "";
+            document.getElementById("dj").style.display = "";
+            document.getElementById("bj").style.display = ""; //显
+
+        }
+        </script>
+
+</head>
+<body>
+<div id="dd_dg" align="center" style="">
+        <form id="fm_dg">
+        <input type="hidden" id="id" name="id"/>
+        <input type="hidden" id="sjid" name="sjid"/>
+        <table border="0">
+          <tr>
+            <td width="109" height="31"><div align="right">设备分类:</div></td>
+
+            <td width="184">
+                <input type="text" id="csbfl" style="width:135px" name="csbfl" class="easyui-validatebox" readonly />
+            </td>
+
+            <td width="109" height="30"><div align="right">设备编号:</div></td>
+            <td width="192"><input style="width:135px" type="text" id="csbbh" name="csbbh" class="easyui-validatebox"readonly /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">设备名称:</div></td>
+            <td><input type="text" style="width:135px" id="csbmc" name="csbmc" class="easyui-validatebox" readonly /></td>
+
+            <td height="30"><div align="right">RFID码:</div></td>
+            <td><input type="text" style="width:135px" id="csbsbh" name="csbsbh" class="easyui-validatebox"  readonly /></td>
+            </tr>
+            <tr>
+            <td height="30"><div align="right">部门名称:</div></td>
+            <td><input type="text" id="cbmmc" style="width:135px" name="cbmmc" class="easyui-validatebox"readonly /></td>
+
+            <td height="30"><div align="right">所属专业:</div></td>
+            <td><input type="text" id="csszy" style="width:135px" name="csszy" class="easyui-validatebox" readonly  /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产线:</div></td>
+            <td><input type="text" id="cscx" style="width:135px" name="cscx" class="easyui-validatebox" readonly /></td>
+
+            <td height="30"><div align="right">设备型号:</div></td>
+            <td><input type="text" style="width:135px" id="csbxh" name="csbxh" class="easyui-validatebox" readonly /></td>
+
+          </tr>
+          <tr>
+            <td height="30"><div align="right">上端位置:</div></td>
+            <td><input type="text" style="width:135px" id="csdwz" name="csdwz" class="easyui-validatebox" readonly /></td>
+
+
+            <td height="30"><div align="right">技术参数:</div></td>
+            <td><input type="text" style="width:135px" id="cjscs" name="cjscs" class="easyui-validatebox" readonly /></td>
+           </tr>
+           <tr>
+            <td width="109" height="30"><div align="right">设备状态:</div></td>
+            <td width="195"><input type="text" style="width:135px;" id="csbzt" name="csbzt" class="easyui-validatebox" readonly /></td>
+
+            <td width="109" height="0"><div align="right">设备等级:</div></td>
+            <td width="195"><input type="text" style="width:135px;" id="csbdj" name="csbdj" class="easyui-validatebox" readonly  /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产厂家:</div></td> 
+            <td><input type="text" style="width:135px" id="csccj" name="csccj" class="easyui-validatebox" readonly /></td>
+
+            <td height="30"><div align="right">装机数量:</div></td>
+            <td><input type="text" style="width:135px" id="izjsl" name="izjsl" class="easyui-validatebox" readonly /></td>
+          </tr>
+          <tr>
+            
+            <td height="30"><div align="right">安装地点:</div></td>
+            <td><input type="text" style="width:135px" id="cazdd" name="cazdd" class="easyui-validatebox" readonly  /></td>
+
+            <td height="30"><div align="right">投用日期:</div></td>
+            <td><input type="text" style="width:135px" id="dtyrq" name="dtyrq" class="easyui-validatebox" readonly  /></td>
+        </tr>
+        <tr>
+            <td width="109" height="30"><div align="right">上级设备:</div></td>
+            <td width="192"><input style="width:135px" type="text" id="csjsb" name="csjsb" class="easyui-validatebox" readonly /></td>
+
+            <td height="30"><div align="right">备注:</div></td>
+            <td ><input type="text" style="width:135px" id="cbz" name="cbz" class="easyui-validatebox" readonly  /></td>
+          </tr>
+
+        </table>
+
+        <div style="padding:5px;border:1px solid #ddd;width:600px;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_all();">全部</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_bj();">备件</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_bj2();">部件</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_by();">履历</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_wd();">文档</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_dj();">点检</a>
+	</div>
+
+    <div align="center" id="bj" style="width:650px;">
+    <form id="fm_bj">
+    <table width="650" border="0" id="tab_bj">      
+  </table>
+  </form>
+  </div>
+
+
+    <div align="center" id="bj2" style="width:650px;">
+        <table width="650" border="0" id="tab_bj2">      
+  </table>
+  </div>
+
+
+    <div align="center" id="ll" style="width:650px;">
+    <table width="650" border="0" id="tab_ll">      
+  </table>
+  </div>
+
+    <div align="center" id="wd" style="width:650px;">
+    <table width="650" border="0" id="tab_wd">      
+  </table>
+    </div>
+
+   <div align="center" id="dj" style="width:650px;">
+   <table width="600">
+   <tr>
+   <td>
+    <table width="400" border="0" id="tab_dj">      
+  </table>
+  </td>
+  </tr>
+  </table>
+    </div>
+    </form>
+    </div>
+
+</body>
+</html>

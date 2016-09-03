@@ -1,0 +1,989 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>EASIC设备管理系统</title>
+
+    <META HTTP-EQUIV="pragma" CONTENT="no-cache"> 
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate"> 
+    <META HTTP-EQUIV="expires" CONTENT="0">
+
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+    <script src="common.js" type="text/javascript"></script>
+<style type="text/css">
+body {
+	font: 12px/20px "微软雅黑", "宋体", Arial, sans-serif, Verdana, Tahoma;
+	padding: 0;
+	margin: 0;
+}
+a:link {
+ text-decoration: none;
+}
+a:visited {
+ text-decoration: none;
+}
+a:hover {
+ text-decoration: underline;
+}
+a:active {
+ text-decoration: none;
+}
+.cs-north {
+	height:30px;background:#B3DFDA;
+}
+.cs-north-bg {
+	width: 100%;
+	height: 100%;
+	background: url(themes/gray/images/header_bg.png) repeat-x;
+}
+.cs-north-logo {
+	height: 30px;
+	padding: 15px 0px 0px 5px;
+	color:#fff;font-size:22px;font-weight:bold;text-decoration:none
+}
+.cs-west {
+	width:200px;padding:0px;border-left:1px solid #99BBE8;
+}
+.cs-south {
+	height:25px;background:url('themes/gray/images/panel_title.gif') repeat-x;padding:0px;text-align:center;
+}
+.cs-navi-tab {
+	padding: 5px;
+}
+.cs-tab-menu {
+	width:120px;
+}
+.cs-home-remark {
+	padding: 10px;
+}
+</style>
+
+<style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+
+
+<script type="text/javascript">
+    var _menus = undefined;
+
+    function toObject(a) {
+        return (new Function('return ' + a))();
+    }
+
+    function exit() {
+        if (confirm("您确定要退出系统吗？")) {
+
+            $.post("logout.ashx", function (data) {
+                top.location = "login.html";        //返回首页
+                return false;
+            });
+        }
+    }
+
+    //修改密码
+    function edit_mm(){
+        $("#dd_dg").show(); //显示修改窗体
+
+        $.post("yh_load.ashx", function (data) {
+            $('#cyh').val(data);
+        });
+
+        $("#fm_dg")[0].reset();
+        $("#dd_dg").dialog({
+            title: "修改密码",
+            iconCls: "icon-edit",
+            modal: true, //遮罩层
+            width: 350,
+            height: 250,
+            buttons: [
+            {
+                text: "编辑",
+                iconCls: "icon-edit",
+                handler: function () {
+                    var xmm = document.getElementById("cxmm").value;
+                    var qrmm = document.getElementById("cqrmm").value;
+
+                    if (xmm != qrmm) {
+                        $.messager.alert("提示", "新密码与确认密码不一致，请重新输入！");
+                        return;
+                    }
+
+                    var parm = $("#fm_dg").serialize();
+                    var pp = decodeURIComponent(parm, true);
+
+                    $.post("mmxg.ashx", { data: pp }, function (data) {
+                        if (data == "1") {
+                            $.messager.alert('提示', "原密码输入错误！");
+                            return;
+                        }
+
+                        $.messager.alert('提示', data)
+                        $("#dd_dg").window("close");
+                    });
+                }
+
+            },
+            {
+                text: "取消",
+                iconCls: "icon-cancel",
+                handler: function () {
+                    $("#dd_dg").window('close');
+                }
+            }
+            ]
+
+
+            });
+     } 
+
+    //初始化左侧
+    function InitLeftMenu1() {
+
+        $(".easyui-accordion1").empty();
+        var menulist = "";
+
+        if (_menus == undefined) {
+            return;
+        }
+
+        $.each(_menus.menus, function (i, n) {
+            menulist += '<div title="' + n.menuname + '"  icon="' + n.icon + '" style="overflow:auto;">';
+            menulist += '<ul>';
+            $.each(n.menus, function (j, o) {
+                menulist += '<li><div><a ref="' + o.menuid + '" href="#" rel="' + o.url + '?qx=' + o.menuid +'" ><span class="icon ' + o.icon + '" >&nbsp;</span><span class="nav">' + o.menuname + '</span></a></div></li> ';
+            })
+            menulist += '</ul></div>';
+        })
+
+        $(".easyui-accordion1").append(menulist);
+
+        $('.easyui-accordion1 li a').click(function () {
+            var tabTitle = $(this).children('.nav').text();
+
+            var url = $(this).attr("rel");
+            var menuid = $(this).attr("ref");
+
+            addTab(tabTitle, url);
+            $('.easyui-accordion1 li div').removeClass("selected");
+            $(this).parent().addClass("selected");
+        }).hover(function () {
+            $(this).parent().addClass("hover");
+        }, function () {
+            $(this).parent().removeClass("hover");
+        });
+
+        //导航菜单绑定初始化
+        $(".easyui-accordion1").accordion();
+    }
+
+
+
+    function addTab(title, url) {
+        if ($('#tabs').tabs('exists', title)) {
+            $('#tabs').tabs('select', title); //选中并刷新
+            var currTab = $('#tabs').tabs('getSelected');
+            var url = $(currTab.panel('options').content).attr('src');
+
+            var len = url.substr(0, url.indexOf("&")).length;  //第一个&出现的位置
+
+            //去掉&连接符后面的内容，避免设备资料关联记录时加载错误的情况。
+            if (len != 0) {
+                url = url.substr(0, len+1);
+            }
+
+            if (url != undefined && currTab.panel('options').title != 'Home') {
+                $('#tabs').tabs('update', {
+                    tab: currTab,
+                    options: {
+                        content: createFrame(url)
+                    }
+                })
+            }
+        } else {
+            var content = createFrame(url);
+            $('#tabs').tabs('add', {
+                title: title,
+                content: content,
+                closable: true
+            });
+        }
+        tabClose();
+    }
+    function createFrame(url) {
+        var s = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>';
+        return s;
+    }
+
+    function tabClose() {
+        /*双击关闭TAB选项卡*/
+        $(".tabs-inner").dblclick(function () {
+            var subtitle = $(this).children(".tabs-closable").text();
+            $('#tabs').tabs('close', subtitle);
+        })
+        /*为选项卡绑定右键*/
+        $(".tabs-inner").bind('contextmenu', function (e) {
+            $('#mm').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+            });
+
+            var subtitle = $(this).children(".tabs-closable").text();
+
+            $('#mm').data("currtab", subtitle);
+            $('#tabs').tabs('select', subtitle);
+            return false;
+        });
+    }
+    //绑定右键菜单事件
+    function tabCloseEven() {
+        //刷新
+        $('#mm-tabupdate').click(function () {
+            var currTab = $('#tabs').tabs('getSelected');
+            var url = $(currTab.panel('options').content).attr('src');
+            if (url != undefined && currTab.panel('options').title != 'Home') {
+                $('#tabs').tabs('update', {
+                    tab: currTab,
+                    options: {
+                        content: createFrame(url)
+                    }
+                })
+            }
+        })
+        //关闭当前
+        $('#mm-tabclose').click(function () {
+            var currtab_title = $('#mm').data("currtab");
+            $('#tabs').tabs('close', currtab_title);
+        })
+        //全部关闭
+        $('#mm-tabcloseall').click(function () {
+            $('.tabs-inner span').each(function (i, n) {
+                var t = $(n).text();
+                if (t != 'Home') {
+                    $('#tabs').tabs('close', t);
+                }
+            });
+        });
+        //关闭除当前之外的TAB
+        $('#mm-tabcloseother').click(function () {
+            var prevall = $('.tabs-selected').prevAll();
+            var nextall = $('.tabs-selected').nextAll();
+            if (prevall.length > 0) {
+                prevall.each(function (i, n) {
+                    var t = $('a:eq(0) span', $(n)).text();
+                    if (t != 'Home') {
+                        $('#tabs').tabs('close', t);
+                    }
+                });
+            }
+            if (nextall.length > 0) {
+                nextall.each(function (i, n) {
+                    var t = $('a:eq(0) span', $(n)).text();
+                    if (t != 'Home') {
+                        $('#tabs').tabs('close', t);
+                    }
+                });
+            }
+            return false;
+        });
+        //关闭当前右侧的TAB
+        $('#mm-tabcloseright').click(function () {
+            var nextall = $('.tabs-selected').nextAll();
+            if (nextall.length == 0) {
+                //msgShow('系统提示','后边没有啦~~','error');
+                alert('后边没有啦~~');
+                return false;
+            }
+            nextall.each(function (i, n) {
+                var t = $('a:eq(0) span', $(n)).text();
+                $('#tabs').tabs('close', t);
+            });
+            return false;
+        });
+        //关闭当前左侧的TAB
+        $('#mm-tabcloseleft').click(function () {
+            var prevall = $('.tabs-selected').prevAll();
+            if (prevall.length == 0) {
+                alert('到头了，前边没有啦~~');
+                return false;
+            }
+            prevall.each(function (i, n) {
+                var t = $('a:eq(0) span', $(n)).text();
+                $('#tabs').tabs('close', t);
+            });
+            return false;
+        });
+
+        //退出
+        $("#mm-exit").click(function () {
+            $('#mm').menu('hide');
+        })
+    }
+
+
+    
+
+    $(function () {
+        $("#tab").datagrid({
+            width: $(panel2).width()-40,
+            height:400,
+            singleSelect: true, //选中一行的设置
+            rownumbers: true, //行号
+            url:"zxzbjl.ashx",
+            title: "最新值班记录", //标题
+            pageSize: 10, //每页显示的记录条数                       
+            pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+            iconCls: "icon-save", //图标
+            collapsible: true, //隐藏按钮
+            nowrap:false,
+            loadMsg: '正在加载,请稍后...',
+            //冻结列
+            frozenColumns: [[{ field: "chk", "checkbox": true}]],
+            columns: [[
+                { field: "JSON_drq", title: "日期", width: 150, formatter: myformatter },
+                { field: "JSON_cbc", title: "班次", width: 100 },
+                { field: "JSON_cscx", title: "生产线", width: 100 },
+                { field: "JSON_cjl", title: "记录", width: 400 },
+                { field: "JSON_cwxr", title: "作业人", width: 200 },
+                { field: "JSON_cczy", title: "值班人", width: 100 },
+                { field: "JSON_cbmmc", title: "部门", width: 100 }
+                ]],
+            //传输参数
+            queryParams: { "action": "query" },
+            pagination: true,
+            onLoadSuccess: function (data) {
+                //MergeCells('tab', 'JSON_drq,JSON_cbc');           //合并显示
+
+                $('#tab').datagrid('doCellTip', { cls: { 'background-color': 'white' }, delay: 500 });  //浮动显示
+            },
+            toolbar:'#tb'
+        });
+        $("#tab").datagrid('getPager').pagination({
+            pageSize: 10, //每页显示的记录条数                       
+            pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+            beforePageText: '第', //页数文本框前显示的汉字                           
+            afterPageText: '页    共 {pages} 页',
+            displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+        });
+
+        $("#tab2").datagrid({
+            width: $(panel2).width()-40,
+            height:400,
+            singleSelect: true, //选中一行的设置
+            rownumbers: true, //行号
+            url: "zzqzjl.ashx", //请求路径
+            pageSize: 10, //每页显示的记录条数                       
+            pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+            title: "最终强制记录", //标题
+            iconCls: "icon-save", //图标
+            collapsible: true, //隐藏按钮
+             nowrap:false,
+            loadMsg: '正在加载,请稍后...',
+            //冻结列
+            frozenColumns: [[{ field: "chk", "checkbox": true}]],
+            columns: [[
+                { field: "JSON_cdh", title: "单号", width: 120,hidden:true },
+                { field: "JSON_dsj", title: "时间", width: 130 },
+                { field: "JSON_csbbh", title: "设备编号", width: 120 },
+                { field: "JSON_csbmc", title: "设备名称", width: 100 },
+                { field: "JSON_cscx", title: "生产线", width: 100 },
+                { field: "JSON_iyz", title: "原值", width: 100 },
+                { field: "JSON_iqzz", title: "强制值", width: 100 },
+                { field: "JSON_cyy", title: "内容", width: 400 },
+                { field: "JSON_czdr", title: "作业人", width: 150 },
+                { field: "JSON_cczy", title: "值班人", width: 100 },
+                { field: "JSON_cbmmc", title: "部门", width: 100 }
+                ]],
+            //传输参数
+            queryParams: { "action": "query"},
+            pagination: true,
+            onLoadSuccess: function (data) {
+                //MergeCells('tab2', 'JSON_cyy,JSON_czdr');       //合并显示
+
+                $('#tab2').datagrid('doCellTip', { cls: { 'background-color': 'white' }, delay: 500 });  //浮动显示
+            },
+            toolbar: '#tb2'
+        });
+        $("#tab2").datagrid('getPager').pagination({
+            pageSize: 10, //每页显示的记录条数                       
+            pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+            beforePageText: '第', //页数文本框前显示的汉字                           
+            afterPageText: '页    共 {pages} 页',
+            displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+        });
+
+
+        $("#tab3").datagrid({
+            width: $(panel2).width()-40,
+            height: 400,
+            singleSelect: true, //选中一行的设置
+            rownumbers: true, //行号
+            url: "zxdbsx.ashx", //请求路径
+            title: "最新待办事项", //标题
+            iconCls: "icon-save", //图标
+             nowrap:false,
+            pageSize: 10, //每页显示的记录条数                       
+            pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+            collapsible: true, //隐藏按钮
+            loadMsg: '正在加载,请稍后...',
+            //冻结列
+            frozenColumns: [[{ field: "chk", "checkbox": true}]],
+            columns: [[
+                { field: "JSON_drq", title: "日期", width: 100 },
+                { field: "JSON_csbbh", title: "设备编号", width: 100 },
+                { field: "JSON_csbmc", title: "设备名称", width: 100 },
+                { field: "JSON_cscx", title: "生产线", width: 80 },
+                { field: "JSON_czy", title: "专业", width: 80 },
+                { field: "JSON_csxlx", title: "事项类型", width: 80 },
+                { field: "JSON_csxnr", title: "事项内容", width: 200 },
+                { field: "JSON_cclfs", title: "处理方式", width: 100 },
+                { field: "JSON_cdbr", title: "待办人", width: 100 },
+                { field: "JSON_cczy", title: "值班人", width: 100 },
+                { field: "JSON_czt", title: "状态", width: 100 }
+                ]],
+            //传输参数
+            queryParams: { "action": "query" },
+            pagination: true,
+            toolbar: "#tb3",
+            onLoadSuccess: function (data) {
+                $('#tab3').datagrid('doCellTip', { cls: { 'background-color': 'white' }, delay: 500 });  //浮动显示
+            }
+        });
+        $("#tab3").datagrid('getPager').pagination({
+            pageSize: 10, //每页显示的记录条数                       
+            pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+            beforePageText: '第', //页数文本框前显示的汉字                           
+            afterPageText: '页    共 {pages} 页',
+            displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+        });
+
+
+        $("#tab_tz").datagrid({
+              width: 825,
+              height: 425,
+              singleSelect: true, //选中一行的设置
+              rownumbers: true, //行号
+              url: "gcstz.ashx", //请求路径
+              title: "通知", //标题
+              nowrap: false,
+              pageSize: 10, //每页显示的记录条数                       
+              pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+              //iconCls: "icon-save", //图标
+              //collapsible: true, //隐藏按钮
+              loadMsg: '正在加载,请稍后...',
+              //冻结列
+              frozenColumns: [[{ field: "chk", "checkbox": true}]],
+              //列
+              columns: [[
+                { field: "JSON_drq", title: "日期", width: 80, formatter: myformatter },
+                { field: "JSON_cdxmc", title: "对象名称", width: 200 },
+                { field: "JSON_cjl", title: "记录", width: 500 },
+                { field: "JSON_cczy", title: "制单人", width: 100 }
+                ]],
+              //传输参数
+              queryParams: { "action": "show",state:'' },
+              pagination: true
+          });
+          $("#tab_tz").datagrid('getPager').pagination({
+              pageSize: 10, //每页显示的记录条数                       
+              pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+              beforePageText: '第', //页数文本框前显示的汉字                           
+              afterPageText: '页    共 {pages} 页',
+              displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+          });
+
+
+        $('#cscx').combobox({
+            url: 'scx.ashx?action=1',
+            method: 'get',
+            valueField: 'text',
+            textField: 'text',
+            panelWidth: 300,
+            panelHeight: 'auto',
+            editable: false
+        });
+
+
+        $('#cline').combobox({
+            url: 'scx.ashx?action=1',
+            method: 'get',
+            valueField: 'text',
+            textField: 'text',
+            panelWidth: 300,
+            panelHeight: 'auto',
+            editable: false
+        });
+
+        $('#cproline').combobox({
+            url: 'scx.ashx?action=1',
+            method: 'get',
+            valueField: 'text',
+            textField: 'text',
+            panelWidth: 300,
+            panelHeight: 'auto',
+            editable: false
+        });
+
+//        $('#cwxr').combobox({
+//            url: 'ygzl_load.ashx?action=1',
+//            method: 'get',
+//            valueField: 'text',
+//            textField: 'text',
+//            panelWidth: 350,
+//            panelHeight: 'auto',
+//            editable: true
+//        });
+
+//        $('#czdr').combobox({
+//            url: 'ygzl_load.ashx?action=1',
+//            method: 'get',
+//            valueField: 'text',
+//            textField: 'text',
+//            panelWidth: 350,
+//            panelHeight: 'auto',
+//            editable: true
+//        });
+
+        var myDate = new Date();    //默认显示当前日期
+        //使用服务器函数返回日期
+        $.post("getDate.ashx", { data: myDate.toLocaleDateString() }, function (data) {
+            $('#dqsrq').datebox('setValue', data);
+            $('#djzrq').datebox('setValue', data);
+            $('#drq1').datebox('setValue', data);
+            $('#drq2').datebox('setValue', data);
+        });
+
+        $('#dksrq').datetimebox('setValue', getCurTime());
+         $('#djsrq').datetimebox('setValue', getCurTime() );
+
+
+        //post异步提交
+        $.post("Main.ashx", function (data) {
+            if (data != "") {
+                //必须将data转换成object类型，否则无法加载
+                _menus = toObject(data);
+                InitLeftMenu1();
+            }
+        });
+
+        tabCloseEven();
+        $('.cs-navi-tab').click(function () {
+            var $this = $(this);
+            var href = $this.attr('src');
+            var title = $this.text();
+            addTab(title, href);
+        });
+
+
+        //用户名
+        $.post("yh_load.ashx", function (data) {
+          var username=data;
+
+            //通知右下角提示
+            $.post("gcstz.ashx", { "action": "search", data: username }, function (data) {
+                $.messager.show({
+                    title: "提示",
+                    msg: '<a href="javascript:notice();">' + data + '</a>',
+                    timeout: 0,     //除非用户关闭，否则一直显示
+                    showType: 'slide'
+                });
+            });
+        });
+ 
+    });
+
+    //工程师通知
+    function notice() {
+        //表单清空
+        $("#form6")[0].reset();
+        //显示
+        $("#div6").show();
+
+        //重新加载
+        $.post("yh_load.ashx", function (data) {
+            var username = data;
+            $("#tab_tz").datagrid('load', { "action": "show", state: "s",data:username });
+        });
+
+        //以窗体的形式展示
+        $("#div6").dialog({
+            title: "通知", //标题
+            iconCls: "icon-ok", //图标
+            width: 850, //窗体的宽度
+            height: 500, //窗体的高度
+            modal: true, //遮罩层
+            //按钮集合
+            buttons: [
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div6").window("close");
+                  }
+              }
+            ]
+        });
+    }
+
+
+    /**
+    * EasyUI DataGrid根据字段动态合并单元格
+    * @param fldList 要合并table的id
+    * @param fldList 要合并的列,用逗号分隔(例如："name,department,office");
+    */
+    function MergeCells(tableID, fldList) {
+        var Arr = fldList.split(",");
+        var dg = $('#' + tableID);
+        var fldName;
+        var RowCount = dg.datagrid("getRows").length;
+        var span;
+        var PerValue = "";
+        var CurValue = "";
+        var length = Arr.length - 1;
+        for (i = length; i >= 0; i--) {
+            fldName = Arr[i];
+            PerValue = "";
+            span = 1;
+            for (row = 0; row <= RowCount; row++) {
+                if (row == RowCount) {
+                    CurValue = "";
+                }
+                else {
+                    CurValue = dg.datagrid("getRows")[row][fldName];
+                }
+                if (PerValue == CurValue) {
+                    span += 1;
+                }
+                else {
+                    var index = row - span;
+                    dg.datagrid('mergeCells', {
+                        index: index,
+                        field: fldName,
+                        rowspan: span,
+                        colspan: null
+                    });
+                    span = 1;
+                    PerValue = CurValue;
+                }
+            }
+        }
+    }
+
+    //查询最新值班记录
+    function searchText() {
+        var qsrq = $('#dqsrq').datebox('getValue');
+        var jzrq = $('#djzrq').datebox('getValue');
+        var scx = $('#cscx').combobox('getValue');
+        var jl = $('#cjl').val();
+        //var ry = $('#cwxr').combobox('getValue'); 
+
+        if (qsrq == "") {
+            $.messager.alert("提示", "起始日期不允许为空");
+            return;
+        }
+
+        if (jzrq == "") {
+            $.messager.alert("提示", "截止日期不允许为空");
+            return;
+        }
+
+        //中文格式转换
+        var dqsrq = decodeURIComponent(qsrq, true);
+        var djzrq = decodeURIComponent(jzrq, true);
+        var cscx = decodeURIComponent(scx, true);
+        var cjl = decodeURIComponent(jl, true);
+        //var cry = decodeURIComponent(ry, true);
+
+        //$("#tab").datagrid('load', { "action": "search", qsrq: dqsrq, jzrq: djzrq, scx: cscx, jl: cjl, ry: cry });
+
+        $("#tab").datagrid('load', { "action": "search", qsrq: dqsrq, jzrq: djzrq, scx: cscx, jl: cjl});
+    }
+
+    function searchValue() {
+        var dksrq = $('#dksrq').datebox('getValue');
+        var djsrq = $('#djsrq').datebox('getValue');
+        var cline = $('#cline').combobox('getValue');
+        var cnr = $('#cnr').val();
+        //var czdr = $('#czdr').combobox('getValue');
+
+        if (dksrq == "") {
+            $.messager.alert("提示", "起始日期不允许为空");
+            return;
+        }
+
+        if (djsrq == "") {
+            $.messager.alert("提示", "截止日期不允许为空");
+            return;
+        }
+
+        //中文格式转换
+        var ksrq = decodeURIComponent(dksrq, true);
+        var jsrq = decodeURIComponent(djsrq, true);
+        var line = decodeURIComponent(cline, true);
+        var nr = decodeURIComponent(cnr, true);
+        //var zdr = decodeURIComponent(czdr, true);
+
+        //$("#tab2").datagrid('load', { "action": "search", ksrq: ksrq, jsrq: jsrq, line: line, nr: nr, zdr: zdr });
+        $("#tab2").datagrid('load', { "action": "search", ksrq: ksrq, jsrq: jsrq, line: line, nr: nr });
+    }
+
+    function searchVal() {
+        var drq1 = $('#drq1').datebox('getValue');
+        var drq2 = $('#drq2').datebox('getValue');
+        var cproline = $('#cproline').combobox('getValue');
+        var ctext = $('#ctext').val();
+
+        if (drq1 == "") {
+            $.messager.alert("提示", "起始日期不允许为空");
+            return;
+        }
+
+        if (drq2 == "") {
+            $.messager.alert("提示", "截止日期不允许为空");
+            return;
+        }
+
+        //中文格式转换
+        var rq1 = decodeURIComponent(drq1, true);
+        var rq2 = decodeURIComponent(drq2, true);
+        var proline = decodeURIComponent(cproline, true);
+        var txt = decodeURIComponent(ctext, true);
+
+        $("#tab3").datagrid('load', { "action": "search", rq1: rq1, rq2: rq2, proline: proline, txt: txt });
+    }
+
+
+
+    /**  
+    * 扩展两个方法  
+    */
+    $.extend($.fn.datagrid.methods, {
+        /**
+        * 开打提示功能  
+        * @param {} jq  
+        * @param {} params 提示消息框的样式  
+        * @return {}  
+        */
+        doCellTip: function (jq, params) {
+            function showTip(data, td, e) {
+                if ($(td).text() == "")
+                    return;
+                data.tooltip.text($(td).text()).css({
+                    top: (e.pageY + 10) + 'px',
+                    left: (e.pageX + 20) + 'px',
+                    'z-index': $.fn.window.defaults.zIndex,
+                    display: 'block'
+                });
+            };
+            return jq.each(function () {
+                var grid = $(this);
+                var options = $(this).data('datagrid');
+                if (!options.tooltip) {
+                    var panel = grid.datagrid('getPanel').panel('panel');
+                    var defaultCls = {
+                        'border': '1px solid #333',
+                        'padding': '1px',
+                        'color': '#333',
+                        'background': '#f7f5d1',
+                        'position': 'absolute',
+                        'max-width': '200px',
+                        'border-radius': '4px',
+                        '-moz-border-radius': '4px',
+                        '-webkit-border-radius': '4px',
+                        'display': 'none'
+                    }
+                    var tooltip = $("<div id='celltip'></div>").appendTo('body');
+                    tooltip.css($.extend({}, defaultCls, params.cls));
+                    options.tooltip = tooltip;
+                    panel.find('.datagrid-body').each(function () {
+                        var delegateEle = $(this).find('> div.datagrid-body-inner').length
+                                ? $(this).find('> div.datagrid-body-inner')[0]
+                                : this;
+                        $(delegateEle).undelegate('td', 'mouseover').undelegate(
+                                'td', 'mouseout').undelegate('td', 'mousemove')
+                                .delegate('td', {
+                                    'mouseover': function (e) {
+                                        if (params.delay) {
+                                            if (options.tipDelayTime)
+                                                clearTimeout(options.tipDelayTime);
+                                            var that = this;
+                                            options.tipDelayTime = setTimeout(
+                                                    function () {
+                                                        showTip(options, that, e);
+                                                    }, params.delay);
+                                        } else {
+                                            showTip(options, this, e);
+                                        }
+
+                                    },
+                                    'mouseout': function (e) {
+                                        if (options.tipDelayTime)
+                                            clearTimeout(options.tipDelayTime);
+                                        options.tooltip.css({
+                                            'display': 'none'
+                                        });
+                                    },
+                                    'mousemove': function (e) {
+                                        var that = this;
+                                        if (options.tipDelayTime) {
+                                            clearTimeout(options.tipDelayTime);
+                                            options.tipDelayTime = setTimeout(
+                                                    function () {
+                                                        showTip(options, that, e);
+                                                    }, params.delay);
+                                        } else {
+                                            showTip(options, that, e);
+                                        }
+                                    }
+                                });
+                    });
+
+                }
+
+            });
+        },
+        /**
+        * 关闭消息提示功能  
+        * @param {} jq  
+        * @return {}  
+        */
+        cancelCellTip: function (jq) {
+            return jq.each(function () {
+                var data = $(this).data('datagrid');
+                if (data.tooltip) {
+                    data.tooltip.remove();
+                    data.tooltip = null;
+                    var panel = $(this).datagrid('getPanel').panel('panel');
+                    panel.find('.datagrid-body').undelegate('td',
+                                    'mouseover').undelegate('td', 'mouseout')
+                                    .undelegate('td', 'mousemove')
+                }
+                if (data.tipDelayTime) {
+                    clearTimeout(data.tipDelayTime);
+                    data.tipDelayTime = null;
+                }
+            });
+        }
+    });  
+
+</script>
+</head>
+<body class="easyui-layout">
+    <div region="north" border="true" class="cs-north">
+		<div region="north" split="true" border="false" style="font-weight:bold;overflow: hidden; height: 20px;
+        line-height: 20px;color: #fff; font-family: Verdana, 微软雅黑,黑体">
+        <span style="float:right; padding-right:20px;" class="head">
+        <a href="javascript:edit_mm();"  style="font-weight:bold;" id="editpass">修改密码</a> 
+        <a href="javascript:exit();" id="loginOut">安全退出</a></span>
+        <span style="padding-left:10px; font-size: 16px; "><img src="/images/blocks.gif" width="20"  style="font-weight:bold;" height="20" align="absmiddle" />EASIC设备管理系统</span>
+	</div>
+	</div>
+
+	<div region="west" border="true" split="true" title="导航栏" class="cs-west">
+		<div class="easyui-accordion1" fit="true" border="false">
+		<!--  导航内容 -->
+		</div>
+	</div>
+
+    <!--修改密码窗口-->
+    <br />
+    <div id="dd_dg" style=" display:none">
+        <form id="fm_dg">
+        <input type="hidden" id="id" name="id"/>
+        <table border="0">
+            <tr>
+            <td width="145" height="31"><div align="right">用户名:</div></td>
+            <td width="274"><input type="text" id="cyh" name="cyh" class="easyui-validatebox" readonly/></td>
+          </tr>
+          <tr>
+            <td width="145" height="31"><div align="right">原密码:</div></td>
+            <td width="274"><input type="password" id="cymm" name="cymm" class="easyui-validatebox" /></td>
+          </tr>
+          <tr>
+            <td width="145" height="31"><div align="right">新密码:</div></td>
+            <td width="274"><input  type="password" id="cxmm" name="cxmm" class="easyui-validatebox" /></td>
+          </tr>
+          <tr>
+            <td width="145" height="31"><div align="right">确认密码:</div></td>
+            <td width="274"><input  type="password" id="cqrmm" name="cqrmm" class="easyui-validatebox" /></td>
+          </tr>
+        </table>
+        </form>
+    </div>
+
+    <br />
+
+
+    <div id="div6"  style=" display:none">
+        <form id="form6">
+         <div id="div_tz" align="center">
+    <table id="tab_tz">
+</table>
+</div>
+</form>
+</div>
+
+	<div id="mainPanle" region="center" border="true" border="false">
+		   <div id="tabs" class="easyui-tabs"  fit="true" border="false" >
+           
+                <div title="Home" id="panel2" data-options="region:'center',title:'值班记录',iconCls:'icon-ok'" class="div01">
+				<div class="cs-home-remark">
+                    <H3>最新待办事项</H3>
+					<div><table id="tab3"></table></div>
+                    <H3>最新值班记录</H3>
+					<div><table id="tab"></table></div>
+                    <H3>最终强制记录</H3>
+					<div><table id="tab2"></table></div>
+                    
+				</div>
+				</div>
+        </div>
+	</div>
+
+   
+
+    <div id="tb" style="padding:5px;height:auto">
+		<div>
+			日期: <input id="dqsrq" name="dqsrq" class="easyui-datebox" style="width:100px;" editable="false"/>
+			至: <input id="djzrq" name="djzrq" class="easyui-datebox" style="width:100px;"  editable="false"/> 
+			生产线: <input id="cscx" name="cscx" class="easyui-combobox" style="width:100px;" />
+			记录：<input id="cjl" name="cjl" class="easyui-validatebox"  style="width:150px;"/>
+            <!--人员：<input id="cwxr" name="cwxr" class="easyui-validatebox"  style="width:150px;"/>-->
+			<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchText();">查询</a>
+		</div>
+	</div>
+
+    <div id="tb2" style="padding:5px;height:auto">
+		<div>
+			日期: <input id="dksrq" name="dksrq" class="easyui-datetimebox" style="width:150px;"  editable="false"/>
+			至: <input id="djsrq" name="djsrq" class="easyui-datetimebox" style="width:150px;"  editable="false"/> 
+			生产线: <input id="cline" name="cline" class="easyui-combobox" style="width:100px;"/>
+			内容：<input id="cnr" name="cnr" class="easyui-validatebox"  style="width:150px;"/>
+            <!--人员：<input id="czdr" name="czdr" class="easyui-validatebox"  style="width:150px;"/>-->
+			<a href="#" class="easyui-linkbutton"  iconCls="icon-search"  onclick="searchValue();">查询</a>
+
+		</div>
+	</div>
+
+    <div id="tb3" style="padding:5px;height:auto">
+		<div>
+			日期: <input id="drq1" name="drq1" class="easyui-datebox" style="width:100px;"  editable="false"/>
+			至: <input id="drq2" name="drq2" class="easyui-datebox" style="width:100px;"  editable="false"/> 
+			生产线: <input id="cproline" name="cproline" class="easyui-combobox" style="width:100px;"/>
+			事项内容：<input id="ctext" name="ctext" class="easyui-validatebox"  style="width:150px;"/>
+			<a href="#" class="easyui-linkbutton"  iconCls="icon-search"  onclick="searchVal();">查询</a>
+
+		</div>
+	</div>
+
+	<div region="south" border="false" class="cs-south">@潍坊海川计算机软件有限公司</div>
+	</body>
+</html>

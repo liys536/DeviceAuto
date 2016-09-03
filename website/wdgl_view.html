@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>在线预览</title>
+   
+
+    <link href="kindeditor/themes/default/default.css" rel="stylesheet" type="text/css" />
+    <script src="kindeditor/kindeditor-min.js" type="text/javascript"></script>
+    <script src="kindeditor/lang/zh_CN.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        //        var str = '<a href="http://127.0.0.1:86//UpLoad//load.docx"></a>';
+
+        var str = '<a href="http://127.0.0.1:86//UpLoad//load.docx"></a>';
+
+        //解析src，获取deviceid的内容
+        function get_surl(src) {
+            var I = src.substr(src.indexOf("?id=") + 4).length;
+            var T = src.indexOf("?id=");
+            if (0 >= T) return "";
+            if (I == src.length) return -1;
+            var url = src.substr(src.indexOf("?id=") + 4);
+            return url;
+        }
+
+//        $(function () {
+//            var ssrc = window.location.href;
+//            var surl = get_surl(ssrc);
+
+//            //post异步提交
+//            $.post("wdgl.ashx", { "action": "view", data: pp }, function (data) {
+//                str = data;
+//            });
+//        });
+
+
+        var editor;
+        KindEditor.ready(function (K) {
+            editor = K.create('textarea[name="content"]', {
+                resizeType: 1,
+                allowFileManager: true,
+                allowPreviewEmoticons: false,
+                allowImageUpload: false,
+                autoHeightMode: true,
+                items: [
+						'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+						'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+            });
+
+            editor.html(str);
+        });
+
+
+		</script>
+</head>
+<body>
+    <div >
+    <form>
+    <textarea name="content" style="width:700px;height:200px;visibility:hidden;"></textarea>
+    </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Untitled Page</title>
+    <style>
+        .div01{width:44%; 
+height:100%; position:relative;
+            top: 0px;
+            left: 0px;
+        }
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+        .style1
+        {
+            width: 63px;
+        }
+        .style2
+        {
+            width: 77px;
+        }
+        #cljxz
+        {
+            width: 231px;
+        }
+ </style>
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+     <script src="common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            //post异步提交
+            $.post("sjbf.ashx", { action: "query" }, function (data) {
+                $("#cljxz").val(data);
+            });
+
+        });
+
+        function backup() {
+            //var clj = document.getElementById("cljxz").value;
+            var clj = $("#cljxz").val();
+            if (clj == "") {
+                $.messager.alert("提示", "路径不允许为空，请输入！");
+                return;
+            }
+
+            var parm = clj;
+            var pp = decodeURIComponent(parm, true);
+
+            //post异步提交
+            $.post("sjbf.ashx", { action: "backup", data: pp }, function (data) {
+                    $.messager.alert("提示", data);
+            });
+        }
+
+    </script>
+</head>
+<body>
+<div class="div01">
+<table border="0">
+  <tr>
+    <td align="right" class="style1">备份路径：</td>
+    <td class="style2"><input type="text" id="cljxz" name="cljxz" class="easyui-validatebox" value="" readonly/></td>
+    <td width="84"><a href="#" class="easyui-linkbutton" id="id_add" iconcls="icon-save"  plain="true" onclick="backup();" >备份</a></td>
+  </tr>
+</table>
+</div>
+</body>
+</html>

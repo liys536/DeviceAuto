@@ -1,0 +1,2887 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="easyui/extension/datagrid-detailview.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+    <script src="common.js" type="text/javascript"></script>
+
+    <script language="javascript">
+        //treegrid客户端分页函数，子级节点不统计
+        function pagerFilter(data) {
+            if ($.isArray(data)) {    // is array  
+                data = {
+                    total: data.length,
+                    rows: data
+                }
+            }
+            var dg = $(this);
+            var state = dg.data('treegrid');
+            var opts = dg.treegrid('options');
+            var pager = dg.treegrid('getPager');
+            pager.pagination({
+                onSelectPage: function (pageNum, pageSize) {
+                    opts.pageNumber = pageNum;
+                    opts.pageSize = pageSize;
+                    pager.pagination('refresh', {
+                        pageNumber: pageNum,
+                        pageSize: pageSize
+                    });
+                    dg.treegrid('loadData', data);
+                }
+            });
+            if (!data.topRows) {
+                data.topRows = [];
+                data.childRows = [];
+                for (var i = 0; i < data.rows.length; i++) {
+                    var row = data.rows[i];
+                    row._parentId ? data.childRows.push(row) : data.topRows.push(row);
+                }
+                data.total = (data.topRows.length);
+            }
+            var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
+            var end = start + parseInt(opts.pageSize);
+            data.rows = $.extend(true, [], data.topRows.slice(start, end).concat(data.childRows));
+            return data;
+        }
+
+
+        function formatOper() {
+            return '<a href="#" class="easyui-linkbutton l-btn l-btn-plain"  onclick="selectRow()"><img src="easyui/css/themes/icons/search.gif" /></a>';
+        }
+
+        function formatSelect() {
+            return '<a href="#" class="easyui-linkbutton l-btn l-btn-plain" onclick="selectDep()"><img src="easyui/css/themes/icons/search.gif" /></a>';
+        }
+
+
+        function formatQuery() {
+            return '<a href="#" class="easyui-linkbutton l-btn l-btn-plain" onclick="selectVari()"><img src="easyui/css/themes/icons/search.gif" /></a>';
+        }
+
+
+        function formatS() {
+            return '<a href="#" class="easyui-linkbutton l-btn l-btn-plain"  onclick="selectDj()"><img src="easyui/css/themes/icons/search.gif" /></a>';
+        }
+
+        function selectDj() {
+            //表单清空;
+            $("#form4")[0].reset();
+            //显示
+            $("#div4").show();
+
+            //以窗体的形式展示
+            $("#div4").dialog({
+                title: "选择点检人", //标题
+                iconCls: "icon-ok", //图标
+                width: 400, //窗体的宽度
+                height: 250, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //回传至编辑窗口
+                    var row = $('#tab_dj').datagrid('getSelected');
+                    if (row) {
+                        var i = $('#tab_dj').datagrid('getRowIndex', row);
+
+                        // 得到columns对象
+                        var columns = $('#tab_dj').datagrid("options").columns;
+                        // 得到rows对象
+                        var rows = $('#tab_dj').datagrid("getRows"); // 这段代码是
+                        // 对某个单元格赋值
+                        if (rows) {
+                            var v = $('#cyg').combobox('getValue');
+                            if (v == "" || v == null || v == undefined) {
+                                $.messager.alert("提示", "请选择员工！");
+                                return;
+                            }
+                            rows[i][columns[0][4].field] = v;
+                        }
+
+                        if (editIndex_dj != undefined || editIndex_dj != null) {
+                            $('#tab_dj').datagrid('endEdit', editIndex_dj);
+                        }
+
+                        // 刷新该行, 只有刷新了才有效果
+                        $('#tab_dj').datagrid('refreshRow', i);
+                    }
+
+                    $("#div4").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div4").window("close");
+                  }
+              }
+            ]
+            });
+
+        }
+
+        function selectDep() {
+            //表单清空;
+            $("#form2")[0].reset();
+            //显示
+            $("#div2").show();
+
+            //默认显示部门
+            $("#cdx").combobox("select", "部门");
+
+            //$("#bm").show();
+            //$("#gr").hide();
+
+            document.getElementById("bm").style.display = ""; //显示
+            document.getElementById("gr").style.display = "none"; //隐藏
+
+            //以窗体的形式展示
+            $("#div2").dialog({
+                title: "选择报警对象", //标题
+                iconCls: "icon-ok", //图标
+                width: 400, //窗体的宽度
+                height: 250, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //回传至编辑窗口
+                    var row = $('#tab_dj').datagrid('getSelected');
+                    if (row) {
+                        var i = $('#tab_dj').datagrid('getRowIndex', row);
+
+                        // 得到columns对象
+                        var columns = $('#tab_dj').datagrid("options").columns;
+                        // 得到rows对象
+                        var rows = $('#tab_dj').datagrid("getRows"); // 这段代码是
+                        // 对某个单元格赋值
+                        var cdx = $("#cdx").combobox("getValue");
+                        if (cdx == "部门") {
+                            var t = $('#cdep').combotree('tree'); // 得到树对象  
+                            var n = t.tree('getSelected'); // 得到选择的节点  ,如果不行，使用t.tree('getChecked')试试
+                            if (n == null || n == undefined) {
+                                $.messager.alert("提示", "请选择部门！");
+                                return;
+                            }
+
+                            rows[i][columns[0][5].field] = n.text;
+                        } else if (cdx == "个人") {
+                            var v = $('#cperson').combobox('getValue');
+                            if (v == "" || v == null || v == undefined) {
+                                $.messager.alert("提示", "请选择员工！");
+                                return;
+                            }
+                            rows[i][columns[0][5].field] = v;
+                        }
+
+                        if (editIndex_dj != undefined || editIndex_dj != null) {
+                            $('#tab_dj').datagrid('endEdit', editIndex_dj);
+                        }
+
+                        // 刷新该行, 只有刷新了才有效果
+                        $('#tab_dj').datagrid('refreshRow', i);
+                    }
+
+                    $("#div2").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div2").window("close");
+                  }
+              }
+            ]
+            });
+
+        }
+
+        function selectVari() {
+            //表单清空;
+            $("#form3")[0].reset();
+            //显示
+            $("#div3").show();
+            //以窗体的形式展示
+            $("#div3").dialog({
+                title: "选择变量", //标题
+                iconCls: "icon-ok", //图标
+                width: 650, //窗体的宽度
+                height: 450, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //获取选定行
+                    var selected = $('#tab_vari').datagrid('getSelected');
+
+                    //回传至编辑窗口
+                    var row = $('#tab_djcs').datagrid('getSelected');
+                    if (row) {
+                        var i = $('#tab_djcs').datagrid('getRowIndex', row);
+
+                        // 得到columns对象
+                        var columns = $('#tab_djcs').datagrid("options").columns;
+                        // 得到rows对象
+                        var rows = $('#tab_djcs').datagrid("getRows");
+                        // 对某个单元格赋值
+                        rows[i][columns[0][4].field] = selected.JSON_cblm;
+
+                        if (editIndex_djcs != undefined || editIndex_djcs != null) {
+                            $('#tab_djcs').datagrid('endEdit', editIndex_djcs);
+                        }
+
+                        // 刷新该行, 只有刷新了才有效果
+                        $('#tab_djcs').datagrid('refreshRow', i);
+                    }
+
+                    $("#div3").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div3").window("close");
+                  }
+              }
+            ]
+            });
+
+        }
+
+        function selectRow() {
+            //表单清空
+            $("#form1")[0].reset();
+            //显示
+            $("#div1").show();
+            //以窗体的形式展示
+            $("#div1").dialog({
+                title: "选择备件", //标题
+                iconCls: "icon-ok", //图标
+                width: 850, //窗体的宽度
+                height: 500, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //获取选定行
+                    var selected = $('#tab_select').datagrid('getSelected');
+
+                    //回传至编辑窗口
+                    var row = $('#tab_bj').datagrid('getSelected');
+                    if (row) {
+                        var i = $('#tab_bj').datagrid('getRowIndex', row);
+
+                        // 得到columns对象
+                        var columns = $('#tab_bj').datagrid("options").columns;
+                        // 得到rows对象
+                        var rows = $('#tab_bj').datagrid("getRows");
+                        // 对某个单元格赋值
+                        rows[i][columns[0][1].field] = selected.JSON_id;
+                        rows[i][columns[0][2].field] = selected.JSON_cbjbh;
+                        rows[i][columns[0][3].field] = selected.JSON_cbjmc;
+                        rows[i][columns[0][4].field] = selected.JSON_cggxh;
+                        rows[i][columns[0][5].field] = selected.JSON_cjscs;
+                        rows[i][columns[0][6].field] = selected.JSON_csszy;
+                        rows[i][columns[0][7].field] = selected.JSON_cbjdj;
+                        rows[i][columns[0][8].field] = selected.JSON_csccj;
+                        rows[i][columns[0][9].field] = selected.JSON_cbz;
+                        // 刷新该行, 只有刷新了才有效果
+                        $('#tab_bj').datagrid('refreshRow', i);
+                    }
+
+                    $("#div1").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div1").window("close");
+                  }
+              }
+            ]
+            });
+
+        }
+
+        //调用父页面中的tabs
+        function addTab(title, url) {
+
+            var jq = top.jQuery; //父页面
+
+            if (jq("#tabs").tabs('exists', title)) {
+                jq("#tabs").tabs('select', title);
+            } else {
+                var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>';
+                jq("#tabs").tabs('add', {
+                    title: title,
+                    content: content,
+                    closable: true
+                });
+            }
+        }
+
+
+        $(function () {
+            //下拉菜单关联
+            $('#mm1').menu({
+                onClick: function (item) {
+                    if (item.text == "值班记录") {
+                        addTab(item.text, "Main.html?qx=R0101");
+                    }
+                    if (item.text == "维修记录") {
+                        addTab(item.text, "wxjl.html?qx=R0102");
+                    }
+                    if (item.text == "点检记录") {
+                        addTab(item.text, "djjl.html?qx=R0105");
+                    }
+                    if (item.text == "保养记录") {
+                        addTab(item.text, "zyby.html?qx=R0104");
+                    }
+                    if (item.text == "信号强制") {
+                        addTab(item.text, "xhqz.html?qx=R0106");
+                    }
+                    if (item.text == "停机记录") {
+                        addTab(item.text, "tjjl.html?qx=R0107");
+                    }
+                    if (item.text == "异常记录") {
+                        addTab(item.text, "qtjl.html?qx=R0108");
+                    }
+                    if (item.text == "停送电记录") {
+                        addTab(item.text, "tsdjl.html?qx=R0109");
+                    }
+                    if (item.text == "履历表") {
+                        addTab(item.text, "llb.html?qx=R0110");
+                    }
+                    if (item.text == "待办事项") {
+                        addTab(item.text, "dbsx.html?qx=R0111");
+                    }
+                }
+            });
+
+            $("#tt").tree({//同步加载Tree
+                url: 'sbfl.ashx',
+                lines: true,
+                onSelect: function (node) {
+                    $("#tab").treegrid('load', { "action": "query", lb: node.id });
+
+                    //tree与datagrid联动
+                    //$("#tab").treegrid({ queryParams: { "action": "query", lb: node.id} });
+                    //$("#tab").treegrid('reload');
+                }
+            });
+
+
+            $('#csbfl').combotree({
+                url: 'sbfl.ashx',     //显示最末级分类
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                required: true
+            });
+
+            $('#cdjfs').combobox({
+                url: 'djfs2_load.ashx',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $('#csbdj').combobox({
+                url: 'common.ashx?action=2',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false,
+                required: true
+            });
+
+            $('#csbzt').combobox({
+                url: 'common.ashx?action=1',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false,
+                required: true
+            });
+
+            $('#cbmmc').combotree({
+                url: 'bmzl.ashx',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+
+                //              ,
+                //              onSelect: function (node, param) {        //异步所属专业
+                //                  var url = 'sszy.ashx?action=' + node.id;
+                //                  $('#csszy').combobox('setValue', '');
+                //                  $('#csszy').combobox('reload', url);
+
+                //                  var surl = 'scx.ashx?action=' + node.id;        //生产线
+                //                  $('#cscx').combobox('setValue', '');
+                //                  $('#cscx').combobox('reload', surl);
+                //              }
+            });
+
+
+            $('#csszy').combobox({
+                url: 'sszy.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $('#cscx').combobox({
+                url: 'scx.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $("#tab_vari").datagrid({
+                width: 630,
+                height: 375,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "tdsz.ashx", //请求路径
+                title: "选择变量", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                    { field: "JSON_ibid", title: "bid", hidden: true },
+                    { field: "JSON_ctddz", title: "通道地址", width: 100 },
+                    { field: "JSON_cblm", title: "变量名", width: 100 },
+                    { field: "JSON_czmc", title: "站名称", width: 100 },
+                    { field: "JSON_cbmc", title: "板名称", width: 100 }
+                    ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool_vari"
+            });
+            $("#tab_vari").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            $("#ipt_vari").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab_vari').datagrid('options').queryParams.search_type = name;
+                    $('#tab_vari').datagrid('options').queryParams.search_value = val;
+                    $('#tab_vari').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+            $("#tab_select").datagrid({
+                width: 825,
+                height: 425,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "sbzl_bj.ashx", //请求路径
+                title: "备件资料", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_id", title: "备件id", width: 100, hidden: true },
+                { field: "JSON_cbjbh", title: "备件编号", width: 100 },
+                { field: "JSON_cbjmc", title: "备件名称", width: 100 },
+                { field: "JSON_cggxh", title: "规格型号", width: 100 },
+                { field: "JSON_cjscs", title: "技术参数", width: 100 },
+                { field: "JSON_csszy", title: "所属专业", width: 100 },
+                { field: "JSON_cbjdj", title: "备件等级", width: 100 },
+                { field: "JSON_csccj", title: "生产厂家", width: 100 },
+                { field: "JSON_ibjsl", title: "备件数量", width: 100 },
+                { field: "JSON_cbz", title: "备注", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool_select"
+            });
+            $("#tab_select").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            $('#cdx').combobox({
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false,
+                onSelect: function () {
+                    var cdx = $('#cdx').combobox('getValue');
+                    if (cdx == "部门") {
+                        //$("#bm").show();
+                        //$("#gr").hide();
+                        document.getElementById("bm").style.display = ""; //显示
+                        document.getElementById("gr").style.display = "none"; //隐藏
+                    } else {
+                        //$("#bm").hide();
+                        //$("#gr").show();
+                        document.getElementById("bm").style.display = "none"; //显示
+                        document.getElementById("gr").style.display = ""; //隐藏
+                    }
+                }
+            });
+
+            $('#cperson').combobox({
+                method: 'get',
+                url: 'ygzl_load.ashx?action=1',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $('#cdep').combotree({
+                url: 'bmzl.ashx',     //显示全部分类
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 300,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $('#cbm').combotree({
+                url: 'bmzl.ashx',     //显示全部分类
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 300,
+                panelHeight: 'auto',
+                editable: false,
+                onSelect: function (node, param) {        //异步加载员工
+                    var surl = 'ygzl_load.ashx?action=1&bmid=' + node.id;
+                    $('#cyg').combobox('setValue', '');
+                    $('#cyg').combobox('reload', surl);
+                }
+            });
+
+            $('#cyg').combobox({
+                method: 'get',
+                //url: 'ygzl_load.ashx?action=1',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+
+            $("#tab").treegrid({
+                width: $('#panel2').width(),
+                height: $('#panel2').height(),
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "HTMLPage1.ashx", //请求路径
+                //title: "班组资料", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "ilbid", title: "设备分类id",hidden:true },
+                { field: "id", title: "id",hidden:true },
+                { field: "iscxid", title: "生产线id", hidden: true },
+                { field: "izyid", title: "专业id", hidden: true },
+                { field: "ibmid", title: "部门id", hidden: true },
+                { field: "csbfl", title: "设备分类", width: 100 },
+                { field: "csbbh", title: "设备编号", width: 100 },
+                { field: "csbmc", title: "设备名称", width: 200 },
+                { field: "csbsbh", title: "RFID码", width: 100 },
+                { field: "cbmmc", title: "部门", width: 100 },
+                { field: "cscx", title: "生产线", width: 100 },
+                { field: "csszy", title: "所属专业", width: 100 },
+                { field: "csbzt", title: "设备状态", width: 100 },
+                { field: "csbdj", title: "设备等级", width: 100 },
+                { field: "csdwz", title: "上端位置", width: 100 },
+                { field: "csbxh", title: "设备型号", width: 100 },
+                { field: "cjscs", title: "技术参数", width: 100 },
+                { field: "csccj", title: "生产厂家", width: 100 },
+                { field: "izjsl", title: "装机数量", width: 100 },
+                { field: "cazdd", title: "安装地点", width: 100 },
+                { field: "dtyrq", title: "投用日期", width: 100, formatter: myformatter },
+                { field: "cbz", title: "备注", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool",
+                onDblClickRow: function () {
+                    edit_dg();  //行双击调用修改函数
+                }
+            });
+            $("#tab").treegrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            //备件
+            $("#tab_bj").datagrid({
+                width: 850,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "sbzl_bjzl2.ashx", //请求路径
+                title: "备件资料", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: 'opt', title: '操作', width: 50, align: 'center',
+                    formatter: formatOper
+                },
+                { field: "JSON_ibjid", title: "备件id", width: 100, hidden: true, editable: false },
+                { field: "JSON_cbjbh", title: "备件编号", width: 100 },
+                { field: "JSON_cbjmc", title: "备件名称", width: 100 },
+                { field: "JSON_cggxh", title: "规格型号", width: 100 },
+                { field: "JSON_cjscs", title: "技术参数", width: 100 },
+                { field: "JSON_csszy", title: "所属专业", width: 100 },
+                { field: "JSON_cbjdj", title: "备件等级", width: 100 },
+                { field: "JSON_csccj", title: "生产厂家", width: 100 },
+                //{ field: "JSON_ibjsl", title: "备件数量", width: 100, editor: { type: 'numberbox', options: { precision: 2}} },
+                {field: "JSON_cbz", title: "备注", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", sbid: 0 },
+                pagination: true,
+                toolbar: "#tool_bj"
+            });
+            $("#tab_bj").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            //部件
+            $("#tab_bj2").datagrid({
+                width: 850,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "sbzl_sbbj2.ashx", //请求路径
+                title: "部件资料", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_id", title: "部件id", width: 100, hidden: true, editable: false },
+                { field: "JSON_ibmid", title: "部门id", width: 100, editor: { type: 'numberbox', options: { precision: 0} }, hidden: true, editable: false },
+                { field: "JSON_izyid", title: "专业id", width: 100, editor: { type: 'numberbox', options: { precision: 0} }, hidden: true, editable: false },
+                { field: "JSON_iscxid", title: "生产线id", width: 100, editor: { type: 'numberbox', options: { precision: 0} }, hidden: true, editable: false },
+                { field: "JSON_cbjbh", title: "部件编号", width: 100, editor: 'text' },
+                { field: "JSON_cbjmc", title: "部件名称", width: 100, editor: 'text' },
+                { field: "JSON_cbjsbh", title: "部件识别号", width: 100, editor: 'text' },
+                { field: "JSON_cbjzt", title: "部件状态", width: 100, editor: { type: 'combobox',
+                    options: {
+                        valueField: 'text',
+                        textField: 'text',
+                        editable: false,
+                        url: 'common.ashx?action=1'
+                    }
+                }
+                },
+                { field: "JSON_cbjdj", title: "部件等级", width: 100, editor: { type: 'combobox',
+                    options: {
+                        valueField: 'text',
+                        textField: 'text',
+                        editable: false,
+                        url: 'common.ashx?action=2'
+                    }
+                }
+                },
+                //                { field: "JSON_cbmmc", title: "部门", width: 150, hidden: true, editor: { type: 'combotree',
+                //                    options: {
+                //                        valueField: 'cbmmc',
+                //                        textField: 'cbmmc',
+                //                        url: 'bmzl.ashx',
+                //                        editable: false,
+                //                        required: true,
+                //                        missingMessage: "请选择部门",
+                //                        onSelect: function (node, param) {
+
+                //                            //所属专业
+                //                            var row = $('#tab_bj2').datagrid('getSelected');
+                //                            var rowIndex = $('#tab_bj2').datagrid('getRowIndex', row); //获取行号
+                //                            //部门id赋值
+                //                            var target = $('#tab_bj2').datagrid('getEditor', { 'index': rowIndex, 'field': 'JSON_ibmid' }).target;
+                //                            target.numberbox('clear'); //清除原来的数据																					
+                //                            target.numberbox('setValue', node.id); //联动下拉列表重载最好在开始编辑的事件也加一次联动，这只是选择的时候才联动
+
+                //                            var target = $('#tab_bj2').datagrid('getEditor', { 'index': rowIndex, 'field': 'JSON_csszy' }).target;
+                //                            target.combobox('clear'); //清除原来的数据	
+                //                            var url = 'sszy.ashx?action=' + node.id;        //所属专业																						
+                //                            target.combobox('reload', url); //联动下拉列表重载最好在开始编辑的事件也加一次联动，这只是选择的时候才联动
+
+                //                            //生产线
+                //                            target = $('#tab_bj2').datagrid('getEditor', { 'index': rowIndex, 'field': 'JSON_cscx' }).target;
+                //                            target.combobox('clear'); //清除原来的数据																
+                //                            var surl = 'scx.ashx?action=' + node.id;        //生产线							
+                //                            target.combobox('reload', surl); //联动下拉列表重载最好在开始编辑的事件也加一次联动，这只是选择的时候才联动
+                //                        }
+                //                    }
+                //                }
+                //                },
+                //                { field: "JSON_csszy", title: "所属专业", width: 100, hidden: true, editor: { type: 'combobox',
+                //                    options: {
+                //                        valueField: 'text',
+                //                        textField: 'text',
+                //                        //url: url,
+                //                        editable: false,
+                //                        required: true,
+                //                        missingMessage: "请选择所属专业",
+                //                        onSelect: function (node, parm) {
+                //                            var row = $('#tab_bj2').datagrid('getSelected');
+                //                            var rowIndex = $('#tab_bj2').datagrid('getRowIndex', row); //获取行号
+
+                //                            var target = $('#tab_bj2').datagrid('getEditor', { 'index': rowIndex, 'field': 'JSON_izyid' }).target;
+                //                            target.numberbox('clear'); //清除原来的数据																					
+                //                            target.numberbox('setValue', node.id); //联动下拉列表重载最好在开始编辑的事件也加一次联动，这只是选择的时候才联动
+                //                        }
+                //                    }
+                //                }
+                //                },
+                //                { field: "JSON_cscx", title: "生产线", width: 100, hidden: true, editor: { type: 'combobox',
+                //                    options: {
+                //                        valueField: 'text',
+                //                        textField: 'text',
+                //                        //url: surl,
+                //                        editable: false,
+                //                        required: true,
+                //                        missingMessage: "请选择生产线",
+                //                        onSelect: function (node, parm) {
+                //                            var row = $('#tab_bj2').datagrid('getSelected');
+                //                            var rowIndex = $('#tab_bj2').datagrid('getRowIndex', row); //获取行号
+                //                            var target = $('#tab_bj2').datagrid('getEditor', { 'index': rowIndex, 'field': 'JSON_iscxid' }).target;
+                //                            target.numberbox('clear'); //清除原来的数据																					
+                //                            target.numberbox('setValue', node.id); //联动下拉列表重载最好在开始编辑的事件也加一次联动，这只是选择的时候才联动
+                //                        }
+                //                    }
+                //                }
+                //                },
+                {field: "JSON_cbjxh", title: "部件型号", width: 100, editor: 'text' },
+                { field: "JSON_cjscs", title: "技术参数", width: 100, editor: 'text' },
+                { field: "JSON_csccj", title: "生产厂家", width: 100, editor: 'text' },
+                { field: "JSON_izjsl", title: "装机数量", width: 100, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_cbz", title: "备注", width: 100, editor: 'text' }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", sbid: 0 },
+                pagination: true,
+                toolbar: "#tool_bj2",
+                onDblClickRow: function () {
+                    edit_bj2();  //行双击调用修改函数
+                }
+            });
+            $("#tab_bj2").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            //保养
+            $("#tab_by").datagrid({
+                width: 850,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "sbzl_by.ashx", //请求路径
+                title: "保养设置", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_ibyid", title: "保养id", width: 100, editor: { type: 'numberbox', options: { precision: 0} }, editable: false, hidden: true },
+                { field: "JSON_cbylx", title: "保养类型", width: 150, editor: { type: 'combotree',
+                    options: {
+                        valueField: 'cbylx',
+                        textField: 'cbylx',
+                        url: 'bylx_load.ashx',
+                        editable: false,
+                        required: true,
+                        missingMessage: "请选择保养类型",
+                        onSelect: function (node, parm) {
+                            var row = $('#tab_by').datagrid('getSelected');
+                            var rowIndex = $('#tab_by').datagrid('getRowIndex', row); //获取行号
+                            var target = $('#tab_by').datagrid('getEditor', { 'index': rowIndex, 'field': 'JSON_ibyid' }).target;
+                            target.numberbox('clear'); //清除原来的数据																					
+                            target.numberbox('setValue', node.id); //联动下拉列表重载最好在开始编辑的事件也加一次联动，这只是选择的时候才联动
+                        }
+                    }
+                }
+                },
+                { field: "JSON_cdw", title: "单位", width: 100, editor: { type: 'combobox',
+                    options: {
+                        valueField: 'text',
+                        textField: 'text',
+                        url: 'dw_load.ashx',
+                        editable: false,
+                        required: true,
+                        missingMessage: "请选择单位"
+                    }
+                }
+                },
+                { field: "JSON_ibyzq", title: "保养周期", width: 100, editor: { type: 'numberbox', options: { precision: 0}} },
+                { field: "JSON_cbyr", title: "保养人", width: 150, editor: { type: 'combobox',
+                    options: {
+                        valueField: 'text',
+                        textField: 'text',
+                        url: 'ygzl_load.ashx?action=1',
+                        editable: false,
+                        required: true,
+                        missingMessage: "请选择保养人"
+                    }
+                }
+                }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", sbid: 0 },
+                pagination: true,
+                toolbar: "#tool_by",
+                onDblClickRow: function () {
+                    edit_by();  //行双击调用修改函数
+                }
+            });
+            $("#tab_by").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            //文档
+            $("#tab_wd").datagrid({
+                width: 850,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "wdgl.ashx", //请求路径
+                title: "文档资料", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_id", title: "文档id", width: 100, hidden: true },
+                { field: "JSON_cnr", title: "文档", width: 200, editor: 'text' }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", sbid: 0 },
+                pagination: true,
+                toolbar: "#tool_wd",
+                onDblClickRow: function () {
+                    edit_wd();  //行双击调用修改函数
+                }
+            });
+            $("#tab_wd").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            //点检
+            $("#tab_dj").datagrid({
+                width: 510,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "sbzl_dj.ashx", //请求路径
+                title: "点检方式", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_idjid", title: "点检id", width: 100, editor: { type: 'numberbox', options: { precision: 0} }, hidden: true, editable: false },
+                { field: "JSON_cdjfs", title: "点检方式", width: 100, editor: { type: 'combobox',
+                    options: {
+                        valueField: 'text',
+                        textField: 'text',
+                        editable: false,
+                        url: 'djfs2_load.ashx',
+                        required: true,
+                        missingMessage: "请选择点检方式",
+                        onSelect: function (node, param) {
+                            //异步加载点检参数
+                            var txt = node.text;
+                            $('#tab_djcs').datagrid('load', { "action": "query", txt: txt, state: 1 });
+
+                            var row = $('#tab_dj').datagrid('getSelected');
+                            var rowIndex = $('#tab_dj').datagrid('getRowIndex', row); //获取行号
+                            var target = $('#tab_dj').datagrid('getEditor', { 'index': rowIndex, 'field': 'JSON_idjid' }).target;
+                            target.numberbox('clear'); //清除原来的数据																					
+                            target.numberbox('setValue', node.id); //联动下拉列表重载最好在开始编辑的事件也加一次联动，这只是选择的时候才联动
+                        }
+                    }
+                }
+                },
+                { field: "JSON_cdw", title: "单位", width: 50, editor: { type: 'combobox',
+                    options: {
+                        valueField: 'text',
+                        textField: 'text',
+                        url: 'dw_load.ashx',
+                        editable: false,
+                        required: true,
+                        missingMessage: "请选择单位"
+                    }
+                }
+                },
+                { field: "JSON_izq", title: "周期", width: 50, editor: { type: 'numberbox', options: { precision: 0}} },
+                { field: "JSON_cdjr", title: "点检人", width: 90
+                    //                    , editor: { type: 'combobox',
+                    //                    options: {
+                    //                        valueField: 'text',
+                    //                        textField: 'text',
+                    //                        editable: false,
+                    //                        url: 'ygzl_load.ashx?action=1',
+                    //                        required: true,
+                    //                        missingMessage: "请选择点检人"
+                    //                    }
+                    //                    }
+                },
+                { field: 'opt', title: '', width: 30, align: 'center',
+                    formatter: formatS
+                },
+                { field: "JSON_cbjr", title: "报警人", width: 90
+                    //                , editor: { type: 'combobox',
+                    //                    options: {
+                    //                        valueField: 'text',
+                    //                        textField: 'text',
+                    //                        editable: false,
+                    //                        url: 'ygzl_load.ashx?action=1',
+                    //                        required: true,
+                    //                        missingMessage: "请选择报警人"
+                    //                    }
+                    //                }
+                }
+                ,
+                { field: 'opt', title: '', width: 30, align: 'center',
+                    formatter: formatSelect
+                }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", sbid: 0 },
+                pagination: true,
+                toolbar: "#tool_dj",
+                onDblClickRow: function () {
+                    edit_dj();  //行双击调用修改函数
+                },
+                onDblClickCell: function (index, field, value) {
+                    if (field == "JSON_cbjr") {
+                        selectDep();
+                    }
+                    if (field == "JSON_cdjr") {
+                        selectDj();
+                    }
+                }
+            });
+            $("#tab_dj").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                     
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            //点检参数
+            $("#tab_djcs").datagrid({
+                width: 340,
+                height: 230,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "djcs_load.ashx", //请求路径
+                title: "点检参数", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_icsid", title: "参数id", width: 100, hidden: true, editable: false },
+                { field: "JSON_cdjcs", title: "点检参数", width: 80 },
+                { field: "JSON_ixx", title: "下限", width: 45, editor: { type: 'numberbox', options: { precision: 0}} },
+                { field: "JSON_isx", title: "上限", width: 45, editor: { type: 'numberbox', options: { precision: 0}} },
+                { field: "JSON_cblm", title: "关联变量", width: 80 }
+                              ,
+                              { field: 'opt', title: '', width: 30, align: 'right',
+                                  formatter: formatQuery
+                              }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", sbid: 0, state: 1 },
+                pagination: true,
+                toolbar: "#tool_djcs",
+                onDblClickRow: function () {
+                    edit_djcs();  //行双击调用修改函数
+                },
+                onDblClickCell: function (index, field, value) {
+                    if (field == "JSON_cblm") {
+                        selectVari();
+                    }
+                }
+            });
+            $("#tab_djcs").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            $("#ipt_search").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab').datagrid('options').queryParams.search_type = name;
+                    $('#tab').datagrid('options').queryParams.search_value = val;
+                    $('#tab').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+            $("#ipt_search2").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab_select').datagrid('options').queryParams.search_type = name;
+                    $('#tab_select').datagrid('options').queryParams.search_value = val;
+                    $('#tab_select').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+        });
+
+
+
+
+        ///备件资料
+        //*********************************************************************
+        var editIndex_bj = undefined;
+        var sflag_bj = "";
+
+        /////////////////////添加///////////////////
+        function add_bj() {
+            if (sflag_bj == "add" || sflag_bj == "edit") {
+                $('#tab_bj').datagrid('endEdit', editIndex_bj);
+
+                //设置选定行，否则无法获取内容
+                $('#tab_bj').datagrid('selectRow', editIndex_bj);
+
+                sflag_bj = "";
+            }
+
+            $('#tab_bj').datagrid('appendRow', {});
+            editIndex_bj = $('#tab_bj').datagrid('getRows').length - 1;
+            $('#tab_bj').datagrid('selectRow', editIndex_bj)
+			    .datagrid('beginEdit', editIndex_bj);
+
+            sflag_bj = "add";
+        }
+
+
+        /////////删除////////////////////////
+        function delete_bj() {
+            var selected = $("#tab_bj").datagrid('getSelected');
+
+            editIndex_bj = $('#tab_bj').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex_bj == undefined) { return }
+                        $('#tab_bj').datagrid('cancelEdit', editIndex_bj)
+					                .datagrid('deleteRow', editIndex_bj);
+                        editIndex_bj = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+        //*********************************************************************
+
+
+        ///部件资料
+        //*********************************************************************
+        var editIndex_bj2 = undefined;
+        var sflag_bj2 = "";
+
+        /////////////////////添加///////////////////
+        function add_bj2() {
+            if (sflag_bj2 == "add" || sflag_bj2 == "edit") {
+                $('#tab_bj2').datagrid('endEdit', editIndex_bj2);
+
+                //设置选定行，否则无法获取内容
+                $('#tab_bj2').datagrid('selectRow', editIndex_bj2);
+
+                sflag_bj2 = "";
+            }
+
+            $('#tab_bj2').datagrid('appendRow', {});
+            editIndex_bj2 = $('#tab_bj2').datagrid('getRows').length - 1;
+            $('#tab_bj2').datagrid('selectRow', editIndex_bj2)
+			.datagrid('beginEdit', editIndex_bj2);
+
+            sflag_bj2 = "add";
+        }
+
+        //////////////////修改//////////////////
+        function edit_bj2() {
+            var selected = $("#tab_bj2").datagrid('getSelected');
+
+            //不是同一行，结束编辑状态
+            if (editIndex_bj2 != selected) {
+                $('#tab_bj2').datagrid('endEdit', editIndex_bj2);
+            }
+
+            //重新获取行索引
+            editIndex_bj2 = $('#tab_bj2').datagrid('getRowIndex', selected);
+
+            $('#tab_bj2').datagrid('selectRow', editIndex_bj2)
+            .datagrid('beginEdit', editIndex_bj2);
+            sflag_bj2 = "edit";
+        }
+
+        /////////删除////////////////////////
+        function delete_bj2() {
+            var selected = $("#tab_bj2").datagrid('getSelected');
+
+            editIndex_bj2 = $('#tab_bj2').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex_bj2 == undefined) { return }
+                        $('#tab_bj2').datagrid('cancelEdit', editIndex_bj2)
+					            .datagrid('deleteRow', editIndex_bj2);
+                        editIndex_bj2 = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+
+        //*********************************************************************
+
+
+        ///保养
+        //*********************************************************************
+        var editIndex_by = undefined;
+        var sflag_by = "";
+
+        /////////////////////添加///////////////////
+        function add_by() {
+            if (sflag_by == "add" || sflag_by == "edit") {
+                $('#tab_by').datagrid('endEdit', editIndex_by);
+
+                //设置选定行，否则无法获取内容
+                $('#tab_by').datagrid('selectRow', editIndex_by);
+
+                sflag_by = "";
+            }
+
+            $('#tab_by').datagrid('appendRow', {});
+            editIndex_by = $('#tab_by').datagrid('getRows').length - 1;
+            $('#tab_by').datagrid('selectRow', editIndex_by)
+			.datagrid('beginEdit', editIndex_by);
+
+            sflag_by = "add";
+        }
+
+        //////////////////修改//////////////////
+        function edit_by() {
+            var selected = $("#tab_by").datagrid('getSelected');
+
+            //不是同一行，结束编辑状态
+            if (editIndex_by != selected) {
+                $('#tab_by').datagrid('endEdit', editIndex_by);
+            }
+
+            //重新获取行索引
+            editIndex_by = $('#tab_by').datagrid('getRowIndex', selected);
+
+            $('#tab_by').datagrid('selectRow', editIndex_by)
+            .datagrid('beginEdit', editIndex_by);
+            sflag_by = "edit";
+        }
+
+        /////////删除////////////////////////
+        function delete_by() {
+            var selected = $("#tab_by").datagrid('getSelected');
+
+            editIndex_by = $('#tab_by').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex_by == undefined) { return }
+                        $('#tab_by').datagrid('cancelEdit', editIndex_by)
+					            .datagrid('deleteRow', editIndex_by);
+                        editIndex_by = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+        //*********************************************************************
+
+        ///文档
+        //*********************************************************************
+        var editIndex_wd = undefined;
+        var sflag_wd = "";
+
+        /////////////////////添加///////////////////
+        function add_wd() {
+            if (sflag_wd == "add" || sflag_wd == "edit") {
+                $('#tab_wd').datagrid('endEdit', editIndex_wd);
+
+                //设置选定行，否则无法获取内容
+                $('#tab_wd').datagrid('selectRow', editIndex_wd);
+
+                sflag_wd = "";
+            }
+
+            $('#tab_wd').datagrid('appendRow', {});
+            editIndex_wd = $('#tab_wd').datagrid('getRows').length - 1;
+            $('#tab_wd').datagrid('selectRow', editIndex_wd)
+			.datagrid('beginEdit', editIndex_wd);
+
+            sflag_wd = "add";
+        }
+
+        //////////////////修改//////////////////
+        function edit_wd() {
+            var selected = $("#tab_wd").datagrid('getSelected');
+
+            //不是同一行，结束编辑状态
+            if (editIndex_wd != selected) {
+                $('#tab_wd').datagrid('endEdit', editIndex_wd);
+            }
+
+            //重新获取行索引
+            editIndex_wd = $('#tab_wd').datagrid('getRowIndex', selected);
+
+            $('#tab_wd').datagrid('selectRow', editIndex_wd)
+            .datagrid('beginEdit', editIndex_wd);
+            sflag_wd = "edit";
+        }
+
+        /////////删除////////////////////////
+        function delete_wd() {
+            var selected = $("#tab_wd").datagrid('getSelected');
+
+            editIndex_wd = $('#tab_wd').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex_wd == undefined) { return }
+                        $('#tab_wd').datagrid('cancelEdit', editIndex_wd)
+					            .datagrid('deleteRow', editIndex_wd);
+                        editIndex_wd = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+
+        //*********************************************************************
+
+
+        ///点检方式
+        //*********************************************************************
+        var editIndex_dj = undefined;
+        var sflag_dj = "";
+
+        /////////////////////添加///////////////////
+        function add_dj() {
+            var rows = $("#tab_dj").datagrid('getData');
+            if (rows.total >= 1) {
+                $.messager.alert("提示", "点检方式已经添加！");
+                return;
+            }
+
+            if (sflag_dj == "add" || sflag_dj == "edit") {
+                $('#tab_dj').datagrid('endEdit', editIndex_dj);
+
+                //设置选定行，否则无法获取内容
+                $('#tab_dj').datagrid('selectRow', editIndex_dj);
+
+                sflag_dj = "";
+            }
+
+            $('#tab_dj').datagrid('appendRow', {});
+            editIndex_dj = $('#tab_dj').datagrid('getRows').length - 1;
+            $('#tab_dj').datagrid('selectRow', editIndex_dj)
+			    .datagrid('beginEdit', editIndex_dj);
+
+            sflag_dj = "add";
+        }
+
+        //////////////////修改//////////////////
+        function edit_dj() {
+            var selected = $("#tab_dj").datagrid('getSelected');
+
+            //不是同一行，结束编辑状态
+            if (editIndex_dj != selected) {
+                $('#tab_dj').datagrid('endEdit', editIndex_dj);
+            }
+
+            //重新获取行索引
+            editIndex_dj = $('#tab_dj').datagrid('getRowIndex', selected);
+
+            $('#tab_dj').datagrid('selectRow', editIndex_dj)
+                .datagrid('beginEdit', editIndex_dj);
+            sflag_dj = "edit";
+        }
+
+        /////////删除////////////////////////
+        function delete_dj() {
+            var selected = $("#tab_dj").datagrid('getSelected');
+
+            editIndex_dj = $('#tab_dj').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex_dj == undefined) { return }
+                        $('#tab_dj').datagrid('cancelEdit', editIndex_dj)
+					                .datagrid('deleteRow', editIndex_dj);
+                        editIndex_dj = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+        //*********************************************************************
+
+
+        ///点检参数
+        //*********************************************************************
+        var editIndex_djcs = undefined;
+        var sflag_djcs = "";
+
+        //////////////////修改//////////////////
+        function edit_djcs() {
+            var selected = $("#tab_djcs").datagrid('getSelected');
+
+            //不是同一行，结束编辑状态
+            if (editIndex_djcs != selected) {
+                $('#tab_djcs').datagrid('endEdit', editIndex_djcs);
+            }
+
+            //重新获取行索引
+            editIndex_djcs = $('#tab_djcs').datagrid('getRowIndex', selected);
+
+            $('#tab_djcs').datagrid('selectRow', editIndex_djcs)
+                .datagrid('beginEdit', editIndex_djcs);
+            sflag_djcs = "edit";
+        }
+
+        /////////删除////////////////////////
+        function delete_djcs() {
+            var selected = $("#tab_djcs").datagrid('getSelected');
+
+            editIndex_djcs = $('#tab_djcs').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex_djcs == undefined) { return }
+                        $('#tab_djcs').datagrid('cancelEdit', editIndex_djcs)
+					                .datagrid('deleteRow', editIndex_djcs);
+                        editIndex_djcs = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+        //*********************************************************************
+
+
+        /////////////////////////删除/////////////////
+        function delete_dg() {
+            //获取url
+            var surl = get_url();
+            $.post("qx_load.ashx", { "action": "del", data: surl }, function (data) {
+                if (data == "del") {
+                    $.messager.alert("提示", "您没有操作此功能的权限，请与系统管理员联系！");
+                    return;
+                }
+
+                var selected = $("#tab").treegrid('getSelected');
+                if (selected != null) {
+                    $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                        if (y) {
+                            var v = "";
+                            var checked = $("#tab").treegrid('getChecked');
+                            $.each(checked, function (i, j) {
+                                v += j.JSON_id + ",";
+                            })
+                            v = v.substring(0, v.length - 1);
+                            $.post("sbzl.ashx", { "action": "del", id: v }, function (data) {
+                                if (data == "1") {
+                                    $.messager.alert("提示", "维修记录中已使用该设备资料，不允许删除！");
+                                    return;
+                                }
+
+                                if (data == "2") {
+                                    $.messager.alert("提示", "保养记录中已使用该设备资料，不允许删除！");
+                                    return;
+                                }
+
+                                if (data == "3") {
+                                    $.messager.alert("提示", "点检记录中已使用该设备资料，不允许删除！");
+                                    return;
+                                }
+
+                                if (data == "4") {
+                                    $.messager.alert("提示", "信号强制中已使用该设备资料，不允许删除！");
+                                    return;
+                                }
+
+                                if (data == "5") {
+                                    $.messager.alert("提示", "停机记录中已使用该设备资料，不允许删除！");
+                                    return;
+                                }
+
+                                if (data == "6") {
+                                    $.messager.alert("提示", "异常记录中已使用该设备资料，不允许删除！");
+                                    return;
+                                }
+
+                                $.messager.alert('提示', data);
+                                $("#tab").treegrid('reload');
+                            });
+                        }
+                    })
+                } else {
+                    $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+                }
+            });
+        }
+        /////////////////////添加///////////////////
+        function add_dg() {
+            //获取url
+            var surl = get_url();
+            $.post("qx_load.ashx", { "action": "add", data: surl }, function (data) {
+                if (data == "add") {
+                    $.messager.alert("提示", "您没有操作此功能的权限，请与系统管理员联系！");
+                    return;
+                }
+
+                document.getElementById("csbbh").readOnly = false;   //设备编号可以输入
+
+                //表单清空
+                $("#fm_dg")[0].reset();
+                //显示
+                $("#dd_dg").show();
+
+                if ($('#tt').tree('getSelected') == null) {
+                    $.messager.alert("提示", "请选择一个分类！");
+                    return;
+                }
+
+                //选择部门后，自动显示该分类
+                if ($('#tt').tree('getSelected').text != "") {
+                    $('#csbfl').combotree("setValue", $('#tt').tree('getSelected').id);
+                }
+
+                var myDate = new Date();    //默认显示当前日期
+                //使用服务器函数返回日期
+                $.post("getDate.ashx", { data: myDate.toLocaleDateString() }, function (data) {
+                    $('#dtyrq').datebox('setValue', data);
+                });
+
+                //表格赋值
+                var sbid = 0;
+                $('#tab_bj').datagrid('load', { "action": "query", sbid: sbid });       //备件
+                $('#tab_bj2').datagrid('load', { "action": "query", sbid: sbid });      //部件
+                $('#tab_by').datagrid('load', { "action": "query", sbid: sbid });      //保养
+                $('#tab_wd').datagrid('load', { "action": "query", sbid: sbid });      //文档
+                $('#tab_dj').datagrid('load', { "action": "query", sbid: sbid });      //点检方式
+                $('#tab_djcs').datagrid('load', { "action": "query", sbid: sbid, state: 2 });      //点检参数
+
+                //默认显示全部
+                show_all();
+
+                //以窗体的形式展示
+                $("#dd_dg").dialog({
+                    title: "设备资料", //标题
+                    iconCls: "icon-add", //图标
+                    width: 900, //窗体的宽度
+                    height: 550, //窗体的高度
+                    modal: true, //遮罩层
+                    //按钮集合
+                    buttons: [
+            {
+                text: "保存", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //将数据序列化
+                    var parm = $("#fm_dg").serialize();
+
+                    //备件
+                    //----------------------------------------------------------
+                    if (editIndex_bj != undefined || editIndex_bj != null) {
+                        $('#tab_bj').datagrid('endEdit', editIndex_bj);
+                    }
+                    var rows = $('#tab_bj').datagrid('getData');
+                    var parm_bj = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var DeviceId = "";      //备件编号
+                    var Quantity = 0;       //明细
+
+                    if (rows.total >= 1) {
+                        for (var i = 0; i <= rows.total - 1; i++) {
+                            selected = $('#tab_bj').datagrid('getRows')[i];
+                            DeviceId = selected.JSON_cbjbh;
+                            //Quantity = selected.JSON_bjsl;
+                            Quantity = 0;
+
+                            parm_bj = parm_bj + "&" + DeviceId + "&" + Quantity + "@";
+                        }
+                    }
+                    else {
+                        parm_bj = parm_bj + 0 + "@";
+                    }
+
+                    parm_bj = parm_bj.substr(0, parm_bj.length - 1);     //去掉最后的@
+                    parm_bj = parm_bj + "*" + rows.total;
+
+                    parm = parm + "~" + parm_bj;
+                    //----------------------------------------------------------
+
+                    //部件
+                    //----------------------------------------------------------
+                    if (editIndex_bj2 != undefined || editIndex_bj2 != null) {
+                        $('#tab_bj2').datagrid('endEdit', editIndex_bj2);
+                    }
+                    var rows = $('#tab_bj2').datagrid('getData');
+                    var parm_bj2 = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var bjbh2 = "";      //部件编号
+                    var bjmc2 = "";       //部件名称
+                    var bjxh = ""         //部件型号
+                    var bjsbh = "";
+                    var bjzt = "";
+                    var bjdj = "";
+                    var bmid = 0;
+                    var sszy = 0;
+                    var scx = 0;
+                    var sdwz = "";
+                    var jscs = "";
+                    var sccj = "";
+                    var zjsl = 0;
+                    var azdd = "";
+                    var tyrq = "";
+                    var bz = "";
+
+                    if (rows.total >= 1) {
+                        for (var i = 0; i <= rows.total - 1; i++) {
+                            selected = $('#tab_bj2').datagrid('getRows')[i];
+                            bjbh2 = selected.JSON_cbjbh;
+                            bjmc2 = selected.JSON_cbjmc;
+                            bjsbh = selected.JSON_cbjsbh;
+                            bmid = selected.JSON_ibmid;
+                            zyid = selected.JSON_izyid;
+                            scxid = selected.JSON_iscxid;
+                            bjzt = selected.JSON_cbjzt;
+                            bjdj = selected.JSON_cbjdj;
+                            bjxh = selected.JSON_cbjxh;
+                            jscs = selected.JSON_cjscs;
+                            sccj = selected.JSON_csccj;
+                            zjsl = selected.JSON_izjsl;
+                            bz = selected.JSON_cbz;
+
+                            parm_bj2 = parm_bj2 + "&" + bjbh2 + "&" + bjmc2 + "&" + bjsbh + "&" + bjzt + "&" + bjdj + "&" + bmid + "&" + zyid + "&" + scxid + "&" + bjxh + "&" + jscs + "&" + sccj + "&" + zjsl + "&" + bz + "@";
+                        }
+                    }
+                    else {
+                        parm_bj2 = parm_bj2 + 0 + "@";
+                    }
+
+                    parm_bj2 = parm_bj2.substr(0, parm_bj2.length - 1);     //去掉最后的@
+                    parm_bj2 = parm_bj2 + "*" + rows.total;
+
+                    parm = parm + "~" + parm_bj2;
+                    //----------------------------------------------------------
+
+                    //保养
+                    //----------------------------------------------------------
+                    if (editIndex_by != undefined || editIndex_by != null) {
+                        $('#tab_by').datagrid('endEdit', editIndex_by);
+                    }
+                    var rows = $('#tab_by').datagrid('getData');
+                    var parm_by = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var bylx = "";      //保养类型
+                    var dw = "";        //单位
+                    var byzq = "";       //保养周期
+                    var byr = "";       //保养人
+
+                    if (rows.total >= 1) {
+                        for (var i = 0; i <= rows.total - 1; i++) {
+                            selected = $('#tab_by').datagrid('getRows')[i];
+                            bylx = selected.JSON_ibyid;
+                            dw = selected.JSON_cdw;
+                            byzq = selected.JSON_ibyzq;
+                            byr = selected.JSON_cbyr;
+
+                            parm_by = parm_by + "&" + bylx + "&" + dw + "&" + byzq + "&" + byr + "@";
+                        }
+                    }
+                    else {
+                        parm_by = parm_by + 0 + "@";
+                    }
+
+                    parm_by = parm_by.substr(0, parm_by.length - 1);     //去掉最后的@
+                    parm_by = parm_by + "*" + rows.total;
+
+                    parm = parm + "~" + parm_by;
+                    //----------------------------------------------------------
+
+                    //文档
+                    //----------------------------------------------------------
+                    if (editIndex_wd != undefined || editIndex_wd != null) {
+                        $('#tab_wd').datagrid('endEdit', editIndex_wd);
+                    }
+                    var rows = $('#tab_wd').datagrid('getData');
+                    var parm_wd = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var wd = "";      //文档
+
+                    if (rows.total >= 1) {
+                        for (var i = 0; i <= rows.total - 1; i++) {
+                            selected = $('#tab_wd').datagrid('getRows')[i];
+                            wd = selected.JSON_cnr;
+
+                            parm_wd = parm_wd + "&" + wd + "@";
+                        }
+                    }
+                    else {
+                        parm_wd = parm_wd + 0 + "@";
+                    }
+
+                    parm_wd = parm_wd.substr(0, parm_wd.length - 1);     //去掉最后的@
+                    parm_wd = parm_wd + "*" + rows.total;
+
+                    parm = parm + "~" + parm_wd;
+                    //----------------------------------------------------------
+
+
+                    //点检方式
+                    //---------------------------------------------------------
+                    if (editIndex_dj != undefined || editIndex_dj != null) {
+                        $('#tab_dj').datagrid('endEdit', editIndex_dj);
+                    }
+                    var rows = $('#tab_dj').datagrid('getData');
+                    var parm_dj = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var djfs = "";      //点检方式
+                    var djdw = "";        //单位
+                    var djzq = 0;           //点检周期
+                    var djr = "";           //点检人
+                    var bjr = "";           //报警人
+
+                    if (rows.total >= 1) {
+                        for (var i = 0; i <= rows.total - 1; i++) {
+                            selected = $('#tab_dj').datagrid('getRows')[i];
+                            djfs = selected.JSON_idjid;
+                            djdw = selected.JSON_cdw;
+                            djzq = selected.JSON_izq;
+                            djr = selected.JSON_cdjr;
+                            bjr = selected.JSON_cbjr;
+
+                            parm_dj = parm_dj + "&" + djfs + "&" + djdw + "&" + djzq + "&" + djr + "&" + bjr + "@";
+                        }
+                    }
+                    else {
+                        parm_dj = parm_dj + 0 + "@";
+                    }
+
+                    parm_dj = parm_dj.substr(0, parm_dj.length - 1);     //去掉最后的@
+                    parm_dj = parm_dj + "*" + rows.total;
+
+                    parm = parm + "~" + parm_dj;
+                    //----------------------------------------------------------
+
+                    //点检参数
+                    //---------------------------------------------------------
+                    if (editIndex_djcs != undefined || editIndex_djcs != null) {
+                        $('#tab_djcs').datagrid('endEdit', editIndex_djcs);
+                    }
+                    var rows = $('#tab_djcs').datagrid('getData');
+                    var parm_djcs = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var djcs = "";      //点检参数
+                    var sx = 0;        //上限
+                    var xx = 0;           //下限
+                    var blm = "";       //变量名
+
+                    if (rows.total >= 1) {
+                        for (var i = 0; i <= rows.total - 1; i++) {
+                            selected = $('#tab_djcs').datagrid('getRows')[i];
+                            djcs = selected.JSON_cdjcs;
+                            sx = selected.JSON_isx;
+                            xx = selected.JSON_ixx;
+                            blm = selected.JSON_cblm;
+
+                            parm_djcs = parm_djcs + "&" + djcs + "&" + xx + "&" + sx + "&" + blm + "@";
+                        }
+                    }
+                    else {
+                        parm_djcs = parm_djcs + 0 + "@";
+                    }
+
+                    parm_djcs = parm_djcs.substr(0, parm_djcs.length - 1);     //去掉最后的@
+                    parm_djcs = parm_djcs + "*" + rows.total;
+
+                    parm = parm + "~" + parm_djcs;
+                    //----------------------------------------------------------
+
+                    //中文格式转换
+                    var pp = decodeURIComponent(parm, true);
+                    //post异步提交
+                    $.post("sbzl.ashx", { "action": "add", data: pp }, function (data) {
+                        var flag = data.substr(0, 1);
+
+                        if (data == "A") {
+                            $.messager.alert('提示', "设备分类不允许为空！");
+                            return;
+                        }
+
+                        if (data == "B") {
+                            $.messager.alert('提示', "设备编号不允许为空！");
+                            return;
+                        }
+
+                        if (data == "C") {
+                            $.messager.alert('提示', "设备名称不允许为空！");
+                            return;
+                        }
+
+                        if (data == "D") {
+                            $.messager.alert('提示', "设备编号已存在，请重新输入！");
+                            return;
+                        }
+
+                        if (data == "U") {
+                            $.messager.alert('提示', "RFID码不允许为空！");
+                            return;
+                        }
+                        if (data == "V") {
+                            $.messager.alert('提示', "RFID码不允许重复，请重新输入！");
+                            return;
+                        }
+
+                        //备件
+                        if (flag == "E") {
+                            $.messager.alert("提示", "备件资料中第" + data.substr(2, data.length - 2) + "行备件编号不允许为空，请重新输入！");
+                            return;
+                        }
+                        if (flag == "F") {
+                            $.messager.alert("提示", "备件资料中第" + data.substr(2, data.length - 2) + "行备件不存在，请重新输入！");
+                            return;
+                        }
+                        if (flag == "G") {
+                            $.messager.alert("提示", "备件资料中第" + data.substr(2, data.length - 2) + "行数量不允许为空，请重新输入！");
+                            return;
+                        }
+
+                        //部件
+                        if (flag == "H") {
+                            $.messager.alert("提示", "部件资料中第" + data.substr(2, data.length - 2) + "行部件编号不允许为空，请重新输入！");
+                            return;
+                        }
+                        if (flag == "I") {
+                            $.messager.alert("提示", "部件资料中第" + data.substr(2, data.length - 2) + "行部件已存在，请重新输入！");
+                            return;
+                        }
+                        if (flag == "J") {
+                            $.messager.alert("提示", "部件资料中第" + data.substr(2, data.length - 2) + "行部件名称不允许为空，请重新输入！");
+                            return;
+                        }
+
+                        //保养
+                        if (flag == "K") {
+                            $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养类型不允许为空，请选择！");
+                            return;
+                        }
+                        if (flag == "L") {
+                            $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养类型部存在，请重新选择！");
+                            return;
+                        }
+                        if (flag == "M") {
+                            $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养单位不允许为空，请重新输入！");
+                            return;
+                        }
+                        if (flag == "N") {
+                            $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养周期不允许为空，请重新输入！");
+                            return;
+                        }
+
+                        //文档
+                        if (flag == "O") {
+                            $.messager.alert("提示", "文档中第" + data.substr(2, data.length - 2) + "行文档不允许为空，请输入！");
+                            return;
+                        }
+                        if (flag == "P") {
+                            $.messager.alert("提示", "文档中第" + data.substr(2, data.length - 2) + "行文档已存在，请重新输入！");
+                            return;
+                        }
+
+                        //点检方式
+                        if (flag == "Q") {
+                            $.messager.alert("提示", "点检方式中第" + data.substr(2, data.length - 2) + "行点检方式不允许为空，请输入！");
+                            return;
+                        }
+                        if (flag == "R") {
+                            $.messager.alert("提示", "点检方式中第" + data.substr(2, data.length - 2) + "行点检方式不存在，请重新输入！");
+                            return;
+                        }
+
+                        //点检参数
+                        if (flag == "S") {
+                            $.messager.alert("提示", "点检参数中第" + data.substr(2, data.length - 2) + "行点检参数不允许为空，请输入！");
+                            return;
+                        }
+                        if (flag == "T") {
+                            $.messager.alert("提示", "点检参数中第" + data.substr(2, data.length - 2) + "行点检参数不存在，请重新输入！");
+                            return;
+                        }
+
+                        $.messager.alert('提示', data);
+                        //重新加载datagrid
+                        $("#tab").treegrid('reload');
+                        //关闭
+                        $("#dd_dg").window('close');
+                    });
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#dd_dg").window("close");
+                  }
+              }
+            ]
+                });
+            });
+
+        }
+
+        //////////////////修改//////////////////
+        function edit_dg() {
+            //获取url
+            var surl = get_url();
+            $.post("qx_load.ashx", { "action": "edit", data: surl }, function (data) {
+                if (data == "edit") {
+                    $.messager.alert("提示", "您没有操作此功能的权限，请与系统管理员联系！");
+                    return;
+                }
+
+                //选中一行，获取这一行的属性的值
+                var selected = $("#tab").treegrid('getSelected');
+                //判断是否选中
+                if (selected != null) {
+                    //设置默认选择项
+                    $('#csbfl').combotree("setValue", selected.ilbid);
+                    $('#cbmmc').combotree("setValue", selected.ibmid);
+                    $('#csszy').combobox("select", selected.izyid);
+                    $('#cscx').combobox("select", selected.iscxid);
+                    $('#cdjfs').combobox("select", selected.idjid);
+                    $('#csbzt').combobox("select", selected.csbzt);
+                    $('#csbdj').combobox("select", selected.csbdj);
+
+                    $("#id").val(selected.id);
+                    $("#idjid").val(selected.idjid);
+                    $("#csbbh").val(selected.csbbh);
+                    document.getElementById("csbbh").readOnly = true;   //设备编号只读
+
+                    $("#csbmc").val(selected.csbmc);
+                    $("#csbsbh").val(selected.csbsbh);
+                    $("#cdjfs").val(selected.cdjfs);
+                    $("#csdwz").val(selected.csdwz);
+                    $("#csbxh").val(selected.csbxh);
+                    $("#cjscs").val(selected.cjscs);
+                    $("#csccj").val(selected.csccj);
+                    $("#izjsl").numberbox('setValue', selected.izjsl);
+                    $("#cazdd").val(selected.cazdd);
+
+                    //$("#dtyrq").val(selected.JSON_dtyrq); //使用该语句错误赋值错误，原因:datebox继承自combobox
+                    //应采用下面方式语句赋值。
+                    $('#dtyrq').datebox('setValue', myformatter(selected.dtyrq));
+                    $("#cbz").val(selected.cbz);
+
+                    //默认显示全部
+                    show_all();
+
+                    //表格赋值
+                    var sbid = selected.id;
+                    $('#tab_bj').datagrid('load', { "action": "query", sbid: sbid });       //备件
+                    $('#tab_bj2').datagrid('load', { "action": "query", sbid: sbid });      //部件
+                    $('#tab_by').datagrid('load', { "action": "query", sbid: sbid });      //保养
+                    $('#tab_wd').datagrid('load', { "action": "query", sbid: sbid });      //文档
+                    $('#tab_dj').datagrid('load', { "action": "query", sbid: sbid });      //点检方式
+                    $('#tab_djcs').datagrid('load', { "action": "query", sbid: sbid, state: 2 });      //点检参数
+
+                    $("#dd_dg").show(); //显示修改窗体
+                    $("#dd_dg").dialog({
+                        title: "设备资料",
+                        iconCls: "icon-edit",
+                        modal: true, //遮罩层
+                        width: 900,
+                        height: 550,
+                        buttons: [
+                  {
+                      text: "保存",
+                      iconCls: "icon-edit",
+                      handler: function () {
+                          //将数据序列化
+                          var parm = $("#fm_dg").serialize();
+
+                          //备件
+                          //----------------------------------------------------------
+                          if (editIndex_bj != undefined || editIndex_bj != null) {
+                              $('#tab_bj').datagrid('endEdit', editIndex_bj);
+                          }
+                          var rows = $('#tab_bj').datagrid('getData');
+                          var parm_bj = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var DeviceId = "";      //备件编号
+                          var Quantity = 0;       //明细
+
+                          if (rows.total >= 1) {
+                              for (var i = 0; i <= rows.total - 1; i++) {
+                                  selected = $('#tab_bj').datagrid('getRows')[i];
+                                  DeviceId = selected.JSON_cbjbh;
+                                  //Quantity = selected.JSON_bjsl;
+                                  Quantity = 0;
+
+                                  parm_bj = parm_bj + "&" + DeviceId + "&" + Quantity + "@";
+                              }
+                          }
+                          else {
+                              parm_bj = parm_bj + 0 + "@";
+                          }
+
+                          parm_bj = parm_bj.substr(0, parm_bj.length - 1);     //去掉最后的@
+                          parm_bj = parm_bj + "*" + rows.total;
+
+                          parm = parm + "~" + parm_bj;
+                          //----------------------------------------------------------
+
+                          //部件
+                          //----------------------------------------------------------
+                          if (editIndex_bj2 != undefined || editIndex_bj2 != null) {
+                              $('#tab_bj2').datagrid('endEdit', editIndex_bj2);
+                          }
+                          var rows = $('#tab_bj2').datagrid('getData');
+                          var parm_bj2 = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var bjid2 = 0;
+                          var bjbh2 = "";      //部件编号
+                          var bjmc2 = "";       //部件名称
+                          var bjxh = ""         //部件型号
+                          var bjsbh = "";
+                          var bjzt = "";
+                          var bjdj = "";
+                          var bmid = 0;
+                          var sszy = 0;
+                          var scx = 0;
+                          var sdwz = "";
+                          var jscs = "";
+                          var sccj = "";
+                          var zjsl = 0;
+                          var azdd = "";
+                          var tyrq = "";
+                          var bz = "";
+
+                          if (rows.total >= 1) {
+                              for (var i = 0; i <= rows.total - 1; i++) {
+                                  selected = $('#tab_bj2').datagrid('getRows')[i];
+                                  bjid2 = selected.JSON_id;
+                                  bjbh2 = selected.JSON_cbjbh;
+                                  bjmc2 = selected.JSON_cbjmc;
+                                  bjsbh = selected.JSON_cbjsbh;
+                                  bmid = selected.JSON_ibmid;
+                                  zyid = selected.JSON_izyid;
+                                  scxid = selected.JSON_iscxid;
+                                  bjzt = selected.JSON_cbjzt;
+                                  bjdj = selected.JSON_cbjdj;
+                                  bjxh = selected.JSON_cbjxh;
+                                  jscs = selected.JSON_cjscs;
+                                  sccj = selected.JSON_csccj;
+                                  zjsl = selected.JSON_izjsl;
+                                  bz = selected.JSON_cbz;
+
+                                  parm_bj2 = parm_bj2 + "&" + bjid2 + "&" + bjbh2 + "&" + bjmc2 + "&" + bjsbh + "&" + bjzt + "&" + bjdj + "&" + bmid + "&" + zyid + "&" + scxid + "&" + bjxh + "&" + jscs + "&" + sccj + "&" + zjsl + "&" + bz + "@";
+                              }
+                          }
+                          else {
+                              parm_bj2 = parm_bj2 + 0 + "@";
+                          }
+
+                          parm_bj2 = parm_bj2.substr(0, parm_bj2.length - 1);     //去掉最后的@
+                          parm_bj2 = parm_bj2 + "*" + rows.total;
+
+                          parm = parm + "~" + parm_bj2;
+                          //----------------------------------------------------------
+
+                          //保养
+                          //----------------------------------------------------------
+                          if (editIndex_by != undefined || editIndex_by != null) {
+                              $('#tab_by').datagrid('endEdit', editIndex_by);
+                          }
+                          var rows = $('#tab_by').datagrid('getData');
+                          var parm_by = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var bylx = "";      //保养类型
+                          var dw = "";        //单位
+                          var byzq = "";       //保养周期
+                          var byr = "";       //保养人
+
+                          if (rows.total >= 1) {
+                              for (var i = 0; i <= rows.total - 1; i++) {
+                                  selected = $('#tab_by').datagrid('getRows')[i];
+                                  bylx = selected.JSON_ibyid;
+                                  dw = selected.JSON_cdw;
+                                  byzq = selected.JSON_ibyzq;
+                                  byr = selected.JSON_cbyr;
+
+                                  parm_by = parm_by + "&" + bylx + "&" + dw + "&" + byzq + "&" + byr + "@";
+                              }
+                          }
+                          else {
+                              parm_by = parm_by + 0 + "@";
+                          }
+
+                          parm_by = parm_by.substr(0, parm_by.length - 1);     //去掉最后的@
+                          parm_by = parm_by + "*" + rows.total;
+
+                          parm = parm + "~" + parm_by;
+                          //----------------------------------------------------------
+
+                          //文档
+                          //----------------------------------------------------------
+                          if (editIndex_wd != undefined || editIndex_wd != null) {
+                              $('#tab_wd').datagrid('endEdit', editIndex_wd);
+                          }
+                          var rows = $('#tab_wd').datagrid('getData');
+                          var parm_wd = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var wdid = 0;
+                          var wd = "";      //文档
+
+                          if (rows.total >= 1) {
+                              for (var i = 0; i <= rows.total - 1; i++) {
+                                  selected = $('#tab_wd').datagrid('getRows')[i];
+                                  wdid = selected.JSON_id;
+                                  wd = selected.JSON_cnr;
+
+                                  parm_wd = parm_wd + "&" + wdid + "&" + wd + "@";
+                              }
+                          }
+                          else {
+                              parm_wd = parm_wd + 0 + "@";
+                          }
+
+
+                          parm_wd = parm_wd.substr(0, parm_wd.length - 1);     //去掉最后的@
+                          parm_wd = parm_wd + "*" + rows.total;
+
+                          parm = parm + "~" + parm_wd;
+                          //----------------------------------------------------------
+
+
+                          //点检方式
+                          //---------------------------------------------------------
+                          if (editIndex_dj != undefined || editIndex_dj != null) {
+                              $('#tab_dj').datagrid('endEdit', editIndex_dj);
+                          }
+                          var rows = $('#tab_dj').datagrid('getData');
+                          var parm_dj = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var djfs = "";      //点检方式
+                          var djdw = "";        //单位
+                          var djzq = 0;           //点检周期
+                          var djr = "";           //点检人
+                          var bjr = "";           //报警人
+
+                          if (rows.total >= 1) {
+                              for (var i = 0; i <= rows.total - 1; i++) {
+                                  selected = $('#tab_dj').datagrid('getRows')[i];
+                                  djfs = selected.JSON_idjid;
+                                  djdw = selected.JSON_cdw;
+                                  djzq = selected.JSON_izq;
+                                  djr = selected.JSON_cdjr;
+                                  bjr = selected.JSON_cbjr;
+
+                                  parm_dj = parm_dj + "&" + djfs + "&" + djdw + "&" + djzq + "&" + djr + "&" + bjr + "@";
+                              }
+                          }
+                          else {
+                              parm_dj = parm_dj + 0 + "@";
+                          }
+
+                          parm_dj = parm_dj.substr(0, parm_dj.length - 1);     //去掉最后的@
+                          parm_dj = parm_dj + "*" + rows.total;
+
+                          parm = parm + "~" + parm_dj;
+                          //----------------------------------------------------------
+
+                          //点检参数
+                          //---------------------------------------------------------
+                          if (editIndex_djcs != undefined || editIndex_djcs != null) {
+                              $('#tab_djcs').datagrid('endEdit', editIndex_djcs);
+                          }
+                          var rows = $('#tab_djcs').datagrid('getData');
+                          var parm_djcs = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var djcs = "";      //点检参数
+                          var sx = 0;        //上限
+                          var xx = 0;           //下限
+                          var blm = "";         //变量名
+
+                          if (rows.total >= 1) {
+                              for (var i = 0; i <= rows.total - 1; i++) {
+                                  selected = $('#tab_djcs').datagrid('getRows')[i];
+                                  djcs = selected.JSON_cdjcs;
+                                  sx = selected.JSON_isx;
+                                  xx = selected.JSON_ixx;
+                                  blm = selected.JSON_cblm;
+
+                                  parm_djcs = parm_djcs + "&" + djcs + "&" + xx + "&" + sx + "&" + blm + "@";
+                              }
+                          }
+                          else {
+                              parm_djcs = parm_djcs + 0 + "@";
+                          }
+
+                          parm_djcs = parm_djcs.substr(0, parm_djcs.length - 1);     //去掉最后的@
+                          parm_djcs = parm_djcs + "*" + rows.total;
+
+                          parm = parm + "~" + parm_djcs;
+                          //----------------------------------------------------------
+
+                          //中文格式转换
+                          var pp = decodeURIComponent(parm, true);
+                          //post异步提交
+                          $.post("sbzl.ashx", { "action": "edit", data: pp }, function (data) {
+                              var flag = data.substr(0, 1);
+
+                              if (data == "A") {
+                                  $.messager.alert('提示', "设备分类不允许为空！");
+                                  return;
+                              }
+
+                              if (data == "B") {
+                                  $.messager.alert('提示', "设备编号不允许为空！");
+                                  return;
+                              }
+
+                              if (data == "C") {
+                                  $.messager.alert('提示', "设备名称不允许为空！");
+                                  return;
+                              }
+
+                              if (data == "D") {
+                                  $.messager.alert('提示', "设备编号已存在，请重新输入！");
+                                  return;
+                              }
+
+                              if (data == "U") {
+                                  $.messager.alert('提示', "RFID码不允许为空！");
+                                  return;
+                              }
+                              if (data == "V") {
+                                  $.messager.alert('提示', "RFID码不允许重复，请重新输入！");
+                                  return;
+                              }
+
+                              //备件
+                              if (flag == "E") {
+                                  $.messager.alert("提示", "备件资料中第" + data.substr(2, data.length - 2) + "行备件编号不允许为空，请重新输入！");
+                                  return;
+                              }
+                              if (flag == "F") {
+                                  $.messager.alert("提示", "备件资料中第" + data.substr(2, data.length - 2) + "行备件不存在，请重新输入！");
+                                  return;
+                              }
+                              if (flag == "G") {
+                                  $.messager.alert("提示", "备件资料中第" + data.substr(2, data.length - 2) + "行数量不允许为空，请重新输入！");
+                                  return;
+                              }
+
+                              //部件
+                              if (flag == "H") {
+                                  $.messager.alert("提示", "部件资料中第" + data.substr(2, data.length - 2) + "行部件编号不允许为空，请重新输入！");
+                                  return;
+                              }
+                              if (flag == "I") {
+                                  $.messager.alert("提示", "部件资料中第" + data.substr(2, data.length - 2) + "行部件已存在，请重新输入！");
+                                  return;
+                              }
+                              if (flag == "J") {
+                                  $.messager.alert("提示", "部件资料中第" + data.substr(2, data.length - 2) + "行部件名称不允许为空，请重新输入！");
+                                  return;
+                              }
+
+                              //保养
+                              if (flag == "K") {
+                                  $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养类型不允许为空，请选择！");
+                                  return;
+                              }
+                              if (flag == "L") {
+                                  $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养类型部存在，请重新选择！");
+                                  return;
+                              }
+                              if (flag == "M") {
+                                  $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养单位不允许为空，请重新输入！");
+                                  return;
+                              }
+                              if (flag == "N") {
+                                  $.messager.alert("提示", "保养资料中第" + data.substr(2, data.length - 2) + "行保养周期不允许为空，请重新输入！");
+                                  return;
+                              }
+
+                              //文档
+                              if (flag == "O") {
+                                  $.messager.alert("提示", "文档中第" + data.substr(2, data.length - 2) + "行文档不允许为空，请输入！");
+                                  return;
+                              }
+                              if (flag == "P") {
+                                  $.messager.alert("提示", "文档中第" + data.substr(2, data.length - 2) + "行文档已存在，请重新输入！");
+                                  return;
+                              }
+
+                              //点检方式
+                              if (flag == "Q") {
+                                  $.messager.alert("提示", "点检方式中第" + data.substr(2, data.length - 2) + "行点检方式不允许为空，请输入！");
+                                  return;
+                              }
+                              if (flag == "R") {
+                                  $.messager.alert("提示", "点检方式中第" + data.substr(2, data.length - 2) + "行点检方式不存在，请重新输入！");
+                                  return;
+                              }
+
+                              //点检参数
+                              if (flag == "S") {
+                                  $.messager.alert("提示", "点检参数中第" + data.substr(2, data.length - 2) + "行点检参数不允许为空，请输入！");
+                                  return;
+                              }
+                              if (flag == "T") {
+                                  $.messager.alert("提示", "点检参数中第" + data.substr(2, data.length - 2) + "行点检参数不存在，请重新输入！");
+                                  return;
+                              }
+
+                              $.messager.alert('提示', data);
+                              $("#tab").treegrid("reload");
+                              $("#dd_dg").window("close");
+                          });
+                      }
+
+                  },
+                   {
+                       text: "取消",
+                       iconCls: "icon-cancel",
+                       handler: function () {
+                           $("#dd_dg").window('close');
+                       }
+                   }
+                  ]
+
+
+                    });
+                } else {
+                    $.messager.alert('提示', '请选中一行在进行编辑');
+                }
+            });
+        }
+
+
+        //通过设置display属性可以使div隐藏后释放占用的页面空间，如下
+        // 
+        //　　style="display: none;"
+        // 
+        //　　document.getElementById("typediv1").style.display="none";//隐藏
+        // 
+        //　　document.getElementById("typediv1").style.display="";//显
+
+
+
+        style = "display: none;";
+
+        //保养
+        function show_by() {
+            //          $("#bj").hide();
+            //          $("#bj2").hide();
+            //          $("#wd").hide();
+            //          $("#dj").hide();
+            //          $("#by").show();
+
+            //使用show,hide，在ie8版本或更低版本的ie下显示异常，原因是jquery版本较高，不兼容ie8或7
+            //使用html语句实现隐藏或显示
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("bj").style.display = ""; //显
+        }
+
+        //显示部件
+        function show_bj2() {
+            //          $("#bj").hide();
+            //          $("#by").hide();
+            //          $("#wd").hide();
+            //          $("#dj").hide();
+            //          $("#bj2").show();
+
+
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("by").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("bj2").style.display = ""; //显
+        }
+
+        //显示备件
+        function show_bj() {
+            //          $("#bj2").hide();
+            //          $("#by").hide();
+            //          $("#wd").hide();
+            //          $("#dj").hide();
+            //          $("#bj").show();
+
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("by").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("bj").style.display = ""; //显
+
+        }
+
+        //显示文档
+        function show_wd() {
+            //          $("#bj2").hide();
+            //          $("#by").hide();
+            //          $("#bj").hide();
+            //          $("#dj").hide();
+            //          $("#wd").show();
+
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("by").style.display = "none";
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("dj").style.display = "none";
+            document.getElementById("wd").style.display = ""; //显
+        }
+
+        //显示点检
+        function show_dj() {
+            //          $("#bj2").hide();
+            //          $("#by").hide();
+            //          $("#bj").hide();
+            //          $("#wd").hide();
+            //          $("#dj").show();
+
+            document.getElementById("bj2").style.display = "none";
+            document.getElementById("by").style.display = "none";
+            document.getElementById("bj").style.display = "none";
+            document.getElementById("wd").style.display = "none";
+            document.getElementById("dj").style.display = ""; //显
+        }
+
+        //显示全部
+        function show_all() {
+            //          $("#bj2").show();
+            //          $("#by").show();
+            //          $("#bj").show();
+            //          $("#wd").show();
+            //          $("#dj").show();
+            document.getElementById("bj2").style.display = "";
+            document.getElementById("by").style.display = "";
+            document.getElementById("wd").style.display = "";
+            document.getElementById("dj").style.display = "";
+            document.getElementById("bj").style.display = ""; //显
+        }
+</script>   
+</head>
+
+<body class="easyui-layout">
+<div class="easyui-layout" style="width:100%;height:100%;">
+	<div data-options="region:'west',split:true,title:'设备分类'" style="width:200px;padding:10px;">
+    
+    <ul id="tt"></ul> 
+     
+     </div>
+
+	<div id="panel2" data-options="region:'center',title:'设备资料'"   class="div01">
+    <table id="tab" class="easyui-treegrid"
+			data-options="
+				method: 'get',
+				rownumbers: true,
+				idField: 'id',
+				treeField: 'csbmc',
+                loadFilter: pagerFilter
+			">
+</table>
+</div>
+</div>
+    <div id="tool">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add" iconcls="icon-add"  plain="true" onclick="add_dg();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit" iconCls="icon-edit"  plain="true" onclick="edit_dg();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_cancel" onclick="delete_dg();"  iconcls="icon-cancel" plain="true">删除</a>
+                <a href="#" class="easyui-menubutton" menu="#mm1" iconCls="icon-refresh">关联记录</a>
+            </td>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search" menu="#search_menu" />
+                    <div id="search_menu" style="width:120px">
+                        <div name="csbfl">
+                            设备分类</div>
+                        <div name="csbbh">
+                            设备编号</div>
+                        <div name="csbmc">
+                            设备名称</div>
+                        <div name="csbsbh">
+                            RFID码</div>
+                        <div name="cscx">
+                            生产线</div>
+                        <div name="csszy">
+                            所属专业</div>
+                        <div name="csdwz">
+                            上端位置</div>
+                        <div name="csbxh">
+                            设备型号</div>
+                        <div name="cjscs">
+                            技术参数</div>
+                        <div name="csccj">
+                            生产厂家</div>
+                        <div name="izjsl">
+                            装机数量</div>
+                        <div name="cazdd">
+                            安装地点</div>
+                        <div name="csbdj">
+                            设备等级</div>
+                        <div name="cbz">
+                            备注</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+    <br />
+    <div id="mm1" style="width:150px;">
+		<div>值班记录</div>
+		<div>维修记录</div>
+		<div>保养记录</div>
+		<div>信号强制</div>
+		<div>停机记录</div>
+		<div>异常记录</div>
+        <div>停送电记录</div>
+        <div>履历表</div>
+        <div>待办事项</div>
+	</div>
+    <br />
+    <div id="tool_select">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search2" menu="#search_menu2" />
+                    <div id="search_menu2" style="width:120px">
+                        <div name="cbjbh">
+                            备件编号</div>
+                        <div name="cbjmc">
+                            备件名称</div>
+                        <div name="cggxh">
+                            规格型号</div>
+                        <div name="cjscs">
+                            技术参数</div>
+                        <div name="cbjdj">
+                            备件等级</div>
+                        <div name="csszy">
+                            所属专业</div>
+                        <div name="csccj">
+                            生产厂家</div>
+                          <div name="ibjsl">
+                            备件数量</div>
+                        <div name="csysb">
+                            适用设备</div>
+                        <div name="cbz">
+                            备注</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_bj">
+       <table border="0" cellspacing="l0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add_bj" iconcls="icon-add"  plain="true" onclick="add_bj();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_delete_bj" onclick="delete_bj();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_bj2">
+       <table border="0" cellspacing="l0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add_bj2" iconcls="icon-add"  plain="true" onclick="add_bj2();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit_bj2" iconCls="icon-edit"  plain="true" onclick="edit_bj2();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_delete_bj2" onclick="delete_bj2();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_by">
+       <table border="0" cellspacing="l0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add_by" iconcls="icon-add"  plain="true" onclick="add_by();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit_by" iconCls="icon-edit"  plain="true" onclick="edit_by();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_delete_by" onclick="delete_by();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_wd">
+       <table border="0" cellspacing="l0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add_wd" iconcls="icon-add"  plain="true" onclick="add_wd();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit_wd" iconCls="icon-edit"  plain="true" onclick="edit_wd();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_delete_wd" onclick="delete_wd();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_dj">
+       <table border="0" cellspacing="l0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add_dj" iconcls="icon-add"  plain="true" onclick="add_dj();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit_dj" iconCls="icon-edit"  plain="true" onclick="edit_dj();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_delete_dj" onclick="delete_dj();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_djcs">
+       <table border="0" cellspacing="l0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_edit_djcs" iconCls="icon-edit"  plain="true" onclick="edit_djcs();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_delete_djcs" onclick="delete_djcs();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_vari">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_vari" menu="#search_menu_vari" />
+                    <div id="search_menu_vari" style="width:120px">
+                         <div name="ctdmc">
+                            通道名称</div>
+                        <div name="cblm">
+                            变量名</div>
+                        <div name="czmc">
+                            站名称</div>
+                        <div name="cbmc">
+                            板名称</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+</br>
+   <div id="dd_dg" style=" display:none">
+        <form id="fm_dg">
+        <input type="hidden" id="id" name="id"/>
+        <table border="0">
+          <tr>
+            <td width="109" height="31"><div align="right">设备分类:</div></td>
+
+            <td width="184">
+                <input id="csbfl" style="width:135px" name="csbfl" class="easyui-combotree"  required="true" missingMessage="请选择设备分类"/>
+            </td>
+
+            <td width="132" height="30"><div align="right">设备编号:</div></td>
+            <td width="192"><input style="width:130px" type="text" id="csbbh" name="csbbh" class="easyui-textbox"  required="true" missingMessage="请输入设备编号" onkeypress="processSpelChar();"/></td>
+
+            <td height="30"><div align="right">设备名称:</div></td>
+            <td><input type="text" style="width:130px" id="csbmc" name="csbmc" class="easyui-textbox"  required="true" missingMessage="请输入设备名称" onkeypress="processSpelChar();"/></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">RFID码:</div></td>
+            <td><input type="text" style="width:130px" id="csbsbh" name="csbsbh" class="easyui-validatebox"  onkeypress="processSpelChar();"/></td>
+
+            <td height="30"><div align="right">部门名称:</div></td>
+            <td><input id="cbmmc" style="width:135px" name="cbmmc" class="easyui-combotree"/></td>
+
+            <td height="30"><div align="right">所属专业:</div></td>
+            <td><input id="csszy" style="width:135px" name="csszy" class="easyui-combobox"></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产线:</div></td>
+            <td><input id="cscx" style="width:135px" name="cscx" class="easyui-combobox"/></td>
+
+            <td height="30"><div align="right">设备型号:</div></td>
+            <td><input type="text" style="width:130px" id="csbxh" name="csbxh" class="easyui-validatebox" onkeypress="processSpelChar();"/></td>
+            
+            <td height="30"><div align="right">上端位置:</div></td>
+            <td><input type="text" style="width:130px" id="csdwz" name="csdwz" class="easyui-validatebox" onkeypress="processSpelChar();"/></td>
+
+          </tr>
+          <tr>
+            <td height="30"><div align="right">技术参数:</div></td>
+            <td><input type="text" style="width:130px" id="cjscs" name="cjscs" class="easyui-validatebox" onkeypress="processSpelChar();"/></td>
+
+            <td width="116" height="30"><div align="right">设备状态:</div></td>
+            <td width="195"><input style="width:130px;" id="csbzt" name="csbzt" class="easyui-combobox" /></td>
+
+            <td width="116" height="0"><div align="right">设备等级:</div></td>
+            <td width="195"><input style="width:135px;" id="csbdj" name="csbdj" class="easyui-combobox" /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产厂家:</div></td> 
+            <td><input type="text" style="width:130px" id="csccj" name="csccj" class="easyui-validatebox" onkeypress="processSpelChar();"/></td>
+
+            <td height="30"><div align="right">装机数量:</div></td>
+            <td><input type="text" style="width:130px" id="izjsl" name="izjsl" class="easyui-numberbox" style="text-align:right"/></td>
+
+            <td height="30"><div align="right">安装地点:</div></td>
+            <td><input type="text" style="width:130px" id="cazdd" name="cazdd" class="easyui-validatebox" onkeypress="processSpelChar();" /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">投用日期:</div></td>
+            <td><input type="text" style="width:135px" id="dtyrq" name="dtyrq" class="easyui-datebox" editable="false" /></td>
+            <td height="30"><div align="right">备注:</div></td>
+            <td colspan="3"><input type="text" style="width:440px" id="cbz" name="cbz" class="easyui-validatebox" onkeypress="processSpelChar();" /></td>
+          </tr>
+
+        </table>
+        
+
+        <div style="padding:5px;border:1px solid #ddd;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_all();">全部</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_bj();">备件</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_bj2();">部件</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_by();">保养</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_wd();">文档</a>
+		<a href="#" class="easyui-linkbutton" iconcls="icon-ok" data-options="plain:true" onclick="show_dj();">点检</a>
+	</div>
+
+    <div align="center" id="bj">
+    <form id="fm_bj">
+    <table width="800" border="0" id="tab_bj">      
+  </table>
+  </form>
+  </div>
+
+
+    <div align="center" id="bj2" >
+        <table width="800" border="0" id="tab_bj2">      
+  </table>
+  </div>
+
+
+    <div align="center" id="by" >
+    <table width="800" border="0" id="tab_by">      
+  </table>
+  </div>
+
+    <div align="center" id="wd" >
+    <table width="800" border="0" id="tab_wd">      
+  </table>
+    </div>
+
+   <div align="center" id="dj" >
+   <table width="800">
+   <tr>
+   <td>
+    <table width="500" border="0" id="tab_dj">      
+  </table>
+  </td>
+  <td>
+  <table width="350" border="0" id="tab_djcs">      
+  </table>
+  </td>
+  </tr>
+  </table>
+    </div>
+    </form>
+    </div>
+
+    <div id="div1" style=" display:none">
+        <form id="form1">
+    <div id="sele" align="center">
+    <table id="tab_select">
+</table>
+</div>
+</form>
+</div>
+
+<div id="div2" style=" display:none">
+        <form id="form2">
+    <div id="dep" align="center">
+    <table border="0">
+          <tr>
+            <td width="70" height="31"><div align="right">对象:</div></td>
+            <td width="274"><select style="width:200px;"  id="cdx" name="cdx"  class="easyui-combobox" editable="false" required="true" missingMessage="请选择对象" >
+                    <option value="部门">部门</option>
+                     <option value="个人">个人</option>
+            </select></td>
+          </tr>
+          <tr>
+          <td height="30"><div align="right">报警名称:</div></td>
+          <td>
+          <div id="bm">
+            <input id="cdep" style="width:200px;" name="cdep" class="easyui-combobox"  required="true" missingMessage="请选择部门" />
+          </div>
+          <div id="gr">
+            <input id="cperson" style="width:200px;" name="cperson" class="easyui-combotree"  required="true" missingMessage="请选择人员" />
+          </div>
+          </td>
+          </tr>
+          
+</table>
+</div>
+</form>
+</div>
+
+<div id="div3" style=" display:none">
+        <form id="form3">
+    <div id="squery" align="center">
+    <table id="tab_vari">
+</table>
+</div>
+</form>
+</div>
+
+<div id="div4" style=" display:none">
+        <form id="form4">
+    <div id="Div4" align="center">
+    <table border="0">
+          <tr>
+            <td width="70" height="31"><div align="right">部门:</div></td>
+            <td width="274"><input id="cbm" style="width:200px;" name="cbm" class="easyui-combobox"  required="true" missingMessage="请选择部门" /></td>
+          </tr>
+          <tr>
+          <td height="30"><div align="right">点检人:</div></td>
+          <td>
+            <input id="cyg" style="width:200px;" name="cyg" class="easyui-combotree"  required="true" missingMessage="请选择人员" />
+          </td>
+          </tr>
+          
+</table>
+</div>
+</form>
+</div>
+
+</body>
+</html>

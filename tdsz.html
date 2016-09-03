@@ -1,0 +1,719 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+        <style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+     <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+    <script src="common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        //选择站/板
+        function selectRow() {
+            //表单清空
+            $("#form2")[0].reset();
+            //显示
+            $("#div2").show();
+            //以窗体的形式展示
+            $("#div2").dialog({
+                title: "选择站/板", //标题
+                iconCls: "icon-ok", //图标
+                width: 850, //窗体的宽度
+                height: 500, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //获取选定行
+                    var selected = $('#tab_station').datagrid('getSelected');
+
+                    if (selected != null) {
+                        $("#bid").val(selected.JSON_bid);
+                        $("#czdz").val(selected.JSON_czdz);
+                        $("#czmc").val(selected.JSON_czmc);
+                        $("#cbdz").val(selected.JSON_cbdz);
+                        $("#cbmc").val(selected.JSON_cbmc);
+                    }
+
+                    $("#div2").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div2").window("close");
+                  }
+              }
+            ]
+            });
+        }
+
+        $(function () {
+            $("#tt").tree({//同步加载Tree
+                url: 't_zsz.ashx',
+                lines: true,
+                onBeforeExpand: function (node, param) {        //异步加载板信息
+
+                    $('#tt').tree('options').url = 't_bsz.ashx?zid=' + node.id;
+                },
+                onSelect: function (node) {
+                    if ($('#tt').tree('isLeaf', node.target)) {      //是否叶子节点
+                        $('#tab').datagrid('load', { "action": "query", bid: node.id });
+                    }
+                }
+            });
+
+            $("#tab_station").datagrid({
+                width: 825,
+                height: 425,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "zbsz.ashx", //请求路径
+                title: "选择站/板", //标题
+                nowrap: false,
+                fit: true,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_id", title: "id", hidden: "true" },
+                { field: "JSON_bid", title: "bid", hidden: "true" },
+                { field: "JSON_czdz", title: "站地址", width: 100 },
+                { field: "JSON_czmc", title: "站名称", width: 150 },
+                { field: "JSON_cbdz", title: "板地址", width: 100 },
+                { field: "JSON_cbmc", title: "板名称", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool_station"
+            });
+            $("#tab_station").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            $("#tab").datagrid({
+                width: $('#panel2').width(),
+                height: $('#panel2').height(),
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                nowrap: false,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                url: "tdsz.ashx", //请求路径
+                //title: "班组资料", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                    { field: "JSON_ibid", title: "bid", hidden: "true" },
+                    { field: "JSON_ctddz", title: "Channel", width: 100 },
+                    { field: "JSON_cblm", title: "Variable", width: 200 },
+                    { field: "JSON_cdw", title: "Unit", width: 100 },
+                    { field: "JSON_ixx", title: "Min", width: 100 },
+                    { field: "JSON_isx", title: "Max", width: 100 },
+                    { field: "JSON_idyxx", title: "eMin", width: 100 },
+                    { field: "JSON_idysx", title: "eMax", width: 100 },
+                    { field: "JSON_ipd", title: "Fraction", width: 100 },
+                    { field: "JSON_cfz", title: "Inverted", width: 100 },
+                    { field: "JSON_czdz", title: "站地址", width: 100 },
+                    { field: "JSON_cbdz", title: "板地址", width: 100 },
+                    { field: "JSON_czmc", title: "站名称", width: 100 },
+                    { field: "JSON_cbmc", title: "板名称", width: 100 }
+                    ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool",
+                onDblClickRow: function () {
+                    edit_dg();  //行双击调用修改函数
+                }
+            });
+            $("#tab").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            $("#tab2").datagrid({
+                width: 550,
+                height: 250,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "tdsz.ashx", //请求路径
+                title: "通道设置", //标题
+                nowrap: false,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_ctddz", title: "Channel", width: 100, editor: { type: 'combobox',
+                    options: {
+                        valueField: 'text',
+                        textField: 'text',
+                        editable: false,
+                        url: 'td_load.ashx',
+                        required: true,
+                        missingMessage: "请选择Channel"
+                    }
+                }
+                },
+                { field: "JSON_cblm", title: "Variable", width: 100, editor: 'text' },
+                { field: "JSON_cdw", title: "Unit", width: 80, editor: 'text' },
+                { field: "JSON_ixx", title: "Min", width: 80, editor: { type: 'numberbox', options: { precision: 2} }},
+                { field: "JSON_isx", title: "Max", width: 80, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_idyxx", title: "eMin", width: 80, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_idysx", title: "eMax", width: 80, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_ipd", title: "Fraction", width: 80, editor: { type: 'numberbox', options: { precision: 2}} },
+                { field: "JSON_cfz", title: "Inverted", width: 80, align: "center", editor: { type: 'checkbox', options: { on: 'true', off: 'false'}} }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", bid: 0 },
+                pagination: true,
+                toolbar: "#tool2",
+                onDblClickRow: function () {
+                    edit_mx();  //行双击调用修改函数
+                }
+            });
+            $("#tab2").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+
+            $("#ipt_search").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab').datagrid('options').queryParams.search_type = name;
+                    $('#tab').datagrid('options').queryParams.search_value = val;
+                    $('#tab').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+            $("#ipt_search3").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab_station').datagrid('options').queryParams.search_type = name;
+                    $('#tab_station').datagrid('options').queryParams.search_value = val;
+                    $('#tab_station').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+        });
+        /////////////////////////删除/////////////////
+        function delete_dg() {
+            var selected = $("#tab").datagrid('getSelected');
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        var v = "";
+                        var checked = $("#tab").datagrid('getChecked');
+                        $.each(checked, function (i, j) {
+                            v += j.JSON_id + ",";
+                        })
+                        v = v.substring(0, v.length - 1);
+                        $.post("tdsz.ashx", { "action": "del", id: v }, function (data) {
+                            $.messager.alert('提示', data);
+                            $("#tab").datagrid('reload');
+                        });
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+        /////////////////////添加///////////////////
+        function add_dg() {
+            //表单清空
+            $("#fm_dg")[0].reset();
+            //显示
+            $("#dd_dg").show();
+
+            //选择板不为空
+            if ($('#tt').tree('getSelected').text != "") {
+                $.post("tdsz.ashx", { "action": "select", data: $('#tt').tree('getSelected').id }, function (data) {
+                    var len = data.substr(0, data.indexOf("&")).length;  //&出现的位置
+                    var czdz = data.substr(0, len);
+                    var str = data.substr(len + 1, data.length - len - 1);
+                    var len2 = str.substr(0, str.indexOf("*")).length;  //&出现的位置
+                    var czmc = str.substr(0, len2);
+                    var strr = str.substr(len2 + 1, str.length - len2 - 1);
+                    var len3 = strr.substr(0, strr.indexOf(",")).length;  //&出现的位置
+                    var cbdz = strr.substr(0, len3);
+                    var cbmc = strr.substr(len3 + 1, strr.length - len3 - 1);
+                    $("#bid").val($('#tt').tree('getSelected').id);
+                    $("#czdz").val(czdz);
+                    $("#czmc").val(czmc);
+                    $("#cbdz").val(cbdz);
+                    $("#cbmc").val(cbmc);
+                });
+            }
+
+            var bid = 0;
+            $('#tab2').datagrid('load', { "action": "query", bid: bid });
+
+            //以窗体的形式展示
+            $("#dd_dg").dialog({
+                title: "添加", //标题
+                iconCls: "icon-add", //图标
+                width: 600, //窗体的宽度
+                height: 400, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "保存", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //将数据序列化
+                    var parm = $("#fm_dg").serialize();
+
+                    var flag = "";
+                    // 板
+                    //----------------------------------------------------------
+                    if (editIndex != undefined || editIndex != null) {
+                        $('#tab2').datagrid('endEdit', editIndex);
+                    }
+                    var rows = $('#tab2').datagrid('getData');
+
+                    if (rows.total < 1) {
+                        $.messager.alert("提示", "请添加通道信息！");
+                        return;
+                    }
+
+                    var parms = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var ctddz = "";       //通道地址
+                    var cblm = "";       //变量名
+                    cdw = "";
+                    ixx = 0;
+                    isx = 0;
+                    ipd = 0;
+                    cfz = "";
+
+                    for (var i = 0; i <= rows.total - 1; i++) {
+                        selected = $('#tab2').datagrid('getRows')[i];
+                        ctddz = selected.JSON_ctddz;
+                        cblm = selected.JSON_cblm;
+                        cdw = selected.JSON_cdw;
+                        ixx = selected.JSON_ixx;
+                        idyxx = selected.JSON_idyxx;
+                        isx = selected.JSON_isx;
+                        idysx = selected.JSON_idysx;
+                        ipd = selected.JSON_ipd;
+                        cfz = selected.JSON_cfz;
+
+                        parms = parms + "&" + ctddz + "&" + cblm + "&" + cdw + "&" + ixx + "&" + idyxx + "&" + isx + "&" + idysx + "&" + ipd + "&" + cfz + "@";
+                    }
+
+                    parms = parms.substr(0, parms.length - 1);     //去掉最后的@
+                    parms = parms + "*" + rows.total;
+
+                    parm = parm + "~" + parms;
+                    //----------------------------------------------------------
+
+                    //中文格式转换
+                    var pp = decodeURIComponent(parm, true);
+
+                    //post异步提交
+                    $.post("tdsz.ashx", { "action": "add", data: pp }, function (data) {
+                        flag = data.substr(0, 1);
+
+                        if (data == "1") {
+                            $.messager.alert('提示', "站地址不允许为空！");
+                            return;
+                        }
+
+                        if (data == "2") {
+                            $.messager.alert('提示', "板地址不允许为空！");
+                            return;
+                        }
+
+                        if (flag == "3") {
+                            $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行Channel不允许为空！");
+                            return;
+                        }
+
+                        if (flag == "4") {
+                            $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行该通道已存在，请重新输入！");
+                            return;
+                        }
+
+                        if (flag == "5") {
+                            $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行变量名称不允许为空！");
+                            return;
+                        }
+
+                        if (flag == "6") {
+                            $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行变量名称已存在，请重新输入！");
+                            return;
+                        }
+
+                        $.messager.alert('提示', data);
+                        //重新加载datagrid
+                        $("#tab").datagrid('reload');
+                        //关闭
+                        $("#dd_dg").window('close');
+                    });
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#dd_dg").window("close");
+                  }
+              }
+            ]
+            });
+        }
+
+
+
+        //////////////////修改//////////////////
+        function edit_dg() {
+            //选中一行，获取这一行的属性的值
+            var selected = $("#tab").datagrid('getSelected');
+            //判断是否选中
+            if (selected != null) {
+                //设置默认选择项
+                $("#yid").val(selected.JSON_ibid);
+                $("#bid").val(selected.JSON_ibid);
+                $("#czdz").val(selected.JSON_czdz);
+                $("#cbdz").val(selected.JSON_cbdz);
+                $("#czmc").val(selected.JSON_czmc);
+                $("#cbmc").val(selected.JSON_cbmc);
+
+                var bid = selected.JSON_ibid;
+                $('#tab2').datagrid('load', { "action": "query", bid: bid });
+
+                $("#dd_dg").show(); //显示修改窗体
+                $("#dd_dg").dialog({
+                    title: "编辑",
+                    iconCls: "icon-edit",
+                    modal: true, //遮罩层
+                    width: 600,
+                    height: 400,
+                    buttons: [
+                  {
+                      text: "保存",
+                      iconCls: "icon-edit",
+                      handler: function () {
+                          //将数据序列化
+                          var parm = $("#fm_dg").serialize();
+
+                          var flag = "";
+                          // 板
+                          //----------------------------------------------------------
+                          if (editIndex != undefined || editIndex != null) {
+                              $('#tab2').datagrid('endEdit', editIndex);
+                          }
+                          var rows = $('#tab2').datagrid('getData');
+
+                          if (rows.total < 1) {
+                              $.messager.alert("提示", "请添加通道信息！");
+                              return;
+                          }
+
+                          var parms = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var ctddz = "";       //通道地址
+                          var cblm = "";       //变量名
+                          cdw = "";
+                          ixx = 0;
+                          isx = 0;
+                          ipd = 0;
+                          cfz = "";
+
+                          for (var i = 0; i <= rows.total - 1; i++) {
+                              selected = $('#tab2').datagrid('getRows')[i];
+                              ctddz = selected.JSON_ctddz;
+                              cblm = selected.JSON_cblm;
+                              cdw = selected.JSON_cdw;
+                              ixx = selected.JSON_ixx;
+                              idyxx = selected.JSON_idyxx;
+                              isx = selected.JSON_isx;
+                              idysx = selected.JSON_idysx;
+                              ipd = selected.JSON_ipd;
+                              cfz = selected.JSON_cfz;
+
+                              parms = parms + "&" + ctddz + "&" + cblm + "&" + cdw + "&" + ixx + "&" + idyxx + "&" + isx + "&" + idysx + "&" + ipd + "&" + cfz + "@";
+                          }
+
+                          parms = parms.substr(0, parms.length - 1);     //去掉最后的@
+                          parms = parms + "*" + rows.total;
+
+                          parm = parm + "~" + parms;
+                          //----------------------------------------------------------
+
+                          //中文格式转换
+                          var pp = decodeURIComponent(parm, true);
+
+                          //post异步提交
+                          $.post("tdsz.ashx", { "action": "edit", data: pp }, function (data) {
+                              flag = data.substr(0, 1);
+
+                              if (data == "1") {
+                                  $.messager.alert('提示', "站地址不允许为空！");
+                                  return;
+                              }
+
+                              if (data == "2") {
+                                  $.messager.alert('提示', "板地址不允许为空！");
+                                  return;
+                              }
+
+                              if (flag == "3") {
+                                  $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行Channel不允许为空！");
+                                  return;
+                              }
+
+                              if (flag == "4") {
+                                  $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行该通道已存在，请重新输入！");
+                                  return;
+                              }
+
+                              if (flag == "5") {
+                                  $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行变量名称不允许为空！");
+                                  return;
+                              }
+
+                              if (flag == "6") {
+                                  $.messager.alert('提示', "第" + data.substr(2, data.length - 2) + "行变量名称已存在，请重新输入！");
+                                  return;
+                              }
+
+                              $.messager.alert('提示', data);
+                              //重新加载datagrid
+                              $("#tab").datagrid('reload');
+                              //关闭
+                              $("#dd_dg").window('close');
+                          });
+                      }
+
+                  },
+                   {
+                       text: "取消",
+                       iconCls: "icon-cancel",
+                       handler: function () {
+                           $("#dd_dg").window('close');
+                       }
+                   }
+                  ]
+
+
+                });
+            } else {
+                $.messager.alert('提示', '请选中一行在进行编辑');
+            }
+        }
+
+        var editIndex = undefined;
+        var sflag = "";
+
+        /////////////////////添加///////////////////
+        function add_mx() {
+            if (sflag == "add" || sflag == "edit") {
+                $('#tab2').datagrid('endEdit', editIndex);
+
+                //设置选定行，否则无法获取内容
+                $('#tab2').datagrid('selectRow', editIndex);
+
+                sflag = "";
+            }
+
+            $('#tab2').datagrid('appendRow', {});
+            editIndex = $('#tab2').datagrid('getRows').length - 1;
+            $('#tab2').datagrid('selectRow', editIndex)
+			.datagrid('beginEdit', editIndex);
+
+            sflag = "add";
+        }
+
+        //////////////////修改//////////////////
+        function edit_mx() {
+            var selected = $("#tab2").datagrid('getSelected');
+
+            //不是同一行，结束编辑状态
+            if (editIndex != selected) {
+                $('#tab2').datagrid('endEdit', editIndex);
+            }
+
+            //重新获取行索引
+            editIndex = $('#tab2').datagrid('getRowIndex', selected);
+
+            $('#tab2').datagrid('selectRow', editIndex)
+                .datagrid('beginEdit', editIndex);
+            sflag = "edit";
+        }
+
+        /////////删除////////////////////////
+        function delete_mx() {
+            var selected = $("#tab2").datagrid('getSelected');
+
+            editIndex = $('#tab2').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex == undefined) { return }
+                        $('#tab2').datagrid('cancelEdit', editIndex)
+					                .datagrid('deleteRow', editIndex);
+                        editIndex = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+	</script>
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="easyui-layout">
+ <div class="easyui-layout" style="width:100%;height:100%;">
+<div data-options="region:'west',split:true" title="站/板信息" style="width:200px;">
+<ul id="tt"></ul> 
+</div>
+<div id="panel2" data-options="region:'center',title:'通道设置'"   class="div01">
+ <table id="tab">
+</table>
+</div>
+</div>
+<div id="tool">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add" iconcls="icon-add"  plain="true" onclick="add_dg();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit" iconCls="icon-edit"  plain="true" onclick="edit_dg();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_cancel" onclick="delete_dg();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search" menu="#search_menu" />
+                    <div id="search_menu" style="width:120px">
+                         <div name="ctddz">
+                            Channel</div>
+                        <div name="cblm">
+                            Variable</div>
+                        <div name="czmc">
+                            站名称</div>
+                        <div name="cbmc">
+                            板名称</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+</br>
+<div id="tool2">
+       <table border="0" cellspacing="l0" cellpadding="0" widthl="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="add" iconcls="icon-add"  plain="true" onclick="add_mx();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="edit" iconCls="icon-edit"  plain="true" onclick="edit_mx();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="delete" onclick="delete_mx();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    <br />
+    <div id="tool_station">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search3" menu="#search_menu3" />
+                    <div id="search_menu3" style="width:120px">
+                        <div name="czdz">
+                            站地址</div>
+                        <div name="czmc">
+                            站名称</div>
+                        <div name="cbdz">
+                            板地址</div>
+                        <div name="cbmc">
+                            板名称</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+     <br />
+   <div id="dd_dg" style=" display:none">
+        <form id="fm_dg">
+        <input type="hidden" id="yid" name="yid"/>
+        <input type="hidden" id="bid" name="bid"/>
+        <table border="0">
+          <tr>
+            <td width="63" height="31"><div align="right">站地址:</div></td>
+            <td width="200"><input type="text" id="czdz" name="czdz" class="easyui-validatebox"  required="true" missingmessage="请选择站地址"  readonly/>
+            <a href="#" class="easyui-linkbutton" id="search" iconcls="icon-search"  plain="true" onclick="selectRow();" ></a>
+
+            <td width="63" height="31"><div align="right">站名称:</div></td>
+            <td width="200"><input type="text" id="czmc" name="czmc" class="easyui-validatebox"  readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td width="84" height="31"><div align="right">板地址:</div></td>
+            <td width="200"><input type="text" id="cbdz" name="cbdz" class="easyui-validatebox" required="true" missingmessage="请选择板地址"  readonly/></td>
+
+            <td width="84" height="31"><div align="right">板名称:</div></td>
+            <td width="200"><input type="text" id="cbmc" name="cbmc" class="easyui-validatebox"  readonly/></td>
+          </tr>
+          
+</table>
+
+<div align="center">
+  <table width="962" border="0" id="tab2">
+  </table>
+</div>
+</form>
+        </div>
+
+        
+<div id="div2" style=" display:none">
+        <form id="form2">
+    <div id="sel" align="center">
+    <table id="tab_station">
+</table>
+</div>
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,1167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="d:\program files (x86)\microsoft visual studio 10.0\team tools\static analysis tools\fxcop\Xml\CodeAnalysisReport.xsl"?>
+<FxCopReport Version="10.0">
+ <Targets>
+  <Target Name="D:\案例\恒安纸业\DeviceAtuo\bin\DeviceAuto.dll">
+   <Modules>
+    <Module Name="deviceauto.dll">
+     <Namespaces>
+      <Namespace Name="">
+       <Types>
+        <Type Name="SqlHelper" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#BuildQueryCommand(System.Data.SqlClient.SqlConnection,System.String,System.Data.IDataParameter[])" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="339">在方法 'SqlHelper.BuildQueryCommand(SqlConnection, string, IDataParameter[])' 中，'&lt;&gt;g__initLocal1' 对象未按所有异常路径释放。请在对 '&lt;&gt;g__initLocal1' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="339">传递给 'SqlHelper.BuildQueryCommand(SqlConnection, string, IDataParameter[])' 中的 'SqlCommand.SqlCommand(string, SqlConnection)' 的查询字符串可能包含以下变量 'storedProcName'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#eNonQuery(System.Data.SqlClient.SqlConnection,System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="50">在方法 'SqlHelper.eNonQuery(SqlConnection, string, CommandType, params SqlParameter[])' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="51">在方法 'SqlHelper.eNonQuery(SqlConnection, string, CommandType, params SqlParameter[])' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="53">传递给 'SqlHelper.eNonQuery(SqlConnection, string, CommandType, params SqlParameter[])' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'sql'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#ExecuteQuery(System.String,System.Data.SqlClient.SqlParameter[])" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="280">可以在方法 'SqlHelper.ExecuteQuery(string, SqlParameter[])' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 280</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="255">在方法 'SqlHelper.ExecuteQuery(string, SqlParameter[])' 中，'cmd' 对象未按所有异常路径释放。请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="246">在方法 'SqlHelper.ExecuteQuery(string, SqlParameter[])' 中，'dsResult' 对象未按所有异常路径释放。请在对 'dsResult' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="247">在方法 'SqlHelper.ExecuteQuery(string, SqlParameter[])' 中，'sda' 对象未按所有异常路径释放。请在对 'sda' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="258">传递给 'SqlHelper.ExecuteQuery(string, SqlParameter[])' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'pstrStoreProcedure'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#ExecuteSql(System.String)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="379">'SqlHelper.ExecuteSql(string)' 再次引发捕获的异常并将其显式地指定为一个参数。请改用不带参数的“throw”以保留该异常最初引发时所在的堆栈位置。</Issue>
+            </Message>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="391">可以在方法 'SqlHelper.ExecuteSql(string)' 中多次释放对象 'connection'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 391</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="373">传递给 'SqlHelper.ExecuteSql(string)' 中的 'SqlCommand.SqlCommand(string, SqlConnection)' 的查询字符串可能包含以下变量 'SQLString'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#ExeDataReader(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="79">在方法 'SqlHelper.ExeDataReader(string, CommandType, params SqlParameter[])' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="80">在方法 'SqlHelper.ExeDataReader(string, CommandType, params SqlParameter[])' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="82">传递给 'SqlHelper.ExeDataReader(string, CommandType, params SqlParameter[])' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'sql'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#ExeNonQuery(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="18">在方法 'SqlHelper.ExeNonQuery(string, CommandType, params SqlParameter[])' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="20">传递给 'SqlHelper.ExeNonQuery(string, CommandType, params SqlParameter[])' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'sql'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetScalar(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="109">在方法 'SqlHelper.GetScalar(string, CommandType, params SqlParameter[])' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="111">传递给 'SqlHelper.GetScalar(string, CommandType, params SqlParameter[])' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'sql'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetTable(System.String)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="170">在方法 'SqlHelper.GetTable(string)' 中，'table' 对象未按所有异常路径释放。请在对 'table' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="168">在方法 'SqlHelper.GetTable(string)' 中，请在对 'conn' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="169">在方法 'SqlHelper.GetTable(string)' 中，请在对 'da' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="169">传递给 'SqlHelper.GetTable(string)' 中的 'SqlDataAdapter.SqlDataAdapter(string, SqlConnection)' 的查询字符串可能包含以下变量 'sql'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetTablebyproc(System.String,System.Int32,System.Int32,System.String)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="207">在方法 'SqlHelper.GetTablebyproc(string, int, int, string)' 中，'table' 对象未按所有异常路径释放。请在对 'table' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="206">在方法 'SqlHelper.GetTablebyproc(string, int, int, string)' 中，请在对 'apt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="201">在方法 'SqlHelper.GetTablebyproc(string, int, int, string)' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="200">在方法 'SqlHelper.GetTablebyproc(string, int, int, string)' 中，请在对 'conn' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="201">传递给 'SqlHelper.GetTablebyproc(string, int, int, string)' 中的 'SqlCommand.SqlCommand(string, SqlConnection)' 的查询字符串可能包含以下变量 'proc'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Proc_Table(System.String,System.Int32,System.Int32,System.String)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="192">在方法 'SqlHelper.Proc_Table(string, int, int, string)' 中，'dt' 对象未按所有异常路径释放。请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="191">在方法 'SqlHelper.Proc_Table(string, int, int, string)' 中，请在对 'apt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="185">在方法 'SqlHelper.Proc_Table(string, int, int, string)' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="184">在方法 'SqlHelper.Proc_Table(string, int, int, string)' 中，请在对 'conn' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="185">传递给 'SqlHelper.Proc_Table(string, int, int, string)' 中的 'SqlCommand.SqlCommand(string, SqlConnection)' 的查询字符串可能包含以下变量 'proc'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#RunProcedure(System.String,System.Data.IDataParameter[],System.String)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="327">可以在方法 'SqlHelper.RunProcedure(string, IDataParameter[], string)' 中多次释放对象 'connection'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 327</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="323">在方法 'SqlHelper.RunProcedure(string, IDataParameter[], string)' 中，'dataSet' 对象未按所有异常路径释放。请在对 'dataSet' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="325">在方法 'SqlHelper.RunProcedure(string, IDataParameter[], string)' 中，请在对 '&lt;&gt;g__initLocal0' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#TransactSql(System.String)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="406">'SqlHelper.TransactSql(string)' 再次引发捕获的异常并将其显式地指定为一个参数。请改用不带参数的“throw”以保留该异常最初引发时所在的堆栈位置。</Issue>
+            </Message>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="418">可以在方法 'SqlHelper.TransactSql(string)' 中多次释放对象 'connection'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 418</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="SqlHelper.cs" Line="400">传递给 'SqlHelper.TransactSql(string)' 中的 'SqlCommand.SqlCommand(string, SqlConnection)' 的查询字符串可能包含以下变量 'SQLString'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+       </Types>
+      </Namespace>
+      <Namespace Name="DeviceAuto">
+       <Types>
+        <Type Name="bj_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bj_load.ashx.cs" Line="22">在方法 'bj_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="bjzl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bjzl.ashx.cs" Line="83">在方法 'bjzl.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="bmzl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bmzl.ashx.cs" Line="22">在方法 'bmzl.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="bmzl_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bmzl_load.ashx.cs" Line="22">在方法 'bmzl_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="bmzl2" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bmzl2.ashx.cs" Line="100">在方法 'bmzl2.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="bylx" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bylx.ashx.cs" Line="21">在方法 'bylx.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="bylx_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bylx_load.ashx.cs" Line="21">在方法 'bylx_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="bylx2" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="bylx2.ashx.cs" Line="98">在方法 'bylx2.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="clfs" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="clfs.ashx.cs" Line="95">在方法 'clfs.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="clfs_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="clfs_load.ashx.cs" Line="23">在方法 'clfs_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="common" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="common.ashx.cs" Line="23">在方法 'common.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="cssz_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="cssz_load.ashx.cs" Line="25">在方法 'cssz_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djfs" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djfs.ashx.cs" Line="86">在方法 'djfs.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djfs_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djfs_load.ashx.cs" Line="41">在方法 'djfs_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djfs2_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djfs2_load.ashx.cs" Line="21">在方法 'djfs2_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djjl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#show()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djjl.ashx.cs" Line="67">在方法 'djjl.show()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djjl_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djjl_load.ashx.cs" Line="23">在方法 'djjl_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djjl_loadtt" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djjl_loadtt.ashx.cs" Line="21">在方法 'djjl_loadtt.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djlx" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djlx.ashx.cs" Line="117">在方法 'djlx.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djlx.ashx.cs" Line="202">在方法 'djlx.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="djlx2" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="djlx2.ashx.cs" Line="21">在方法 'djlx2.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="dw_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="dw_load.ashx.cs" Line="21">在方法 'dw_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="dxmc_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="dxmc_load.ashx.cs" Line="24">在方法 'dxmc_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="gzxx" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="gzxx.ashx.cs" Line="21">在方法 'gzxx.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="gzxx_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="gzxx_load.ashx.cs" Line="21">在方法 'gzxx_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="gzxx2" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="gzxx2.ashx.cs" Line="98">在方法 'gzxx2.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="gzxx2_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="gzxx2_load.ashx.cs" Line="21">在方法 'gzxx2_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="js_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="js_load.ashx.cs" Line="23">在方法 'js_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="jsgl_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="jsgl_load.ashx.cs" Line="21">在方法 'jsgl_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="login" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="login.ashx.cs" Line="28">在方法 'login.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="Main" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="Main.ashx.cs" Line="22">在方法 'Main.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="qtjl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="327">可以在方法 'qtjl.Add()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 327</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="214">在方法 'qtjl.Add()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="218">在方法 'qtjl.Add()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="312">在方法 'qtjl.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="254">在方法 'qtjl.Add()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="131">在方法 'qtjl.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="114">可以在方法 'qtjl.Del()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 114</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="89">在方法 'qtjl.Del()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="93">在方法 'qtjl.Del()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="101">传递给 'qtjl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="107">传递给 'qtjl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="539">可以在方法 'qtjl.Edit()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 539</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="408">在方法 'qtjl.Edit()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="412">在方法 'qtjl.Edit()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="522">在方法 'qtjl.Edit()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="463">在方法 'qtjl.Edit()' 中，请在对 'cmds' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="448">在方法 'qtjl.Edit()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qtjl.ashx.cs" Line="346">在方法 'qtjl.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="qx_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qx_load.ashx.cs" Line="21">在方法 'qx_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="qxgl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Query(System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qxgl.ashx.cs" Line="72">在方法 'qxgl.Query(string)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qxgl.ashx.cs" Line="71">在方法 'qxgl.Query(string)' 中，请在对 'dt1' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="qxgl.ashx.cs" Line="70">在方法 'qxgl.Query(string)' 中，请在对 'duser' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sbfl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbfl.ashx.cs" Line="22">在方法 'sbfl.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sbfl_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbfl_load.ashx.cs" Line="22">在方法 'sbfl_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sbfl2" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbfl2.ashx.cs" Line="98">在方法 'sbfl2.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sbzl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="919">可以在方法 'sbzl.Add()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 919</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="332">在方法 'sbzl.Add()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="336">在方法 'sbzl.Add()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="477">在方法 'sbzl.Add()' 中，请在对 'cmd_bj2' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="591">在方法 'sbzl.Add()' 中，请在对 'cmd_by' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="755">在方法 'sbzl.Add()' 中，请在对 'cmd_dj' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="841">在方法 'sbzl.Add()' 中，请在对 'cmd_djcs' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="438">在方法 'sbzl.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="568">在方法 'sbzl.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="664">在方法 'sbzl.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="732">在方法 'sbzl.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="818">在方法 'sbzl.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="900">在方法 'sbzl.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="686">在方法 'sbzl.Add()' 中，请在对 'cmd_wd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="455">在方法 'sbzl.Add()' 中，请在对 'cmds' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="381">在方法 'sbzl.Add()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="252">在方法 'sbzl.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="371">在方法 'sbzl.Add()' 中，请在对 'dtMx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="231">可以在方法 'sbzl.Del()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 231</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="148">在方法 'sbzl.Del()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="152">在方法 'sbzl.Del()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="221">在方法 'sbzl.Del()' 中，请在对 'cmds' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="91">在方法 'sbzl.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="177">传递给 'sbzl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="183">传递给 'sbzl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="189">传递给 'sbzl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="195">传递给 'sbzl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="201">传递给 'sbzl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="207">传递给 'sbzl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="213">传递给 'sbzl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1611">可以在方法 'sbzl.Edit()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 1611</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1014">在方法 'sbzl.Edit()' 中，'cmd' 对象未按所有异常路径释放。请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1119">在方法 'sbzl.Edit()' 中，'cmd_mx' 对象未按所有异常路径释放。请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1250">在方法 'sbzl.Edit()' 中，'cmd_mx' 对象未按所有异常路径释放。请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1132">在方法 'sbzl.Edit()' 中，'cmds' 对象未按所有异常路径释放。请在对 'cmds' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1010">在方法 'sbzl.Edit()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1152">在方法 'sbzl.Edit()' 中，请在对 'cmd_bj2' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1273">在方法 'sbzl.Edit()' 中，请在对 'cmd_by' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1448">在方法 'sbzl.Edit()' 中，请在对 'cmd_dj' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1534">在方法 'sbzl.Edit()' 中，请在对 'cmd_djcs' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1347">在方法 'sbzl.Edit()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1424">在方法 'sbzl.Edit()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1512">在方法 'sbzl.Edit()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1593">在方法 'sbzl.Edit()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1370">在方法 'sbzl.Edit()' 中，请在对 'cmd_wd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1060">在方法 'sbzl.Edit()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="946">在方法 'sbzl.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl.ashx.cs" Line="1050">在方法 'sbzl.Edit()' 中，请在对 'dtMx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sbzl_oad" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sbzl_oad.ashx.cs" Line="21">在方法 'sbzl_oad.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="scx" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="scx.ashx.cs" Line="25">在方法 'scx.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="scx_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="scx_load.ashx.cs" Line="21">在方法 'scx_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sjbf" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjbf.ashx.cs" Line="31">可以在方法 'sjbf.ProcessRequest(HttpContext)' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 31</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjbf.ashx.cs" Line="24">在方法 'sjbf.ProcessRequest(HttpContext)' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjbf.ashx.cs" Line="26">在方法 'sjbf.ProcessRequest(HttpContext)' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjbf.ashx.cs" Line="28">传递给 'sjbf.ProcessRequest(HttpContext)' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'bkpath'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sjhf" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjhf.ashx.cs" Line="33">可以在方法 'sjhf.ProcessRequest(HttpContext)' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 33</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjhf.ashx.cs" Line="26">在方法 'sjhf.ProcessRequest(HttpContext)' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjhf.ashx.cs" Line="28">在方法 'sjhf.ProcessRequest(HttpContext)' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sjhf.ashx.cs" Line="30">传递给 'sjhf.ProcessRequest(HttpContext)' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'context.Request["data"]'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sszy" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sszy.ashx.cs" Line="25">在方法 'sszy.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="sszy_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="sszy_load.ashx.cs" Line="21">在方法 'sszy_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="t_sbzl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="t_sbzl.ashx.cs" Line="73">在方法 't_sbzl.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="tjjl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="245">可以在方法 'tjjl.Add()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 245</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="188">在方法 'tjjl.Add()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="192">在方法 'tjjl.Add()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="231">在方法 'tjjl.Add()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="105">在方法 'tjjl.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="380">可以在方法 'tjjl.Edit()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 380</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="324">在方法 'tjjl.Edit()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="328">在方法 'tjjl.Edit()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="366">在方法 'tjjl.Edit()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjjl.ashx.cs" Line="269">在方法 'tjjl.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="tjzl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjzl.ashx.cs" Line="21">在方法 'tjzl.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="tjzl_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjzl_load.ashx.cs" Line="21">在方法 'tjzl_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="tjzl2" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="tjzl2.ashx.cs" Line="98">在方法 'tjzl2.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="wdgl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wdgl.ashx.cs" Line="112">在方法 'wdgl.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wdgl.ashx.cs" Line="172">在方法 'wdgl.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="wxjl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="349">可以在方法 'wxjl.Add()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 349</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="333">在方法 'wxjl.Add()' 中，'cmd_mx' 对象未按所有异常路径释放。请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="230">在方法 'wxjl.Add()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="234">在方法 'wxjl.Add()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="274">在方法 'wxjl.Add()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="141">在方法 'wxjl.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="124">可以在方法 'wxjl.Del()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 124</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="93">在方法 'wxjl.Del()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="97">在方法 'wxjl.Del()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="105">传递给 'wxjl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="111">传递给 'wxjl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="117">传递给 'wxjl.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="568">可以在方法 'wxjl.Edit()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 568</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="437">在方法 'wxjl.Edit()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="441">在方法 'wxjl.Edit()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="553">在方法 'wxjl.Edit()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="495">在方法 'wxjl.Edit()' 中，请在对 'cmds' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="481">在方法 'wxjl.Edit()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="wxjl.ashx.cs" Line="368">在方法 'wxjl.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="xhqz" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="249">可以在方法 'xhqz.Add()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 249</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="195">在方法 'xhqz.Add()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="199">在方法 'xhqz.Add()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="235">在方法 'xhqz.Add()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="117">在方法 'xhqz.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="375">可以在方法 'xhqz.Edit()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 375</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="322">在方法 'xhqz.Edit()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="326">在方法 'xhqz.Edit()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="361">在方法 'xhqz.Edit()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="xhqz.ashx.cs" Line="272">在方法 'xhqz.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="ygck_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="ygck_load.ashx.cs" Line="21">在方法 'ygck_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="ygqx" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Query(System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="ygqx.ashx.cs" Line="49">在方法 'ygqx.Query(string)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="ygzl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="ygzl.ashx.cs" Line="120">在方法 'ygzl.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="ygzl.ashx.cs" Line="203">在方法 'ygzl.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="ygzl_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="ygzl_load.ashx.cs" Line="22">在方法 'ygzl_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="zbjl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zbjl.ashx.cs" Line="115">在方法 'zbjl.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zbjl.ashx.cs" Line="167">在方法 'zbjl.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="zwzl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zwzl.ashx.cs" Line="21">在方法 'zwzl.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="zwzl_load" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ProcessRequest(System.Web.HttpContext)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zwzl_load.ashx.cs" Line="21">在方法 'zwzl_load.ProcessRequest(HttpContext)' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="zwzl2" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zwzl2.ashx.cs" Line="98">在方法 'zwzl2.Del()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="zyby" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#Add()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="328">可以在方法 'zyby.Add()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 328</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="215">在方法 'zyby.Add()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="219">在方法 'zyby.Add()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="313">在方法 'zyby.Add()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="255">在方法 'zyby.Add()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="132">在方法 'zyby.Add()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Del()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="115">可以在方法 'zyby.Del()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 115</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="90">在方法 'zyby.Del()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="94">在方法 'zyby.Del()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+            <Message TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="102">传递给 'zyby.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="108">传递给 'zyby.Del()' 中的 'SqlCommand.CommandText.set(string)' 的查询字符串可能包含以下变量 'id'。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Edit()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="535">可以在方法 'zyby.Edit()' 中多次释放对象 'con'。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 535</Issue>
+            </Message>
+            <Message TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2015-12-18 09:32:54Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="407">在方法 'zyby.Edit()' 中，'con' 对象未按所有异常路径释放。请在对 'con' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="411">在方法 'zyby.Edit()' 中，请在对 'cmd' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="520">在方法 'zyby.Edit()' 中，请在对 'cmd_mx' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="441">在方法 'zyby.Edit()' 中，请在对 'cmds' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="462">在方法 'zyby.Edit()' 中，请在对 'com' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="D:\案例\恒安纸业\DeviceAtuo" File="zyby.ashx.cs" Line="347">在方法 'zyby.Edit()' 中，请在对 'dt' 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+       </Types>
+      </Namespace>
+     </Namespaces>
+    </Module>
+   </Modules>
+  </Target>
+ </Targets>
+ <Rules>
+  <Rule TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200">
+   <Name>再次引发以保留堆栈详细信息</Name>
+   <Description>重复引发捕获的异常时，请使用 IL 再次引发指令保留原始堆栈详细信息。</Description>
+   <Resolution Name="Default">{0} 再次引发捕获的异常并将其显式地指定为一个参数。请改用不带参数的“throw”以保留该异常最初引发时所在的堆栈位置。</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms182363(VS.100).aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="usagerules.dll" Version="10.0.0.0" />
+  </Rule>
+  <Rule TypeName="不要多次释放对象" Category="Microsoft.Usage" CheckId="CA2202">
+   <Name>不要多次释放对象</Name>
+   <Description>可以多次调用正确实现的 Dispose 方法，而不会引发异常。但是，并不保证所有情况下都会如此。若要避免生成 System.ObjectDisposedException，您不应对一个对象多次调用 Dispose。</Description>
+   <Resolution Name="Default">可以在方法 {1} 中多次释放对象 {0}。若要避免生成 System.ObjectDisposedException，不应对一个对象多次调用 Dispose。: Lines: 1611</Resolution>
+   <Owner>RuleOwner</Owner>
+   <Url>http://msdn.microsoft.com/library/ms182334(VS.100).aspx</Url>
+   <Email />
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="dataflowrules.dll" Version="10.0.0.0" />
+  </Rule>
+  <Rule TypeName="丢失范围之前释放对象" Category="Microsoft.Reliability" CheckId="CA2000">
+   <Name>丢失范围之前释放对象</Name>
+   <Description>如果在对某个可释放对象的所有引用超出范围之前未显式释放该对象，则当垃圾回收器运行该对象的终结器时，会在某个不确定时间释放该对象。由于可能会发生阻止该对象的终结器运行的意外事件，因此应改为显式释放该对象。</Description>
+   <Resolution Name="ExceptionEdge">在方法 {0} 中，{1} 对象未按所有异常路径释放。请在对 {1} 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Resolution>
+   <Resolution Name="NonExceptionEdge">在方法 {0} 中，请在对 {1} 对象的所有引用超出范围之前，对该对象调用 System.IDisposable.Dispose。</Resolution>
+   <Owner>RuleOwner</Owner>
+   <Url>http://msdn.microsoft.com/library/ms182289(VS.100).aspx</Url>
+   <Email />
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="dataflowrules.dll" Version="10.0.0.0" />
+  </Rule>
+  <Rule TypeName="检查 SQL 查询是否存在安全漏洞" Category="Microsoft.Security" CheckId="CA2100">
+   <Name>检查 SQL 查询是否存在安全漏洞</Name>
+   <Description>通过用户输入生成的 SQL 命令字符串容易受到 SQL 注入式攻击。Microsoft SQL Server 和其他数据库服务器支持存储过程和参数化 SQL 查询，这将降低受到注入式攻击的风险。</Description>
+   <Resolution Name="WithNonLiterals">传递给 {1} 中的 {0} 的查询字符串可能包含以下变量 {2}。如果其中的任意变量可能来自用户输入，请考虑使用存储过程或参数化 SQL 查询，而不是通过字符串串联来生成查询。</Resolution>
+   <Owner>RuleOwner</Owner>
+   <Url>http://msdn.microsoft.com/library/ms182310(VS.100).aspx</Url>
+   <Email />
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="dataflowrules.dll" Version="10.0.0.0" />
+  </Rule>
+ </Rules>
+ <Localized>
+  <String Key="Category">类别</String>
+  <String Key="Certainty">确定性</String>
+  <String Key="CollapseAll">全部折叠</String>
+  <String Key="CheckId">检查 ID</String>
+  <String Key="Error">错误</String>
+  <String Key="Errors">错误</String>
+  <String Key="ExpandAll">全部展开</String>
+  <String Key="Help">帮助</String>
+  <String Key="Line">行</String>
+  <String Key="Messages">消息</String>
+  <String Key="LocationNotStoredInPdb">[位置未存储在 Pdb 中]</String>
+  <String Key="Project">项目</String>
+  <String Key="Resolution">解析</String>
+  <String Key="Rule">规则</String>
+  <String Key="RuleFile">规则文件</String>
+  <String Key="RuleDescription">规则说明</String>
+  <String Key="Source">源</String>
+  <String Key="Status">状态</String>
+  <String Key="Target">目标</String>
+  <String Key="Warning">警告</String>
+  <String Key="Warnings">警告</String>
+  <String Key="ReportTitle">代码分析报告</String>
+ </Localized>
+</FxCopReport>

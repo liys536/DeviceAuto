@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="width:100%;height:100%">
+<head>
+    <title></title>
+
+<style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+    <script src="common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#tab").datagrid({
+                width: $(panel2).width(),
+                height: 400,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "zxzbjl.ashx",
+                title: "最新值班记录", //标题
+                nowrap: false,
+                fit: true,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                columns: [[
+                { field: "JSON_drq", title: "日期", width: 100, formatter: myformatter },
+                { field: "JSON_cbc", title: "班次", width: 80 },
+                { field: "JSON_cscx", title: "生产线", width: 80 },
+                { field: "JSON_cjl", title: "记录", width: 500 },
+                { field: "JSON_cwxr", title: "人员", width: 200 },
+                { field: "JSON_cbmmc", title: "部门", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                onLoadSuccess: function (data) {
+                    MergeCells('tab', 'JSON_cjl,JSON_cwxr');
+                },
+                toolbar: '#tb'
+            });
+            $("#tab").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            $("#tab2").datagrid({
+                width: $(panel2).width(),
+                height: 400,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "zzqzjl.ashx", //请求路径
+                title: "最终强制记录", //标题
+                nowrap: false,
+                fit: true,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                columns: [[
+                { field: "JSON_cdh", title: "单号", width: 120 },
+                { field: "JSON_dsj", title: "时间", width: 130 },
+                { field: "JSON_csbbh", title: "设备编号", width: 120 },
+                { field: "JSON_csbmc", title: "设备名称", width: 100 },
+                { field: "JSON_cscx", title: "生产线", width: 100 },
+                { field: "JSON_iyz", title: "原值", width: 80 },
+                { field: "JSON_iqzz", title: "强制值", width: 80 },
+                { field: "JSON_cyy", title: "内容", width: 400 },
+                { field: "JSON_czdr", title: "人员", width: 150 },
+                { field: "JSON_cbmmc", title: "部门", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                onLoadSuccess: function (data) {
+                    MergeCells('tab2', 'JSON_cyy,JSON_czdr');
+                },
+                toolbar: '#tb2'
+            });
+            $("#tab2").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            $('#cscx').combobox({
+                url: 'scx.ashx?action=1',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 300,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+
+            $('#cline').combobox({
+                url: 'scx.ashx?action=1',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 300,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $('#cwxr').combobox({
+                url: 'ygzl_load.ashx?action=1',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $('#czdr').combobox({
+                url: 'ygzl_load.ashx?action=1',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            var myDate = new Date();    //默认显示当前日期
+            //使用服务器函数返回日期
+            $.post("getDate.ashx", { data: myDate.toLocaleDateString() }, function (data) {
+                $('#dqsrq').datebox('setValue', data);
+                $('#djzrq').datebox('setValue', data);
+                $('#dksrq').datebox('setValue', data);
+                $('#djsrq').datebox('setValue', data);
+            });
+
+
+            
+        })
+
+
+        
+
+        //查询最新值班记录
+        function searchText() {
+            var qsrq = $('#dqsrq').datebox('getValue');
+            var jzrq = $('#djzrq').datebox('getValue');
+            var scx = $('#cscx').combobox('getValue');
+            var jl = $('#cjl').val();
+            var ry = $('#cwxr').combobox('getValue');
+
+            if (qsrq == "") {
+                $.messager.alert("提示", "起始日期不允许为空");
+                return;
+            }
+
+            if (jzrq == "") {
+                $.messager.alert("提示", "截止日期不允许为空");
+                return;
+            }
+
+            //中文格式转换
+            var dqsrq = decodeURIComponent(qsrq, true);
+            var djzrq = decodeURIComponent(jzrq, true);
+            var cscx = decodeURIComponent(scx, true);
+            var cjl = decodeURIComponent(jl, true);
+            var cry = decodeURIComponent(ry, true);
+
+            $("#tab").datagrid('load', { "action": "search", qsrq: dqsrq, jzrq: djzrq, scx: cscx, jl: cjl, ry: cry });
+        }
+
+        function searchValue() {
+            var dksrq = $('#dksrq').datebox('getValue');
+            var djsrq = $('#djsrq').datebox('getValue');
+            var cline = $('#cline').combobox('getValue');
+            var cnr = $('#cnr').val();
+            var czdr = $('#czdr').combobox('getValue');
+
+            if (dksrq == "") {
+                $.messager.alert("提示", "起始日期不允许为空");
+                return;
+            }
+
+            if (djsrq == "") {
+                $.messager.alert("提示", "截止日期不允许为空");
+                return;
+            }
+
+            //中文格式转换
+            var ksrq = decodeURIComponent(dksrq, true);
+            var jsrq = decodeURIComponent(djsrq, true);
+            var line = decodeURIComponent(cline, true);
+            var nr = decodeURIComponent(cnr, true);
+            var zdr = decodeURIComponent(czdr, true);
+
+            $("#tab2").datagrid('load', { "action": "search", ksrq: ksrq, jsrq: jsrq, line: line, nr: nr, zdr: zdr });
+        }
+    </script>
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="easyui-layout">
+<div class="easyui-layout" style="width:100%;height:100%;">
+
+<div id="panel2" data-options="region:'center',title:'值班记录',iconCls:'icon-ok'" class="div01">
+</br>
+
+<div class="cs-home-remark">
+    <H3>最新值班记录</H3>
+	<div><table id="tab"></table></div>
+    <H3>最终强制记录</H3>
+	<div><table id="tab2"></table></div>
+</div>
+
+
+    <div id="tb" style="padding:5px;height:auto">
+		<div>
+			日期: <input id="dqsrq" name="dqsrq" class="easyui-datebox" style="width:100px;" editable="false"/>
+			至: <input id="djzrq" name="djzrq" class="easyui-datebox" style="width:100px;"  editable="false"/> 
+			生产线: <input id="cscx" name="cscx" class="easyui-combobox" style="width:100px;" />
+            人员：<input id="cwxr" name="cwxr" class="easyui-combobox"" style="width:100px;"/>
+			记录：<input id="cjl" name="cjl" class="easyui-validatebox"  style="width:150px;"/>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchText();">查询</a>
+		</div>
+	</div>
+
+    <div id="tb2" style="padding:5px;height:auto">
+		<div>
+			日期: <input id="dksrq" name="dksrq" class="easyui-datebox" style="width:100px;"  editable="false"/>
+			至: <input id="djsrq" name="djsrq" class="easyui-datebox" style="width:100px;"  editable="false"/> 
+			生产线: <input id="cline" name="cline" class="easyui-combobox" style="width:100px;"/>
+            人员：<input id="czdr" name="czdr" class="easyui-combobox"" style="width:100px;"/>
+			内容：<input id="cnr" name="cnr" class="easyui-validatebox"  style="width:150px;"/>
+			<a href="#" class="easyui-linkbutton"  iconCls="icon-search"  onclick="searchValue();">查询</a>
+
+		</div>
+	</div>
+</body>
+</html>

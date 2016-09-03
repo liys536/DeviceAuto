@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html PUBLIC "-//4W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="width:100%;height:100%">
+<head>
+    <title></title>
+    <style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function cellStyler(value, row, index) {
+            if (row.JSON_cgnbh == "R0101" || row.JSON_cgnbh == "R0110" || row.JSON_cgnbh == "R0112") {        //设置值班记录增删改的背景色
+                return 'background-color:pink;color:red;';
+            }
+        }
+
+        var selected = "";
+        var selected_text = "";
+
+        $(function () {
+            $("#tt").tree({//同步加载Tree
+                url: 'ygzl_load.ashx?action=2',
+                lines: true,
+                onSelect: function (node) {
+                    //重载
+                    $("#tab").datagrid('load', { "action": "query", data: node.id });
+
+                    selected = node.id;
+                    selected_text = node.text;
+                }
+            });
+
+            //选择角色名称
+            $('#cjsmc').combobox({
+                url: "js_load.ashx",
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $("#tab").datagrid({
+                width: $('#panel2').width(),
+                height: $('#panel2').height(),
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "ygqx.ashx", //请求路径
+                nowrap: false,
+                fit: true,
+                pageSize: 50, //每页显示的记录条数                       
+                pageList: [50], //设置每页记录条数的列表     
+                //title: "点检记录", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_iygid", title: "员工id", width: 100, hidden: "true" },
+                { field: "JSON_cgnbh", title: "功能编号", width: 100, hidden: "true" },
+                { field: "JSON_cgnmc", title: "功能名称", width: 100 },
+                { field: "JSON_cadd", title: "增加", width: 100, align: "center", editor: { type: 'checkbox', options: { on: '√', off: ''} }, styler: cellStyler },
+                { field: "JSON_cdel", title: "删除", width: 100, align: "center", editor: { type: 'checkbox', options: { on: '√', off: ''} }, styler: cellStyler },
+                { field: "JSON_cedit", title: "修改", width: 100, align: "center", editor: { type: 'checkbox', options: { on: '√', off: ''} }, styler: cellStyler },
+                { field: "JSON_cquery", title: "查看", width: 100, align: "center", editor: { type: 'checkbox', options: { on: '√', off: ''}} }
+                                 ]],
+                //传输参数
+                queryParams: { "action": "query", data: 0 },
+                pagination: true,
+                toolbar: "#tool"
+            });
+
+            $("#tab").datagrid('getPager').pagination({
+                pageSize: 50, //每页显示的记录条数                       
+                pageList: [50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+
+        })
+
+
+        //////////////////授权//////////////////
+        function power() {
+            //判断是否选中
+            if (selected != null) {
+                if (selected == 0) {
+                    $.messager.alert('提示', '根目录不允许编辑！');
+                    return;
+                }
+
+                var I = selected_text.indexOf("-");
+                var len = selected_text.length;
+                var J = I + 1;
+
+                $("#id").val(selected);
+                $("#cygbm").val(selected_text.substring(0, I));
+                $("#cygxm").val(selected_text.substring(J, len));
+
+
+                $("#dd_dg").show(); //显示修改窗体
+                $("#dd_dg").dialog({
+                    title: "授权",
+                    iconCls: "icon-edit",
+                    modal: true, //遮罩层
+                    width: 400,
+                    height: 300,
+                    buttons: [
+                  {
+                      text: "保存",
+                      iconCls: "icon-edit",
+                      handler: function () {
+                          var parm = $("#fm_dg").serialize();
+                          var pp = decodeURIComponent(parm, true);
+                          $.post("ygqx.ashx", { "action": "edit", data: pp }, function (data) {
+                              if (data == "1") {
+                                  $.messager.alert('提示', "角色不允许为空！");
+                                  return;
+                              }
+
+                              if (data == "2") {
+                                  $.messager.alert('提示', "角色不不存在，请重新选择！");
+                                  return;
+                              }
+
+                              $.messager.alert('提示', data);
+                              $("#tab").datagrid("reload");
+                              $('#tt').tree('reload');
+                              $("#dd_dg").window("close");
+                          });
+                      }
+
+                  },
+                   {
+                       text: "取消",
+                       iconCls: "icon-cancel",
+                       handler: function () {
+                           $("#dd_dg").window('close');
+                       }
+                   }
+                  ]
+
+
+                });
+            } else {
+                $.messager.alert('提示', '请选中一个角色在进行编辑');
+            }
+        }
+
+        //取消
+        function reject() {
+            if (selected != null) {
+                if (selected == 0) {
+                    $.messager.alert('提示', '根目录不允许编辑！');
+                    return;
+                }
+
+                $.messager.confirm('提示', '是否取消用户 "' + selected_text + '" 的授权？', function (y) {
+                    if (y) {
+                        $.post("ygqx.ashx", { "action": "del", id: selected }, function (data) {
+                            $.messager.alert('提示', data);
+                            $("#tab").datagrid('reload');
+                        });
+                    }
+                })
+            }
+            else {
+                $.messager.alert('提示', '请选中一个角色在进行操作');
+            }
+        }
+    </script>
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" >
+<div class="easyui-layout" style="width:100%;height:100%;">
+<div data-options="region:'west',split:true" title="操作员" style="width:200px;">
+<ul id="tt"></ul> 
+</div>
+<div id="panel2" data-options="region:'center',title:'权限',iconCls:'icon-ok'" class="div01">
+<table id="tab">
+</table>
+</div>
+</div>
+<div id="tool">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                
+                <a href="#" class="easyui-linkbutton" id="id_edit" iconCls="icon-edit"  plain="true" onclick="power();">授权</a>
+                <a href="#" class="easyui-linkbutton" id="id_undo" onclick="reject();"  iconcls="icon-undo" plain="true">取消</a>
+            </td>
+          
+       	</tr>
+       </table>
+    </div>
+  
+  
+  </br>
+   <div id="dd_dg" style=" display:none">
+        <form id="fm_dg">
+        <input type="hidden" id="id" name="id"/>
+        <table border="0">
+          <tr>
+            <td width="145" height="31"><div align="right">员工编码:</div></td>
+
+            <td width="274">
+                <input  type="text" id="cygbm" name="cygbm" class="easyui-validatebox" required="true" readonly/>
+            </td>
+          </tr>
+
+          <tr>
+            <td width="145" height="31"><div align="right">员工姓名:</div></td>
+
+            <td width="274">
+                <input  type="text" id="cygxm" name="cygxm" class="easyui-validatebox" required="true" readonly/>
+            </td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">角色:</div></td>
+            <td><input id="cjsmc" name="cjsmc" class="easyui-combobox"  required="true" missingMessage="请选择角色！" /></td>
+          </tr>
+        </table>
+        </form>
+        </div> 
+    
+</body>
+</html>

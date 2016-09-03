@@ -1,0 +1,796 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="width:100%;height:100%">
+<head>
+<style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+    <title></title>
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+     <script src="common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        //高级查询
+        function search_dg() {
+            //表单清空
+            //不能使用表单清空，原因是该语句生效后，还能获取上次表单留下的内容，与查询条件不符，所以该语句注释掉
+            //$("#fm_search")[0].reset();       
+
+            //显示
+            $("#div_search").show();
+
+            //以窗体的形式展示
+            $("#div_search").dialog({
+                title: "高级查询", //标题
+                iconCls: "icon-search", //图标
+                width: 600, //窗体的宽度
+                height: 350, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //将数据序列化
+                    var parm = $("#fm_search").serialize();
+                    //中文格式转换
+                    var pp = decodeURIComponent(parm, true);
+
+                    $("#tab_device").treegrid('load', { "action": "search", data: pp });
+
+                    $("#div_search").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div_search").window("close");
+                  }
+              }
+            ]
+            });
+        }
+
+
+
+        //选择设备
+        function batch_dg() {
+            //获取选定行
+            var row = $('#tab').datagrid('getSelected');
+
+            if (row==null || row==undefined) {
+                $.messager.alert("提示","请选择一个点检方式！");
+                return;
+            }
+
+            //表单清空
+            $("#form2")[0].reset();
+            //显示
+            $("#div2").show();
+            //以窗体的形式展示
+            $("#div2").dialog({
+                title: "选择设备", //标题
+                iconCls: "icon-ok", //图标
+                width: 850, //窗体的宽度
+                height: 500, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+
+
+                    var selected = $('#tab_device').treegrid('getSelections');
+                    var parms = "";
+
+                    if (selected != null) {
+                        if (selected.length == 0) {
+                            $.messager.alert("提示", "请选择设备！");
+                            return;
+                        }
+
+                        for (var i = 0; i < selected.length; i++) {
+
+                            parms = parms + "&" + selected[i].id;
+                        }
+                    }
+                    else {
+                        $.messager.alert("提示", "请选择设备！");
+                        return;
+                    }
+
+                    parms = parms + "@" + (selected.length - 1) + "@" + row.JSON_id;
+
+                    //中文格式转换
+                    var pp = decodeURIComponent(parms, true);
+
+                    $.post("djfs_plsz.ashx", { "action": "batch", data: pp }, function (data) {
+                        var flag = data.substr(0, 1);
+                        var csb = data.substr(2, data.length - 2);
+//                        var len = csb.substr(0, csb.indexOf(",")).length;  //&出现的位置
+//                        var csbbh = csb.substr(0, len );
+//                        var csbmc = csb.substr(len+1, csb.length - len-1);
+
+                        if (flag == "A") {
+                            $.messager.alert('提示', "设备'" + csb + "'已添加点检方式！");
+                            return;
+                        }
+
+
+                        $.messager.alert('提示', data);
+
+                    });
+
+                    $("#div2").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div2").window("close");
+                  }
+              }
+            ]
+            });
+        }
+
+        $(function () {
+            $('#cjlzy').combobox({
+                url: 'sszy.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: false
+            });
+
+            $('#s_csbfl').combotree({
+                url: 'sbfl.ashx',     //显示最末级分类
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                editable: true
+            });
+
+
+            $('#s_csbdj').combobox({
+                url: 'common.ashx?action=2',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $('#s_csbzt').combobox({
+                url: 'common.ashx?action=1',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+
+            $('#s_cbmmc').combotree({
+                url: 'bmzl.ashx',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+
+            $('#s_csszy').combobox({
+                url: 'sszy.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $('#s_cscx').combobox({
+                url: 'scx.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $("#tab").datagrid({
+                width: $(window).width(),
+                height: $(window).height(),
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "djfs.ashx", //请求路径
+                nowrap: false,
+                fit: true,
+                title: "点检方式", //标题
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_id", title: "id", width: 80, hidden: true },
+                { field: "JSON_ijlzy", title: "记录专业id", width: 80, hidden: true },
+                { field: "JSON_typename", title: "记录类型", width: 80 },
+                { field: "JSON_cjlzy", title: "记录专业", width: 80 },
+                { field: "JSON_typedesigner", title: "记录设计者", width: 100 },
+                { field: "JSON_designdate", title: "日期", width: 100, formatter: myformatter },
+                { field: "JSON_columninformation", title: "记录列信息", width: 500, hidden: "true" },
+                { field: "JSON_columninformation2", title: "助记码", width: 500 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool",
+                onDblClickRow: function () {
+                    edit_dg();  //行双击调用修改函数
+                }
+            });
+            $("#tab").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+
+            $("#tab_device").treegrid({
+                width: 825,
+                height: 425,
+                singleSelect: false, //选中一行的设置
+                rownumbers: true, //行号
+                url: "sbzl.ashx", //请求路径
+                title: "设备资料", //标题
+                nowrap: false,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "id", title: "id", width: 100,hidden:true },
+                { field: "csbfl", title: "设备分类", width: 80 },
+                { field: "csbbh", title: "设备编号", width: 150 },
+                { field: "csbmc", title: "设备名称", width: 150 },
+                { field: "csbsbh", title: "RFID码", width: 100 },
+                { field: "cscx", title: "生产线", width: 100 },
+                { field: "csbzt", title: "设备状态", width: 100 },
+                { field: "csbdj", title: "设备等级", width: 100 },
+                { field: "cbmmc", title: "部门", width: 100 },
+                { field: "csszy", title: "所属专业", width: 100 },
+                { field: "csdwz", title: "上端位置", width: 100 },
+                { field: "csbxh", title: "设备型号", width: 100 },
+                { field: "cjscs", title: "技术参数", width: 100 },
+                { field: "csccj", title: "生产厂家", width: 100 },
+                { field: "izjsl", title: "装机数量", width: 100 },
+                { field: "cazdd", title: "安装地点", width: 100 },
+                { field: "dtyrq", title: "投用日期", width: 100, formatter: myformatter },
+                { field: "cbz", title: "备注", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool_device"
+            });
+            $("#tab_device").treegrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+
+
+            $("#ipt_search").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab').datagrid('options').queryParams.search_type = name;
+                    $('#tab').datagrid('options').queryParams.search_value = val;
+                    $('#tab').datagrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+            $("#ipt_search3").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab_device').treegrid('options').queryParams.search_type = name;
+                    $('#tab_device').treegrid('options').queryParams.search_value = val;
+                    $('#tab_device').treegrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+        })
+        /////////////////////////删除/////////////////
+        function delete_dg() {
+                var selected = $("#tab").datagrid('getSelected');
+                if (selected != null) {
+                    $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                        if (y) {
+                            var v = "";
+                            var checked = $("#tab").datagrid('getChecked');
+                            $.each(checked, function (i, j) {
+                                v += j.JSON_id + ",";
+                            })
+                            v = v.substring(0, v.length - 1);
+                            $.post("djfs.ashx", { "action": "del", id: v }, function (data) {
+                                if (data == "1") {
+                                    $.messager.alert("提示", "设备资料点检方式中已使用该点检方式，不允许删除！");
+                                    return;
+                                }
+
+
+                                $.messager.alert('提示', data);
+                                $("#tab").datagrid('reload');
+                            });
+                        }
+                    })
+                } else {
+                    $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+                }
+        }
+
+        function sc() {
+            var value = "";
+            var total = 0;
+            var rows = $('#pg').propertygrid('getRows')//获取当前的数据行
+
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i]['value'] != "") {
+                    total = total +1;      //获取总数
+                }
+
+                value = value + "*" + rows[i]['name'] + "@" + rows[i]['value'];
+
+            }
+            value = value.substring(1, value.length) + "#" + total;
+            $("#ColumnInformation2").val(value);
+
+
+//            var value = "";
+//            var total = 0;
+//            value = "<RecordColInfo ";
+//            var val = "";
+//            var rows = $('#pg').propertygrid('getRows')//获取当前的数据行
+
+//            for (var i = 0; i < rows.length; i++) {
+//                if (rows[i]['value'] != "") {
+//                    total = total + 1;      //获取总数
+//                }
+//            }
+//            value = value + "Count=" + total + ">";
+
+//            for (var i = 0; i < rows.length; i++) {
+//                if (rows[i]['value'] != "") {
+//                    if (rows[i]['name'].substring(0, 1) == "c") {
+//                        value = value + "<" + rows[i]['name'] + ' Type="System.String">' + rows[i]['value'] + "</" + rows[i]['name'] + ">";
+//                    }
+//                    if (rows[i]['name'].substring(0, 1) == "b") {
+//                        value = value + "<" + rows[i]['name'] + ' Type="System.Boolean">' + rows[i]['value'] + "</" + rows[i]['name'] + ">";
+//                    }
+//                    if (rows[i]['name'].substring(0, 1) == "i") {
+//                        value = value + "<" + rows[i]['name'] + ' Type="System.Decimal">' + rows[i]['value'] + "</" + rows[i]['name'] + ">";
+//                    }
+//                }
+//            }
+//            value = value + "</RecordColInfo>";
+
+//            $("#ColumnInformation").val(value);
+        }
+
+        
+
+        /////////////////////添加///////////////////
+        function add_dg() {
+            var myDate = new Date();    //默认显示当前日期
+            //使用服务器函数返回日期
+            $.post("getDate.ashx", { data: myDate.toLocaleDateString() }, function (data) {
+                $('#DesignDate').datebox('setValue', data);
+            });
+
+                //表单清空
+                $("#fm_dg")[0].reset();
+                //显示
+                $("#dd_dg").show();
+                //以窗体的形式展示
+                $("#dd_dg").dialog({
+                    title: "添加点检方式", //标题
+                    iconCls: "icon-add", //图标
+                    width: 770, //窗体的宽度
+                    height: 475, //窗体的高度
+                    modal: true, //遮罩层
+                    //按钮集合
+                    buttons: [
+            {
+                text: "保存", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //将数据序列化
+                    var parm = $("#fm_dg").serialize();
+                    //中文格式转换
+                    var pp = decodeURIComponent(parm, true);
+
+                    //post异步提交
+                    $.post("djfs.ashx", { "action": "add", data: pp }, function (data) {
+                        if (data == "1") {
+                            $.messager.alert('提示', "记录类型不允许为空！");
+                            return;
+                        }
+
+                        if (data == "2") {
+                            $.messager.alert('提示', "记录设计者不允许为空！");
+                            return;
+                        }
+
+                        if (data == "3") {
+                            $.messager.alert('提示', "记录类型不允许重复！");
+                            return;
+                        }
+
+                        if (data == "4") {
+                            $.messager.alert('提示', "助记码不允许为空！");
+                            return;
+                        }
+
+                        $.messager.alert('提示', data);
+                        //重新加载datagrid
+                        $("#tab").datagrid('reload');
+                        //关闭
+                        $("#dd_dg").window('close');
+                    });
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#dd_dg").window("close");
+                  }
+              }
+            ]
+                });
+        }
+
+
+
+        //////////////////修改//////////////////
+        function edit_dg() {
+                //选中一行，获取这一行的属性的值
+                var selected = $("#tab").datagrid('getSelected');
+                //判断是否选中
+                if (selected != null) {
+                    $("#DesignDate").datebox("setValue", myformatter(selected.JSON_designdate));
+                    $("#cjlzy").combobox("select",selected.JSON_ijlzy);
+
+                    $("#id").val(selected.JSON_id);
+                    $("#TypeName").val(selected.JSON_typename);
+                    $("#TypeDesigner").val(selected.JSON_typedesigner);
+                    $("#DesignDate").val(selected.JSON_designdate);
+                    $("#ColumnInformation2").val(selected.JSON_columninformation2);
+
+                    //解析助记码中的信息
+                    $("#pg").propertygrid('load', { id: selected.JSON_id });
+
+                    $("#dd_dg").show(); //显示修改窗体
+                    $("#dd_dg").dialog({
+                        title: "编辑点检方式",
+                        iconCls: "icon-edit",
+                        modal: true, //遮罩层
+                        width: 770,
+                        height: 475,
+                        buttons: [
+                  {
+                      text: "保存",
+                      iconCls: "icon-edit",
+                      handler: function () {
+                          var parm = $("#fm_dg").serialize();
+                          var pp = decodeURIComponent(parm, true);
+                          $.post("djfs.ashx", { "action": "edit", data: pp }, function (data) {
+                              if (data == "1") {
+                                  $.messager.alert('提示', "记录类型不允许为空！");
+                                  return;
+                              }
+
+                              if (data == "2") {
+                                  $.messager.alert('提示', "记录设计者不允许为空！");
+                                  return;
+                              }
+
+                              if (data == "3") {
+                                  $.messager.alert('提示', "记录类型不允许重复！");
+                                  return;
+                              }
+
+                              if (data == "4") {
+                                  $.messager.alert('提示', "助记码不允许为空！");
+                                  return;
+                              }
+
+                              $.messager.alert('提示', data);
+                              $("#tab").datagrid("reload");
+                              $("#dd_dg").window("close");
+                          });
+                      }
+
+                  },
+                   {
+                       text: "取消",
+                       iconCls: "icon-cancel",
+                       handler: function () {
+                           $("#dd_dg").window('close');
+                       }
+                   }
+                  ]
+
+
+                    });
+                } else {
+                    $.messager.alert('提示', '请选中一行在进行编辑');
+                }
+        }
+
+    </script>
+    <style type="text/css">
+        .style2
+        {
+            height: 9px;
+        }
+        .style3
+        {
+            height: 10px;
+        }
+        .style6
+        {
+            height: 9px;
+            width: 152px;
+        }
+        .style7
+        {
+            height: 10px;
+            width: 152px;
+        }
+        .style9
+        {
+            width: 152px;
+        }
+    </style>
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
+<table id="tab">
+</table>
+<div id="tool">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add" iconcls="icon-add"  plain="true" onclick="add_dg();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit" iconCls="icon-edit"  plain="true" onclick="edit_dg();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_cancel" onclick="delete_dg();"  iconcls="icon-cancel" plain="true">删除</a>
+                <a href="#" class="easyui-linkbutton" id="id_search" onclick="batch_dg();"  iconcls="icon-search" plain="true">点检批量设置</a
+            </td>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search" menu="#search_menu" />
+                    <div id="search_menu" style="width:120px">
+                        <div name="TypeName">
+                            记录类型</div>
+                        <div name="TypeDesigner">
+                            记录设计者</div>
+                        <div name="cjlzy">
+                            记录专业</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_device">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+             <td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="A1" onclick="search_dg();"  iconcls="icon-search" plain="true">高级查询</a>
+            </td>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search3" menu="#search_menu3" />
+                    <div id="search_menu3" style="width:120px">
+                        <div name="csbfl">
+                            设备分类</div>
+                        <div name="csbbh">
+                            设备编号</div>
+                        <div name="csbmc">
+                            设备名称</div>
+                        <div name="csbsbh">
+                            RFID码</div>
+                        <div name="cscx">
+                            生产线</div>
+                        <div name="csszy">
+                            所属专业</div>
+                        <div name="csdwz">
+                            上端位置</div>
+                        <div name="csbxh">
+                            设备型号</div>
+                        <div name="cjscs">
+                            技术参数</div>
+                        <div name="csccj">
+                            生产厂家</div>
+                        <div name="izjsl">
+                            装机数量</div>
+                        <div name="cazdd">
+                            安装地点</div>
+                        <div name="csbdj">
+                            设备等级</div>
+                        <div name="csbzt">
+                            设备状态</div>
+                        <div name="cbz">
+                            备注</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+    <br />
+   
+<div id="dd_dg" style="display:none">
+<div class="easyui-layout" style="width:750px;height:400px;">
+<div data-options="region:'east',split:true" title="参数设置" style="width:225px;" class="div01">
+    <table id="pg" class="easyui-propertygrid" style="width:200px" data-options="
+				url:'djfs_load.ashx?action=query',
+				method:'get',
+				showGroup:true,
+				scrollbarSize:0
+			">
+	</table>
+</div>
+
+<div data-options="region:'center',title:'记录信息',iconCls:'icon-ok'" >
+<form id="fm_dg">
+        <input type="hidden" id="id" name="id"/>
+        
+        <table width="500" height="350" border="0">
+  <tr>
+    <td class="style7"><div align="right">记录类型:</div></td>
+    <td class="style7"><input type="text" style="width:195px;" id="TypeName" name="TypeName" class="easyui-validatebox"  
+    onkeyup="value=value.replace(' ','')" required="true" missingMessage="请输入记录类型" onkeypress="processSpelChar();"/></td>
+    
+  </tr>
+  <tr>
+    <td class="style7"><div align="right">记录专业:</div></td>
+    <td class="style7"><input  style="width:200px;" id="cjlzy" name="cjlzy" class="easyui-combobox"  required="true" missingMessage="请选择记录专业" /></td>
+    
+  </tr>
+  <tr>
+    <td class="style7"><div align="right">记录设计者:</div></td>
+    <td class="style7"><input type="text" style="width:195px;" id="TypeDesigner" name="TypeDesigner" 
+    onkeyup="value=value.replace(' ','')" class="easyui-validatebox"  required="true" missingMessage="请输入记录设计者" onkeypress="processSpelChar();"/></td>
+  </tr>
+  <tr>
+   <td class="style7"><div align="right">日期:</div></td>
+    <td class="style7"><input  style="width:200px;" id="DesignDate" name="DesignDate" class="easyui-datebox" /></td>
+</tr>
+  <tr >
+    <td class="style7"><div align="right">助记码:</div></td>
+    <td>
+    <textarea style="width:195px;" id="ColumnInformation2" name="ColumnInformation2" rows="10" readonly></textarea>
+    <a href="#" class="easyui-linkbutton" id="sc" iconcls="icon-search"   plain="true" onclick="sc();" >生成</a>
+    </td>
+  </tr>
+  <tr >
+    <td></td>
+    <td class="style7"><font color="#FF0000">**参数设置完成后，单击助记码右边的"生成"</font></td>
+  </tr>
+</table>
+ </form>
+   </div>
+   </div>
+   </div>
+
+   <div id="div2" style=" display:none">
+        <form id="form2">
+    <div id="sel" align="center" >
+    <table id="tab_device" class="easyui-treegrid"
+			data-options="
+				method: 'get',
+				rownumbers: true,
+				idField: 'id',
+				treeField: 'csbmc',
+                loadFilter: pagerFilter
+			">
+</table>
+</div>
+</form>
+</div>
+
+
+<div id="div_search" align="center" style="display:none">
+        <form id="fm_search">
+        <table border="0">
+          <tr>
+            <td width="109" height="30"><div align="right">设备编号:</div></td>
+            <td width="192"><input style="width:130px" type="text" id="s_csbbh" name="s_csbbh" class="easyui-validatebox"  /></td>
+          
+            <td height="30"><div align="right">设备名称:</div></td>
+            <td><input type="text" style="width:130px" id="s_csbmc" name="s_csbmc" class="easyui-validatebox" /></td>
+            </tr>
+          <tr>
+            <td height="30"><div align="right">RFID码:</div></td>
+            <td><input type="text" style="width:130px" id="s_csbsbh" name="s_csbsbh" class="easyui-validatebox"  /></td>
+
+            <td height="30"><div align="right">所属专业:</div></td>
+            <td><input id="s_csszy" style="width:135px" name="s_csszy" class="easyui-combobox"></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产线:</div></td>
+            <td><input id="s_cscx" style="width:135px" name="s_cscx" class="easyui-combobox"/></td>
+
+            <td height="30"><div align="right">设备型号:</div></td>
+            <td><input type="text" style="width:130px" id="s_csbxh" name="s_csbxh" class="easyui-validatebox" /></td>
+
+          </tr>
+          <tr>
+            <td height="30"><div align="right">上端位置:</div></td>
+            <td><input type="text" style="width:130px" id="s_csdwz" name="s_csdwz" class="easyui-validatebox" /></td>
+
+
+            <td height="30"><div align="right">技术参数:</div></td>
+            <td><input type="text" style="width:130px" id="s_cjscs" name="s_cjscs" class="easyui-validatebox"/></td>
+           </tr>
+           <tr>
+            <td width="109" height="30"><div align="right">设备状态:</div></td>
+            <td width="195"><input style="width:135px;" id="s_csbzt" name="s_csbzt" class="easyui-combobox" /></td>
+
+            <td width="109" height="0"><div align="right">设备等级:</div></td>
+            <td width="195"><input style="width:135px;" id="s_csbdj" name="s_csbdj" class="easyui-combobox" /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产厂家:</div></td> 
+            <td><input type="text" style="width:130px" id="s_csccj" name="s_csccj" class="easyui-validatebox" /></td>
+
+            <td height="30"><div align="right">装机数量:</div></td>
+            <td><input type="text" style="width:130px" id="s_izjsl" name="s_izjsl" class="easyui-numberbox" style="text-align:right"/></td>
+          </tr>
+          <tr>
+            
+            <td height="30"><div align="right">安装地点:</div></td>
+            <td><input type="text" style="width:130px" id="s_cazdd" name="s_cazdd" class="easyui-validatebox"  /></td>
+
+            <td height="30"><div align="right">备注:</div></td>
+            <td ><input type="text" style="width:130px" id="s_cbz" name="s_cbz" class="easyui-validatebox"/></td>
+          </tr>
+
+        </table>
+        </form>
+	</div>
+</body>
+</html>

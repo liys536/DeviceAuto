@@ -1,0 +1,849 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+     <style>
+  .div01{width:100%; height:100%; position:relative;}
+  .div02{background:#FF0000; color:#FFFFFF; position:absolute; left:50%; top:50%; margin:-100px 0 0 -100px; width:200px; height:200px;}
+ </style>
+
+    <link href="easyui/css/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/demo.css" rel="stylesheet" type="text/css" />
+    <link href="easyui/css/dlg.css" rel="stylesheet" type="text/css" />
+    <script src="easyui/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="easyui/js/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="common.js" type="text/javascript"></script>
+     <script src="easyui/js/easyui-lang-zh_CN.js" type="text/javascript"></script>
+
+     <script src="common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        //高级查询
+        function search_dg() {
+            //表单清空
+            //不能使用表单清空，原因是该语句生效后，还能获取上次表单留下的内容，与查询条件不符，所以该语句注释掉
+            //$("#fm_search")[0].reset();       
+
+            //显示
+            $("#div_search").show();
+
+            //以窗体的形式展示
+            $("#div_search").dialog({
+                title: "高级查询", //标题
+                iconCls: "icon-search", //图标
+                width: 600, //窗体的宽度
+                height: 350, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //将数据序列化
+                    var parm = $("#fm_search").serialize();
+                    //中文格式转换
+                    var pp = decodeURIComponent(parm, true);
+
+                    $("#tab_device").treegrid('load', { "action": "search", data: pp });
+
+                    $("#div_search").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div_search").window("close");
+                  }
+              }
+            ]
+            });
+        }
+
+        function formatOper() {
+            return '<a href="#" class="easyui-linkbutton l-btn l-btn-plain" onclick="selectRow()"><img src="../easyui/css/themes/icons/search.gif" border=0/></a>';
+        }
+
+        //选择设备
+        function selectRow() {
+            //表单清空
+            $("#form2")[0].reset();
+            //显示
+            $("#div2").show();
+            //以窗体的形式展示
+            $("#div2").dialog({
+                title: "选择设备", //标题
+                iconCls: "icon-ok", //图标
+                width: 850, //窗体的宽度
+                height: 500, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "确定", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //获取选定行
+                    var selected = $('#tab_device').treegrid('getSelected');
+                    //回传至编辑窗口
+                    var row = $('#tab2').datagrid('getSelected');
+                    if (row) {
+                        var i = $('#tab2').datagrid('getRowIndex', row);
+
+                        // 得到columns对象
+                        var columns = $('#tab2').datagrid("options").columns;
+                        // 得到rows对象
+                        var rows = $('#tab2').datagrid("getRows"); // 这段代码是
+                        // 对某个单元格赋值
+                        rows[i][columns[0][1].field] = i+1;
+                        rows[i][columns[0][2].field] = selected.id;
+                        rows[i][columns[0][3].field] = selected.csbbh;
+                        rows[i][columns[0][4].field] = selected.csbmc;
+                        // 刷新该行, 只有刷新了才有效果
+                        $('#tab2').datagrid('refreshRow', i);
+                    }
+
+                    $("#div2").window("close");
+                }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#div2").window("close");
+                  }
+              }
+            ]
+            });
+        }
+
+        $(function () {
+            $("#tt").tree({//同步加载Tree
+                url: 'djlx2.ashx',
+                lines: true,
+                onSelect: function (node) {
+                    $('#tab').datagrid('load', { "action": "query", sb: node.id });
+                }
+            });
+
+            $('#s_csbfl').combotree({
+                url: 'sbfl.ashx',     //显示最末级分类
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                editable: true
+            });
+
+
+            $('#s_csbdj').combobox({
+                url: 'common.ashx?action=2',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $('#s_csbzt').combobox({
+                url: 'common.ashx?action=1',
+                method: 'get',
+                valueField: 'text',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+
+            $('#s_cbmmc').combotree({
+                url: 'bmzl.ashx',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+
+            $('#s_csszy').combobox({
+                url: 'sszy.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $('#s_cscx').combobox({
+                url: 'scx.ashx?action=1',
+                method: 'get',
+                valueField: 'id',
+                textField: 'text',
+                panelWidth: 350,
+                panelHeight: 'auto',
+                editable: true
+            });
+
+            $("#tab").datagrid({
+                width: $('#panel2').width(),
+                height: $('#panel2').height(),
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "djlx.ashx", //请求路径
+                nowrap: false,
+                fit: true,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //title: "点检路线", //标题
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "JSON_id", title: "路线id", hidden:true },
+                { field: "JSON_cdjlx", title: "路线名称", width: 100 },
+                { field: "JSON_drq", title: "日期", width: 150, formatter: myformatter },
+                { field: "JSON_csjz", title: "设计者", width: 100 },
+                { field: "JSON_cxh", title: "序号", width: 100 },
+                { field: "JSON_csbmc", title: "设备名称", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool",
+                onDblClickRow: function () {
+                    edit_dg();  //行双击调用修改函数
+                }
+            });
+            $("#tab").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+
+            $("#ipt_search").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab').datagrid('options').queryParams.search_type = name;
+                    $('#tab').datagrid('options').queryParams.search_value = val;
+                    $('#tab').datagrid('reload');
+                    $('#tt').tree('reload');
+                    $('#csjby').combobox('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+
+            $("#tab2").datagrid({
+                width: 520,
+                height: 250,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                nowrap: false,
+                url: "djlx_mx.ashx", //请求路径
+                title: "点检路线", //标题
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: 'opt', title: '操作', width: 50, align: 'center',
+                    formatter: formatOper
+                },
+                { field: "JSON_ixh", title: "序号", width: 100 },
+                { field: "JSON_isbid", title: "设备id", width: 100,hidden:true },
+                { field: "JSON_csbbh", title: "设备编号", width: 150 },
+                { field: "JSON_csbmc", title: "设备名称", width: 150 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query", wxid: 0 },
+                pagination: true,
+                toolbar: "#tool2",
+                onDblClickRow: function () {
+                    edit_mx();  //行双击调用修改函数
+                }
+            });
+            $("#tab2").datagrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+
+            });
+
+            $("#tab_device").treegrid({
+                width: 825,
+                height: 425,
+                singleSelect: true, //选中一行的设置
+                rownumbers: true, //行号
+                url: "sbzl.ashx", //请求路径
+                title: "设备资料", //标题
+                nowrap: false,
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表  
+                //iconCls: "icon-save", //图标
+                //collapsible: true, //隐藏按钮
+                loadMsg: '正在加载,请稍后...',
+                //冻结列
+                frozenColumns: [[{ field: "chk", "checkbox": true}]],
+                //列
+                columns: [[
+                { field: "csbfl", title: "设备分类", width: 80 },
+                { field: "csbbh", title: "设备编号", width: 150 },
+                { field: "csbmc", title: "设备名称", width: 150 },
+                { field: "csbsbh", title: "RFID码", width: 100 },
+                { field: "cscx", title: "生产线", width: 100 },
+                { field: "csbzt", title: "设备状态", width: 100 },
+                { field: "csbdj", title: "设备等级", width: 100 },
+                { field: "cbmmc", title: "部门", width: 100 },
+                { field: "csszy", title: "所属专业", width: 100 },
+                { field: "csdwz", title: "上端位置", width: 100 },
+                { field: "csbxh", title: "设备型号", width: 100 },
+                { field: "cjscs", title: "技术参数", width: 100 },
+                { field: "csccj", title: "生产厂家", width: 100 },
+                { field: "izjsl", title: "装机数量", width: 100 },
+                { field: "cazdd", title: "安装地点", width: 100 },
+                { field: "dtyrq", title: "投用日期", width: 100, formatter: myformatter },
+                { field: "cbz", title: "备注", width: 100 }
+                ]],
+                //传输参数
+                queryParams: { "action": "query" },
+                pagination: true,
+                toolbar: "#tool_device"
+            });
+            $("#tab_device").treegrid('getPager').pagination({
+                pageSize: 10, //每页显示的记录条数                       
+                pageList: [10, 20, 30, 40, 50], //设置每页记录条数的列表                           
+                beforePageText: '第', //页数文本框前显示的汉字                           
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            $("#ipt_search3").searchbox({
+                width: 200,
+                iconCls: 'icon-save',
+                searcher: function (val, name) {
+                    $('#tab_device').treegrid('options').queryParams.search_type = name;
+                    $('#tab_device').treegrid('options').queryParams.search_value = val;
+                    $('#tab_device').treegrid('reload');
+                },
+                prompt: '请输入要查询的内容'
+            });
+        });
+        /////////////////////////删除/////////////////
+        function delete_dg() {
+            var selected = $("#tab").datagrid('getSelected');
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        var v = "";
+                        var checked = $("#tab").datagrid('getChecked');
+                        $.each(checked, function (i, j) {
+                            v += j.JSON_id + ",";
+                        })
+                        v = v.substring(0, v.length - 1);
+                        $.post("djlx.ashx", { "action": "del", id: v }, function (data) {
+                            $.messager.alert('提示', data);
+                            $("#tab").datagrid('reload');
+                            $('#tt').tree('reload');
+                        });
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+        /////////////////////添加///////////////////
+        function add_dg() {
+            var flag = "";      //明细标志
+
+            var myDate = new Date();    //默认显示当前日期
+            //使用服务器函数返回日期
+            $.post("getDate.ashx", { data: myDate.toLocaleDateString() }, function (data) {
+                $('#drq').datebox('setValue', data);
+            });
+
+            var lxid = 0;
+            $('#tab2').datagrid('load', { "action": "query", lxid: lxid });
+
+            //表单清空
+            $("#fm_dg")[0].reset();
+            //显示
+            $("#dd_dg").show();
+
+            //以窗体的形式展示
+            $("#dd_dg").dialog({
+                title: "添加点检路线", //标题
+                iconCls: "icon-add", //图标
+                width: 600, //窗体的宽度
+                height: 420, //窗体的高度
+                modal: true, //遮罩层
+                //按钮集合
+                buttons: [
+            {
+                text: "保存", //添加按钮的文本值
+                iconCls: "icon-ok", //添加按钮的图标
+                handler: function () {
+                    //将数据序列化
+                    var parm = $("#fm_dg").serialize();
+
+                    //备件
+                    //----------------------------------------------------------
+                    if (editIndex != undefined || editIndex != null) {
+                        $('#tab2').datagrid('endEdit', editIndex);
+                    }
+                    var rows = $('#tab2').datagrid('getData');
+
+                    if (rows.total < 1) {
+                        $.messager.alert("提示", "设备记录行数不允许为空，请添加！");
+                        return;
+                    }
+
+                    var parms = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                    var xh = 0;
+                    var isbid = 0;      //设备id
+                    var csbbh = "";       //设备编号
+
+                    for (var i = 0; i <= rows.total - 1; i++) {
+                        selected = $('#tab2').datagrid('getRows')[i];
+                        xh = selected.JSON_ixh;
+                        isbid = selected.JSON_isbid;
+                        csbbh = selected.JSON_csbbh;
+
+                        parms = parms + "&" + xh + "&" + isbid + "&" + csbbh + "@";
+                    }
+
+                    parms = parms.substr(0, parms.length - 1);     //去掉最后的@
+                    parms = parms + "*" + rows.total;
+
+                    parm = parm + "~" + parms;
+                    //----------------------------------------------------------
+
+                    //中文格式转换
+                    var pp = decodeURIComponent(parm, true);
+
+                    //post异步提交
+                    $.post("djlx.ashx", { "action": "add", data: pp }, function (data) {
+                        flag = data.substr(0, 1);
+
+                        if (data == "1") {
+                            $.messager.alert('提示', "该路线已存在，请重新输入！");
+                            return;
+                        }
+
+                        if (data == "2") {
+                            $.messager.alert('提示', "该路线名称已存在，请重新输入！");
+                            return;
+                        }
+                        if (flag == "3") {
+                            $.messager.alert("提示", "第" + data.substr(2, data.length - 2) + "行序号不正确！");
+                            return;
+                        }
+                        if (flag == "4") {
+                            $.messager.alert("提示", "第" + data.substr(2, data.length - 2) + "行设备编号不允许为空，请选择！");
+                            return;
+                        }
+                        if (flag == "5") {
+                            $.messager.alert("提示", "第" + data.substr(2, data.length - 2) + "行设备不存在，请重新选择！");
+                            return;
+                        }
+
+                        $.messager.alert('提示', data);
+                        //重新加载datagrid
+                        $("#tab").datagrid('reload');
+                        $('#tt').tree('reload');
+                        //关闭
+                        $("#dd_dg").window('close');
+
+                    });
+               }
+            },
+              {
+                  text: "取消",
+                  iconCls: "icon-cancel",
+                  handler: function () {
+                      $("#dd_dg").window("close");
+                  }
+              }
+            ]
+            });
+        }
+
+
+        //////////////////修改//////////////////
+        function edit_dg() {
+            //选中一行，获取这一行的属性的值
+            var selected = $("#tab").datagrid('getSelected');
+            //判断是否选中
+            if (selected != null) {
+
+                $("#id").val(selected.JSON_id);
+                $("#clxmc").val(selected.JSON_cdjlx);
+                $('#drq').datebox('setValue', myformatter(selected.JSON_drq));
+                $("#csjz").val(selected.JSON_csjz);
+
+                var flag = "";
+
+                var lxid = selected.JSON_id;
+                $('#tab2').datagrid('load', { "action": "query", lxid: lxid });
+
+                $("#dd_dg").show(); //显示修改窗体
+                $("#dd_dg").dialog({
+                    title: "编辑点检路线",
+                    iconCls: "icon-edit",
+                    modal: true, //遮罩层
+                    width: 600,
+                    height: 420,
+                    buttons: [
+                  {
+                      text: "保存",
+                      iconCls: "icon-edit",
+                      handler: function () {
+                          //将数据序列化
+                          var parm = $("#fm_dg").serialize();
+
+                          //备件
+                          //----------------------------------------------------------
+                          if (editIndex != undefined || editIndex != null) {
+                              $('#tab2').datagrid('endEdit', editIndex);
+                          }
+                          var rows = $('#tab2').datagrid('getData');
+
+                          if (rows.total < 1) {
+                              $.messager.alert("提示", "设备记录行数不允许为空，请添加！");
+                              return;
+                          }
+
+                          var parms = "*";     //该处不能使用#，否则出错，可能#为jquery的默认关键字。
+                          var xh = 0;
+                          var isbid = 0;      //设备id
+                          var csbbh = "";       //设备编号
+
+                          for (var i = 0; i <= rows.total - 1; i++) {
+                              selected = $('#tab2').datagrid('getRows')[i];
+                              xh = selected.JSON_ixh;
+                              isbid = selected.JSON_isbid;
+                              csbbh = selected.JSON_csbbh;
+
+                              parms = parms + "&" + xh + "&" + isbid + "&" + csbbh + "@";
+                          }
+
+                          parms = parms.substr(0, parms.length - 1);     //去掉最后的@
+                          parms = parms + "*" + rows.total;
+
+                          parm = parm + "~" + parms;
+                          //----------------------------------------------------------
+
+                          //中文格式转换
+                          var pp = decodeURIComponent(parm, true);
+
+                          //post异步提交
+                          $.post("djlx.ashx", { "action": "edit", data: pp }, function (data) {
+                              flag = data.substr(0, 1);
+
+                              if (data == "1") {
+                                  $.messager.alert('提示', "该路线已存在，请重新输入！");
+                                  return;
+                              }
+
+                              if (data == "2") {
+                                  $.messager.alert('提示', "该路线名称已存在，请重新输入！");
+                                  return;
+                              }
+                              if (flag == "3") {
+                                  $.messager.alert("提示", "第" + data.substr(2, data.length - 2) + "行序号不正确！");
+                                  return;
+                              }
+                              if (flag == "4") {
+                                  $.messager.alert("提示", "第" + data.substr(2, data.length - 2) + "行设备编号不允许为空，请选择！");
+                                  return;
+                              }
+                              if (flag == "5") {
+                                  $.messager.alert("提示", "第" + data.substr(2, data.length - 2) + "行设备不存在，请重新选择！");
+                                  return;
+                              }
+
+                              $.messager.alert('提示', data);
+                              //重新加载datagrid
+                              $("#tab").datagrid('reload');
+                              $('#tt').tree('reload');
+                              //关闭
+                              $("#dd_dg").window('close');
+
+                          });
+                      }
+
+                  },
+                   {
+                       text: "取消",
+                       iconCls: "icon-cancel",
+                       handler: function () {
+                           $("#dd_dg").window('close');
+                       }
+                   }
+                  ]
+
+                });
+            } else {
+                $.messager.alert('提示', '请选中一行在进行编辑');
+            }
+        }
+
+        var editIndex = undefined;
+        var sflag = "";
+
+        /////////////////////添加///////////////////
+        function add_mx() {
+            if (sflag == "add") {
+                $('#tab2').datagrid('endEdit', editIndex);
+
+                //设置选定行，否则无法获取内容
+                $('#tab2').datagrid('selectRow', editIndex);
+
+                sflag = "";
+            }
+
+            $('#tab2').datagrid('appendRow', {});
+            editIndex = $('#tab2').datagrid('getRows').length - 1;
+            $('#tab2').datagrid('selectRow', editIndex)
+			.datagrid('beginEdit', editIndex);
+
+            sflag = "add";
+        }
+
+        /////////删除////////////////////////
+        function delete_mx() {
+            var selected = $("#tab2").datagrid('getSelected');
+
+            editIndex = $('#tab2').datagrid('getRowIndex', selected);
+
+            if (selected != null) {
+                $.messager.confirm('提示', '是否确定要删除？', function (y) {
+                    if (y) {
+                        if (editIndex == undefined) { return }
+                        $('#tab2').datagrid('cancelEdit', editIndex)
+					                .datagrid('deleteRow', editIndex);
+                        editIndex = undefined;
+                    }
+                })
+            } else {
+                $.messager.alert('提示', '您还没有选中一行数，请选中在删除！');
+            }
+        }
+</script>   
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="easyui-layout">
+
+<div data-options="region:'west',split:true,title:'点检路线'" style="width:200px;padding:10px;">
+    
+    <ul id="tt"></ul> 
+     
+     </div>
+     <div id="panel2" data-options="region:'center',title:'路线记录'"   class="div01">
+<table id="tab">
+</table>
+</div>
+<div id="tool">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_add" iconcls="icon-add"  plain="true" onclick="add_dg();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="id_edit" iconCls="icon-edit"  plain="true" onclick="edit_dg();">修改</a>
+                <a href="#" class="easyui-linkbutton" id="id_cancel" onclick="delete_dg();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search" menu="#search_menu" />
+                    <div id="search_menu" style="width:120px">
+                        <div name="cdjlx">
+                            路线名称</div>
+                        <div name="csbmc">
+                            设备名称</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+    <br />
+
+    <div id="tool2">
+       <table border="0" cellspacing="l0" cellpadding="0" widthl="100%">
+       	<tr>
+       		<td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="add" iconcls="icon-add"  plain="true" onclick="add_mx();" >添加</a>
+                <a href="#" class="easyui-linkbutton" id="delete" onclick="delete_mx();"  iconcls="icon-cancel" plain="true">删除</a>
+            </td>
+        </tr>
+       </table>
+    </div>
+    </br>
+    <div id="tool_device">
+       <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       	<tr>
+             <td style=" padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="id_search" onclick="search_dg();"  iconcls="icon-search" plain="true">高级查询</a>
+            </td>
+            <td style="text-align: right; padding-right: 15px">
+                    <input id="ipt_search3" menu="#search_menu3" />
+                    <div id="search_menu3" style="width:120px">
+                        <div name="csbfl">
+                            设备分类</div>
+                        <div name="csbbh">
+                            设备编号</div>
+                        <div name="csbmc">
+                            设备名称</div>
+                        <div name="csbsbh">
+                            RFID码</div>
+                        <div name="cscx">
+                            生产线</div>
+                        <div name="csszy">
+                            所属专业</div>
+                        <div name="csdwz">
+                            上端位置</div>
+                        <div name="csbxh">
+                            设备型号</div>
+                        <div name="cjscs">
+                            技术参数</div>
+                        <div name="csccj">
+                            生产厂家</div>
+                        <div name="izjsl">
+                            装机数量</div>
+                        <div name="cazdd">
+                            安装地点</div>
+                        <div name="csbdj">
+                            设备等级</div>
+                        <div name="cbz">
+                            备注</div>
+                    </div>
+                </td>
+       	</tr>
+       </table>
+    </div>
+          </br>
+
+<div id="dd_dg" style="display:none">
+
+<form id="fm_dg">
+        <input type="hidden" id="id" name="id"/>
+        
+        <table width="533" height="80" border="0" align="center">
+  <tr>
+    <td><div align="right">路线名称:</div></td>
+    <td><input type="text" id="clxmc" name="clxmc" class="easyui-validatebox"  
+    onkeyup="value=value.replace(' ','')" required="true" missingmessage="请输入路线名称" onkeypress="processSpelChar();"/></td>
+    <td><div align="right">日期:</div></td>
+    <td><input id="drq" name="drq" class="easyui-datebox"  required="true" missingmessage="请选择日期" /></td>
+  </tr>
+  <tr>
+    <td width="77"><div align="right">设计者:</div></td>
+    <td width="177"><input type="text" id="csjz" name="csjz" class="easyui-validatebox"  
+    onkeyup="value=value.replace(' ','')" required="true" missingmessage="请输入设计者" onkeypress="processSpelChar();"/></td>
+    <td width="67">&nbsp;</td>
+    <td width="194">&nbsp;</td>
+  </tr>
+</table>
+<div align="center">
+  <table width="962" border="0" id="tab2">
+  </table>
+</div>
+
+
+ </form>
+   </div>
+
+   
+<div id="div2" style=" display:none">
+        <form id="form2">
+    <div id="sel" align="center" >
+    <table id="tab_device" class="easyui-treegrid"
+			data-options="
+				method: 'get',
+				rownumbers: true,
+				idField: 'id',
+				treeField: 'csbmc',
+                loadFilter: pagerFilter
+			">
+</table>
+</div>
+</form>
+</div>
+
+
+<div id="div_search" align="center" style="display:none">
+        <form id="fm_search">
+        <table border="0">
+          <tr>
+            <td width="109" height="30"><div align="right">设备编号:</div></td>
+            <td width="192"><input style="width:130px" type="text" id="s_csbbh" name="s_csbbh" class="easyui-validatebox"  /></td>
+          
+            <td height="30"><div align="right">设备名称:</div></td>
+            <td><input type="text" style="width:130px" id="s_csbmc" name="s_csbmc" class="easyui-validatebox" /></td>
+            </tr>
+          <tr>
+            <td height="30"><div align="right">RFID码:</div></td>
+            <td><input type="text" style="width:130px" id="s_csbsbh" name="s_csbsbh" class="easyui-validatebox"  /></td>
+
+            <td height="30"><div align="right">所属专业:</div></td>
+            <td><input id="s_csszy" style="width:135px" name="s_csszy" class="easyui-combobox"></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产线:</div></td>
+            <td><input id="s_cscx" style="width:135px" name="s_cscx" class="easyui-combobox"/></td>
+
+            <td height="30"><div align="right">设备型号:</div></td>
+            <td><input type="text" style="width:130px" id="s_csbxh" name="s_csbxh" class="easyui-validatebox" /></td>
+
+          </tr>
+          <tr>
+            <td height="30"><div align="right">上端位置:</div></td>
+            <td><input type="text" style="width:130px" id="s_csdwz" name="s_csdwz" class="easyui-validatebox" /></td>
+
+
+            <td height="30"><div align="right">技术参数:</div></td>
+            <td><input type="text" style="width:130px" id="s_cjscs" name="s_cjscs" class="easyui-validatebox"/></td>
+           </tr>
+           <tr>
+            <td width="109" height="30"><div align="right">设备状态:</div></td>
+            <td width="195"><input style="width:135px;" id="s_csbzt" name="s_csbzt" class="easyui-combobox" /></td>
+
+            <td width="109" height="0"><div align="right">设备等级:</div></td>
+            <td width="195"><input style="width:135px;" id="s_csbdj" name="s_csbdj" class="easyui-combobox" /></td>
+          </tr>
+          <tr>
+            <td height="30"><div align="right">生产厂家:</div></td> 
+            <td><input type="text" style="width:130px" id="s_csccj" name="s_csccj" class="easyui-validatebox" /></td>
+
+            <td height="30"><div align="right">装机数量:</div></td>
+            <td><input type="text" style="width:130px" id="s_izjsl" name="s_izjsl" class="easyui-numberbox" style="text-align:right"/></td>
+          </tr>
+          <tr>
+            
+            <td height="30"><div align="right">安装地点:</div></td>
+            <td><input type="text" style="width:130px" id="s_cazdd" name="s_cazdd" class="easyui-validatebox"  /></td>
+
+            <td height="30"><div align="right">备注:</div></td>
+            <td ><input type="text" style="width:130px" id="s_cbz" name="s_cbz" class="easyui-validatebox"/></td>
+          </tr>
+
+        </table>
+        </form>
+	</div>
+
+</body>
+</html>
